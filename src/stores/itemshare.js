@@ -1,12 +1,19 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useItemShareStore = defineStore('itemshare', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+export const useItemShareStore = defineStore('itemshare', {
+  state: () => ({
+    temp: 1
+  }),
+  getters: {
+    tempGetter(state) {
+      return state.temp
+    }
+  },
+  actions: {
+    login() {
+      // some login processing
+      return true; //login successful
+    }
   }
-
-  return { count, doubleCount, increment }
 })
