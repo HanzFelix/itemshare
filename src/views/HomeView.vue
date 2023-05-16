@@ -1,7 +1,6 @@
 <script setup>
 import { RouterLink } from "vue-router";
 import TheWelcome from "../components/TheWelcome.vue";
-import itemShareLogo from "../assets/itemShareLogo.png";
 </script>
 
 <template>
@@ -20,7 +19,9 @@ import itemShareLogo from "../assets/itemShareLogo.png";
             <div class="flex flex-col">
               <p>3D Scanner</p>
               <p class="text-xs">Baybay City</p>
-              <p><span class="text-2xl">P</span>150 - per week</p>
+              <p class="text-green-800">
+                <span class="text-2xl">P</span>150 - per week
+              </p>
             </div>
           </RouterLink>
         </article>
@@ -32,7 +33,7 @@ import itemShareLogo from "../assets/itemShareLogo.png";
         <article v-for="i in 18" class="shadow-sm shadow-gray-400 p-2 w-40">
           <a href="#">
             <img
-              src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+              src="https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
               alt=""
               srcset=""
               class="object-contain"
@@ -40,7 +41,9 @@ import itemShareLogo from "../assets/itemShareLogo.png";
             <div class="flex flex-col">
               <p>3D Scanner</p>
               <p class="text-xs">Baybay City</p>
-              <p><span class="text-2xl">P</span>150 - per week</p>
+              <p class="text-green-800">
+                <span class="text-2xl">P</span>150 - per week
+              </p>
             </div></a
           >
         </article>
