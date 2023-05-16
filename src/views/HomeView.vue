@@ -4,7 +4,7 @@ import TheWelcome from "../components/TheWelcome.vue";
 </script>
 
 <template>
-  <main class="flex flex-col pt-16 container mx-auto px-4 gap-8">
+  <main class="flex flex-col pt-40 container mx-auto px-4 gap-8">
     <section class="flex flex-col gap-2">
       <h1>JUST FOR YOU</h1>
       <div class="flex items-center gap-4 flex-wrap">
