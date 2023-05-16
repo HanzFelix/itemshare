@@ -4,8 +4,6 @@ import ItemShareLogo from "../components/ItemShareLogo.vue";
 /*
 TODO:
 add bg image from figma's login page
-add itemshare logo
-migrate login <form> from here to separate view
 */
 </script>
 <template>
