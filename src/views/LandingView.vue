@@ -1,5 +1,6 @@
 <script setup>
 import { RouterView } from "vue-router";
+import ItemShareLogo from "../components/ItemShareLogo.vue";
 /*
 TODO:
 add bg image from figma's login page
@@ -15,7 +16,7 @@ migrate login <form> from here to separate view
           <a href="#">About Us</a>
           <a href="#">Contacts</a>
         </nav>
-        <div>ItemShare [logo]</div>
+        <ItemShareLogo />
       </header>
       <!--Move this section to separate file for RouterView-->
       <div class="bg-white p-12 self-center rounded-3xl">

@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink } from "vue-router";
 import TheWelcome from "../components/TheWelcome.vue";
+import itemShareLogo from "../assets/itemShareLogo.png";
 </script>
 
 <template>

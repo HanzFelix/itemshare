@@ -1,21 +1,9 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
-import { useItemShareStore } from "./stores/itemshare";
-
-const itemShareStore = useItemShareStore();
+import { RouterView } from "vue-router";
+import NavigationBar from "./components/NavigationBar.vue";
 </script>
 
 <template>
-  <!-- Temporary header to demonstrate vue router -->
-  <header
-    class="bg-green-500 py-2 px-8 flex gap-4 fixed w-full"
-    v-if="!['login', 'register'].includes($route.name)"
-  >
-    <RouterLink to="/">Home</RouterLink>
-    <RouterLink to="/item">Item Detail</RouterLink>
-    <RouterLink to="/login">Login</RouterLink>
-    <RouterLink to="/profile">Profile</RouterLink>
-  </header>
+  <NavigationBar />
   <RouterView />
 </template>

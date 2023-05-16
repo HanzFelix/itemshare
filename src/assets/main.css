@@ -1,3 +1,10 @@
-@import './base.css';
+@import "./base.css";
 
 /* custom css goes here like .classes and #ids */
+.nav-list {
+  font-family: Poppins;
+}
+
+.font-poppins {
+  font-family: Poppins;
+}
