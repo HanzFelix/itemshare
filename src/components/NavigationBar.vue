@@ -16,10 +16,19 @@ const itemShareStore = useItemShareStore();
     >
       <ItemShareLogo />
       <div class="flex gap-4">
-        <p><span>[Z]</span>NOTIFICATIONS</p>
-        <p><span>[Z]</span>MY ITEMS</p>
-        <p><span>[Z]</span>FAVORITES</p>
-        <p><span>[Z]</span>MESSAGES</p>
+        <p class="flex gap-1">
+          <span class="material-icons text-base">notifications</span
+          >NOTIFICATIONS
+        </p>
+        <p class="flex gap-1">
+          <span class="material-icons text-base">inbox</span>MY ITEMS
+        </p>
+        <p class="flex gap-1">
+          <span class="material-icons text-base">favorite_border</span>FAVORITES
+        </p>
+        <RouterLink to="/messages" class="flex gap-1">
+          <span class="material-icons text-base">chat</span>MESSAGES
+        </RouterLink>
         <RouterLink to="/login">LOG OUT</RouterLink>
         <RouterLink to="/profile">PROFILE</RouterLink>
       </div>
