@@ -19,7 +19,7 @@ function attemptRegister() {
         <label for="phone">Phone Number</label>
         <input
           name="phone"
-          type="text"
+          type="tel"
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
           placeholder="Enter your phone number"
         />
