@@ -10,7 +10,7 @@ const itemShareStore = useItemShareStore();
   <!-- Temporary header to demonstrate vue router -->
   <header
     class="bg-green-500 py-2 px-8 flex gap-4 fixed w-full"
-    v-if="!['login'].includes($route.name)"
+    v-if="!['login', 'register'].includes($route.name)"
   >
     <RouterLink to="/">Home</RouterLink>
     <RouterLink to="/item">Item Detail</RouterLink>

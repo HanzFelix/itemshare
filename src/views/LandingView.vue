@@ -1,13 +1,5 @@
 <script setup>
-import { useItemShareStore } from "../stores/itemshare";
-import { useRouter } from "vue-router";
-const router = useRouter();
-
-const itemShareStore = useItemShareStore();
-
-function attemptLogin() {
-  if (itemShareStore.login()) router.push("/");
-}
+import { RouterView } from "vue-router";
 /*
 TODO:
 add bg image from figma's login page
@@ -26,29 +18,8 @@ migrate login <form> from here to separate view
         <div>ItemShare [logo]</div>
       </header>
       <!--Move this section to separate file for RouterView-->
-      <div>
-        <form
-          class="bg-white gap-2 p-12 rounded-3xl flex flex-col self-center"
-          @submit.stop.prevent="attemptLogin"
-        >
-          <h1>Login</h1>
-          <input
-            type="text"
-            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-            placeholder="Email/Phone Number"
-          />
-          <input
-            type="password"
-            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-            placeholder="Password"
-          />
-          <p class="pt-2">
-            New here? <a href="#" class="underline">Create an account!</a>
-          </p>
-          <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
-            Login
-          </button>
-        </form>
+      <div class="bg-white p-12 self-center rounded-3xl">
+        <RouterView />
       </div>
       <footer class="text-right text-white">All Rights Reserved 2023. ®</footer>
     </div>
