@@ -15,7 +15,7 @@ const itemShareStore = useItemShareStore();
       class="flex items-center justify-between container mx-auto py-2 bg-green-600"
     >
       <ItemShareLogo />
-      <div class="flex gap-4 nav-list">
+      <div class="flex gap-4">
         <p><span>[Z]</span>NOTIFICATIONS</p>
         <p><span>[Z]</span>MY ITEMS</p>
         <p><span>[Z]</span>FAVORITES</p>
@@ -25,14 +25,27 @@ const itemShareStore = useItemShareStore();
       </div>
     </nav>
     <section class="bg-green-500">
-      <ol class="flex gap-10 container mx-auto py-4">
-        <li>NEW</li>
-        <li>HOT</li>
-        <li>TOP RATED</li>
-        <li>KIDS</li>
-        <li>MEN</li>
-        <li>WOMEN</li>
-      </ol>
+      <div class="container mx-auto py-4 flex justify-between items-center">
+        <ol class="flex gap-10">
+          <li>NEW</li>
+          <li>HOT</li>
+          <li>TOP RATED</li>
+          <li>KIDS</li>
+          <li>MEN</li>
+          <li>WOMEN</li>
+        </ol>
+        <form class="bg-yellow-200 border-2 pr-4 border-yellow-500 rounded-xl">
+          <input
+            type="text"
+            name=""
+            id=""
+            class="placeholder-yellow-700 rounded-l-xl text-black py-1 px-4 text-sm bg-transparent"
+            placeholder="Search..."
+          />
+          <button class="text-yellow-700 px-2">Q</button>
+          <button class="text-yellow-700">=</button>
+        </form>
+      </div>
     </section>
   </header>
 </template>
