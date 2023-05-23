@@ -133,14 +133,14 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
         <h1>Item Reviews and Rating</h1>
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-1">
-            <span class="material-icons">filter_alt</span>
+            <span class="material-icons text-green-600">filter_alt</span>
             <span>Filter:</span>
             <select name="" id="">
               <option value="">All Star</option>
             </select>
           </div>
           <div class="flex items-center gap-1">
-            <span class="material-icons">sort</span>
+            <span class="material-icons text-green-600">sort</span>
             <span>Sort:</span>
             <select name="" id="">
               <option value="">Relevance</option>
