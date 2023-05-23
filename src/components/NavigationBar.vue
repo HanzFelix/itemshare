@@ -52,7 +52,7 @@ const itemShareStore = useItemShareStore();
             placeholder="Search..."
           />
           <button class="text-yellow-700 px-2">Q</button>
-          <button class="text-yellow-700">=</button>
+          <RouterLink to="/search" class="text-yellow-700">=</RouterLink>
         </form>
       </div>
     </section>

@@ -6,6 +6,7 @@ import ItemDetailView from "../views/ItemDetailView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
 import MessagesView from "../views/MessagesView.vue";
+import SearchView from "../views/SearchView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +38,11 @@ const router = createRouter({
       path: "/item",
       name: "itemDetail",
       component: ItemDetailView,
+    },
+    {
+      path: "/search",
+      name: "search",
+      component: SearchView,
     },
   ],
 });
