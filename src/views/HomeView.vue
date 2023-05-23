@@ -42,7 +42,7 @@ import TheWelcome from "../components/TheWelcome.vue";
               <p>3D Scanner</p>
               <p class="text-xs">Baybay City</p>
               <p class="text-green-800">
-                <span class="text-2xl">P</span>150 - per week
+                <span class="text-2xl">₱</span>150 - per week
               </p>
             </div></a
           >
