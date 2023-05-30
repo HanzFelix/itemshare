@@ -8,7 +8,7 @@ const itemShareStore = useItemShareStore();
 <template>
   <!-- Temporary header to demonstrate vue router -->
   <header
-    class="bg-green-600 flex flex-col fixed w-full text-white"
+    class="bg-green-600 flex flex-col fixed w-full text-white shadow-md shadow-gray-400"
     v-if="!['login', 'register'].includes($route.name)"
   >
     <nav
