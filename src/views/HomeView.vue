@@ -7,11 +7,10 @@ import TheWelcome from "../components/TheWelcome.vue";
   <main class="flex flex-col py-40 container mx-auto px-4 gap-8">
     <section class="flex flex-col gap-2">
       <h1>JUST FOR YOU</h1>
-      <div class="flex items-center gap-4 flex-wrap">
-        <article
-          v-for="i in 6"
-          class="shadow-sm shadow-gray-400 p-2 w-40 bg-white"
-        >
+      <div
+        class="grid grid-flow-row grid-cols-2 sm:grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8"
+      >
+        <article v-for="i in 6" class="shadow-sm shadow-gray-400 p-2 bg-white">
           <RouterLink to="/item">
             <img
               src="https://skillsforall.com/skillsforall/img/desktop/skillsforall.jpg"
@@ -32,11 +31,10 @@ import TheWelcome from "../components/TheWelcome.vue";
     </section>
     <section class="flex flex-col gap-2">
       <h1>DISCOVER</h1>
-      <div class="flex items-center gap-4 flex-wrap">
-        <article
-          v-for="i in 18"
-          class="shadow-sm shadow-gray-400 p-2 w-40 bg-white"
-        >
+      <div
+        class="grid grid-flow-row grid-cols-2 sm:grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8"
+      >
+        <article v-for="i in 18" class="shadow-sm shadow-gray-400 p-2 bg-white">
           <a href="#">
             <img
               src="https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
