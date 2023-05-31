@@ -45,6 +45,7 @@ const itemShareStore = useItemShareStore();
       >
         <ol
           class="flex px-4 gap-8 lg:py-4 pb-4 whitespace-nowrap overflow-x-auto scroll-p-12"
+          v-if="!['messages', 'search'].includes($route.name)"
         >
           <li>NEW</li>
           <li>HOT</li>
@@ -53,6 +54,7 @@ const itemShareStore = useItemShareStore();
           <li>MEN</li>
           <li>WOMEN</li>
         </ol>
+        <div></div>
         <form
           class="bg-yellow-200 border-2 pr-4 border-yellow-500 rounded-xl py-1 lg:py-0 flex my-3"
           v-if="!['search'].includes($route.name)"
