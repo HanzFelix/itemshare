@@ -1,7 +1,7 @@
 <script setup></script>
 <template>
   <header
-    class="bg-green-600 flex flex-col fixed w-full text-white bottom-0"
+    class="bg-green-600 flex flex-col sticky w-full text-white bottom-0 px-4"
     v-if="!['login', 'register'].includes($route.name)"
   >
     <nav

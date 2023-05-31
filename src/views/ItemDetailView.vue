@@ -4,7 +4,7 @@ import { ref } from "vue";
 const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
 </script>
 <template>
-  <main class="flex flex-col py-40 container mx-auto px-4 gap-8">
+  <main class="flex flex-col py-8 container mx-auto px-4 gap-4">
     <section class="flex flex-row-reverse gap-2">
       <button>Close X</button>
     </section>

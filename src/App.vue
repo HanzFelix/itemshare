@@ -6,6 +6,8 @@ import Footer from "./components/Footer.vue";
 
 <template>
   <NavigationBar />
-  <RouterView />
+  <div class="overflow-y-auto basis-full">
+    <RouterView />
+  </div>
   <Footer />
 </template>
