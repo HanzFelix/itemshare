@@ -36,7 +36,12 @@ const itemShareStore = useItemShareStore();
         <!--TODO: move logout to somewhere else-->
         <RouterLink to="/login">LOG OUT</RouterLink>
         <!-- TODO: replace with user avatar-->
-        <RouterLink to="/profile">PROFILE</RouterLink>
+        <RouterLink to="/profile">
+          <img
+            src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+            alt=""
+            class="aspect-square w-10 rounded-full"
+        /></RouterLink>
       </div>
     </nav>
     <section class="bg-green-500">
