@@ -1,5 +1,13 @@
 <script setup>
 import { ref } from "vue";
+import { useRoute } from "vue-router";
+import { useItemShareStore } from "../stores/itemshare";
+
+const itemShareStore = useItemShareStore();
+const route = useRoute();
+
+const id = parseInt(route.params.id);
+const item = itemShareStore.itemById(id);
 
 const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
 </script>
@@ -12,27 +20,23 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
     <section class="flex gap-2 lg:flex-row flex-col">
       <!--Images-->
       <div class="basis-3/12 flex flex-col gap-2 p-4 bg-white">
-        <img
-          src="https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
-          alt=""
-          srcset=""
-        />
+        <img :src="item.img" alt="" srcset="" />
         <div class="flex w-full">
           <img
             class="w-1/3 px-1 aspect-auto"
-            src="https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
+            :src="item.img"
             alt=""
             srcset=""
           />
           <img
             class="w-1/3 px-1 aspect-auto"
-            src="https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
+            :src="item.img"
             alt=""
             srcset=""
           />
           <img
             class="w-1/3 px-1 aspect-auto"
-            src="https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
+            :src="item.img"
             alt=""
             srcset=""
           />
@@ -42,7 +46,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
       <div class="basis-6/12 flex flex-col justify-between w-full p-4 bg-white">
         <div>
           <div class="flex justify-between items-start">
-            <h1>3D Scanner</h1>
+            <h1>{{ item.name }}</h1>
             <span
               class="bg-green-600 text-white text-xs py-1 px-4 rounded-full font-black"
             >
@@ -53,7 +57,8 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
           <!--rent rate-->
           <div class="my-4">
             <p class="text-green-600">
-              <span class="text-2xl mr-2">₱</span>150 - per week
+              <span class="text-2xl mr-2">₱</span
+              >{{ item.price + " - " + item.rate }}
             </p>
             <!--rating-->
             <div class="flex gap-4">
@@ -63,7 +68,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
             <!--location-->
             <div class="flex">
               <span class="material-icons text-green-600">location_on</span>
-              <span>Baybay City</span>
+              <span>{{ item.location }}</span>
             </div>
           </div>
           <!--description-->
