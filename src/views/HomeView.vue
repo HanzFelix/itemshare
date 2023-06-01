@@ -44,7 +44,7 @@ const itemShareStore = useItemShareStore();
           v-for="item in itemShareStore.itemsInRange(0, 18)"
           class="shadow-sm shadow-gray-400 p-2 bg-white"
         >
-          <a href="#">
+          <RouterLink :to="'/item/' + item.id">
             <img :src="item.img" alt="" srcset="" class="object-contain" />
             <div class="flex flex-col">
               <p>{{ item.name }}</p>
@@ -53,8 +53,8 @@ const itemShareStore = useItemShareStore();
                 <span class="text-2xl">₱</span
                 >{{ item.price + " - " + item.rate }}
               </p>
-            </div></a
-          >
+            </div>
+          </RouterLink>
         </article>
       </div>
     </section>
