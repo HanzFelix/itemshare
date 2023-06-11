@@ -21,6 +21,7 @@ const itemShareStore = useItemShareStore();
               :src="item.img"
               alt=""
               srcset=""
+              loading="lazy"
               class="object-contain aspect-square"
             />
             <div class="flex flex-col">
@@ -45,7 +46,13 @@ const itemShareStore = useItemShareStore();
           class="shadow-sm shadow-gray-400 p-2 bg-white"
         >
           <RouterLink :to="'/item/' + item.id">
-            <img :src="item.img" alt="" srcset="" class="object-contain" />
+            <img
+              :src="item.img"
+              alt=""
+              srcset=""
+              class="object-contain aspect-square"
+              loading="lazy"
+            />
             <div class="flex flex-col">
               <p>{{ item.name }}</p>
               <p class="text-xs">{{ item.location }}</p>

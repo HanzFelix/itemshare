@@ -8,6 +8,6 @@ import itemShareLogo from "../assets/ItemShareLogo.png";
       class="text-3xl text-white font-poppins font-black underline decoration-green-900 underline-offset-4 decoration-4 md:inline-block hidden"
       >ItemShare</span
     >
-    <img :src="itemShareLogo" class="w-12 rounded-xl"
+    <img :src="itemShareLogo" class="w-10 rounded-xl" loading="lazy"
   /></RouterLink>
 </template>
