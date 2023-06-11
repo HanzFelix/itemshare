@@ -51,10 +51,52 @@ function sendMessage() {
   messageDraft.value = "";
   scrollToElement.value.scrollTop = scrollContainer.value.scrollHeight;
 }
+
+// hide avatar if from same sender
+function isSamePerson(chat_id) {
+  if (chat_id + 1 == chatHistory.value.length) {
+    return false;
+  }
+
+  return chatHistory.value[chat_id].user == chatHistory.value[chat_id + 1].user;
+}
+
+// stylize chat bubbles
+function isSameMessageSource(chat_id) {
+  var classes = "";
+
+  if (
+    chat_id + 1 < chatHistory.value.length &&
+    chatHistory.value[chat_id].user == chatHistory.value[chat_id + 1].user
+  ) {
+    classes +=
+      chatHistory.value[chat_id].user == "me"
+        ? " rounded-br-none"
+        : " rounded-bl-none";
+  }
+
+  if (
+    chat_id - 1 >= 0 &&
+    chatHistory.value[chat_id].user == chatHistory.value[chat_id - 1].user
+  ) {
+    classes +=
+      chatHistory.value[chat_id].user == "me"
+        ? " rounded-tr-none"
+        : " rounded-tl-none";
+  }
+
+  // use green color if message source is me
+  classes +=
+    chatHistory.value[chat_id].user == "me"
+      ? " bg-green-700 text-white"
+      : " bg-gray-300";
+
+  return classes;
+}
 </script>
 <template>
   <div class="flex flex-col justify-between h-full">
-    <header class="bg-green-600 flex px-6 py-2 gap-2">
+    <header class="bg-green-600 flex px-6 py-2 gap-2 shadow-md shadow-gray-400">
       <img
         src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
         alt=""
@@ -75,20 +117,19 @@ function sendMessage() {
     >
       <div class="bg-white px-6 pt-12">
         <div
-          v-for="chat in chatHistory"
+          v-for="(chat, index) in chatHistory"
           :class="chat.user == 'me' ? 'flex-row-reverse' : 'flex-row'"
-          class="flex gap-2 my-2 items-end"
+          class="flex gap-2 my-1 items-end"
         >
           <img
             src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
             alt=""
             class="aspect-square w-12 rounded-full"
+            :class="isSamePerson(index) ? 'opacity-0' : ''"
           />
           <div
             class="max-w-md rounded-3xl py-3 px-4"
-            :class="
-              chat.user == 'me' ? 'bg-green-700 text-white' : 'bg-gray-300'
-            "
+            :class="isSameMessageSource(index)"
           >
             <p>{{ chat.message }}</p>
           </div>
