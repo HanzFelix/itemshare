@@ -27,7 +27,9 @@ import { RouterView, RouterLink } from "vue-router";
           />
           <div class="w-full truncate">
             <p class="font-black truncate">Elong Mah</p>
-            <p class="truncate">Insert Extra Lengthy and Wordy Message Here</p>
+            <p class="truncate text-gray-800">
+              Insert Extra Lengthy and Wordy Message Here
+            </p>
           </div>
         </RouterLink>
       </div>
