@@ -7,6 +7,8 @@ import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
 import MessagesView from "../views/MessagesView.vue";
 import SearchView from "../views/SearchView.vue";
+import EmptyView from "../views/EmptyView.vue";
+import ConversationView from "../views/ConversationView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,8 +25,15 @@ const router = createRouter({
     },
     {
       path: "/messages",
-      name: "messages",
       component: MessagesView,
+      children: [
+        { path: "", name: "messages", component: EmptyView },
+        {
+          path: "/messages/:id",
+          name: "conversation",
+          component: ConversationView,
+        },
+      ],
     },
     {
       path: "/login",
