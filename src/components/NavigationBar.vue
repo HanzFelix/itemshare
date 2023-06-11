@@ -50,7 +50,7 @@ const itemShareStore = useItemShareStore();
       >
         <ol
           class="flex px-4 gap-8 lg:py-4 pb-4 whitespace-nowrap overflow-x-auto scroll-p-12"
-          v-if="!['messages', 'search'].includes($route.name)"
+          v-if="!['messages', 'search', 'conversation'].includes($route.name)"
         >
           <li>NEW</li>
           <li>HOT</li>
