@@ -1,9 +1,14 @@
 <script setup>
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import ItemShareLogo from "./ItemShareLogo.vue";
 
+const router = useRouter();
 const itemShareStore = useItemShareStore();
+
+function searchItem() {
+  if (itemShareStore.searchItem()) router.push("/search");
+}
 </script>
 <template>
   <!-- Temporary header to demonstrate vue router -->
@@ -63,6 +68,7 @@ const itemShareStore = useItemShareStore();
         <form
           class="bg-yellow-200 border-2 pr-4 border-yellow-500 rounded-xl py-1 lg:py-0 flex my-3"
           v-if="!['search'].includes($route.name)"
+          @submit.stop.prevent="searchItem()"
         >
           <input
             type="text"

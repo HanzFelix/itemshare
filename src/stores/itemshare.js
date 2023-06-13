@@ -178,6 +178,10 @@ export const useItemShareStore = defineStore("itemshare", {
       // some login processing
       return true; //login successful
     },
+    searchItem() {
+      // some search processing
+      return true;
+    },
   },
 });
 
