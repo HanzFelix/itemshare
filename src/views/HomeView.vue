@@ -12,28 +12,30 @@ const itemShareStore = useItemShareStore();
       <div
         class="grid grid-flow-row grid-cols-2 sm:grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 bg-gradient-to-b from-green-500 to-transparent bg-[length:auto_150px] bg-no-repeat rounded-xl p-4"
       >
-        <article
+        <RouterLink
+          :to="'/item/' + item.id"
           v-for="item in itemShareStore.itemsInRange(12, 18)"
           class="shadow-sm shadow-gray-400 p-2 bg-white"
         >
-          <RouterLink :to="'/item/' + item.id">
+          <div class="w-full aspect-square">
             <img
               :src="item.img"
               alt=""
               srcset=""
               loading="lazy"
-              class="object-contain aspect-square"
+              class="object-contain"
             />
-            <div class="flex flex-col">
-              <p>{{ item.name }}</p>
-              <p class="text-xs">{{ item.location }}</p>
-              <p class="text-green-800">
-                <span class="text-2xl">₱</span
-                >{{ item.price + " - " + item.rate }}
-              </p>
-            </div>
-          </RouterLink>
-        </article>
+          </div>
+
+          <div class="flex flex-col">
+            <p>{{ item.name }}</p>
+            <p class="text-xs">{{ item.location }}</p>
+            <p class="text-green-800">
+              <span class="text-2xl">₱</span
+              >{{ item.price + " - " + item.rate }}
+            </p>
+          </div>
+        </RouterLink>
       </div>
     </section>
     <section class="flex flex-col gap-2">
@@ -41,28 +43,29 @@ const itemShareStore = useItemShareStore();
       <div
         class="grid grid-flow-row grid-cols-2 sm:grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 bg-gradient-to-b from-green-500 to-transparent bg-[length:auto_150px] bg-no-repeat rounded-xl p-4"
       >
-        <article
+        <RouterLink
+          :to="'/item/' + item.id"
           v-for="item in itemShareStore.itemsInRange(0, 18)"
           class="shadow-sm shadow-gray-400 p-2 bg-white"
         >
-          <RouterLink :to="'/item/' + item.id">
+          <div class="w-full aspect-square">
             <img
               :src="item.img"
               alt=""
               srcset=""
-              class="object-contain aspect-square"
               loading="lazy"
+              class="object-contain"
             />
-            <div class="flex flex-col">
-              <p>{{ item.name }}</p>
-              <p class="text-xs">{{ item.location }}</p>
-              <p class="text-green-800">
-                <span class="text-2xl">₱</span
-                >{{ item.price + " - " + item.rate }}
-              </p>
-            </div>
-          </RouterLink>
-        </article>
+          </div>
+          <div class="flex flex-col">
+            <p>{{ item.name }}</p>
+            <p class="text-xs">{{ item.location }}</p>
+            <p class="text-green-800">
+              <span class="text-2xl">₱</span
+              >{{ item.price + " - " + item.rate }}
+            </p>
+          </div>
+        </RouterLink>
       </div>
     </section>
   </main>
