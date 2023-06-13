@@ -1,4 +1,7 @@
-<script setup></script>
+<script setup>
+import { useItemShareStore } from "../stores/itemshare";
+const itemShareStore = useItemShareStore();
+</script>
 <template>
   <main class="flex flex-col lg:flex-row py-8 container mx-auto px-4 gap-4">
     <aside class="basis-1/3">
@@ -79,23 +82,28 @@
     <section
       class="basis-2/3 grid grid-flow-row grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
     >
-      <article v-for="i in 12" class="shadow-sm shadow-gray-400 p-2 bg-white">
-        <a href="#">
+      <RouterLink
+        :to="'/item/' + item.id"
+        v-for="item in itemShareStore.itemsInRange(4, 16)"
+        class="shadow-sm shadow-gray-400 p-2 bg-white"
+      >
+        <div class="w-full aspect-square">
           <img
-            src="https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
+            :src="item.img"
             alt=""
             srcset=""
+            loading="lazy"
             class="object-contain"
           />
-          <div class="flex flex-col">
-            <p>3D Scanner</p>
-            <p class="text-xs">Baybay City</p>
-            <p class="text-green-800">
-              <span class="text-2xl">₱</span>150 - per week
-            </p>
-          </div></a
-        >
-      </article>
+        </div>
+        <div class="flex flex-col">
+          <p>{{ item.name }}</p>
+          <p class="text-xs">{{ item.location }}</p>
+          <p class="text-green-800">
+            <span class="text-2xl">₱</span>{{ item.price + " - " + item.rate }}
+          </p>
+        </div>
+      </RouterLink>
     </section>
   </main>
 </template>
