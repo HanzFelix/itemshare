@@ -25,15 +25,15 @@ function searchItem() {
           <span class="material-icons lg:text-base text-3xl">notifications</span
           ><span class="hidden lg:inline-block">NOTIFICATIONS</span>
         </p>
-        <p class="flex gap-1">
+        <!--p class="flex gap-1">
           <span class="material-icons lg:text-base text-3xl">inbox</span
           ><span class="hidden lg:inline-block">MY ITEMS</span>
-        </p>
-        <p class="flex gap-1">
+        </p-->
+        <!--p class="flex gap-1">
           <span class="material-icons lg:text-base text-3xl"
             >favorite_border</span
           ><span class="hidden lg:inline-block">FAVORITES</span>
-        </p>
+        </p-->
         <RouterLink to="/messages" class="flex gap-1">
           <span class="material-icons lg:text-base text-3xl">chat</span
           ><span class="hidden lg:inline-block">MESSAGES</span>
@@ -55,7 +55,7 @@ function searchItem() {
       >
         <ol
           class="flex px-4 gap-8 lg:py-4 pb-4 whitespace-nowrap overflow-x-auto scroll-p-12"
-          v-if="!['messages', 'search', 'conversation'].includes($route.name)"
+          v-if="['home'].includes($route.name)"
         >
           <li>NEW</li>
           <li>HOT</li>
