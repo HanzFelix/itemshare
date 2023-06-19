@@ -3,6 +3,13 @@ import { RouterLink, useRouter } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import ItemShareLogo from "./ItemShareLogo.vue";
 import NotificationsPopup from "./NotificationsPopup.vue";
+import { onMounted } from "vue";
+import { initFlowbite } from "flowbite";
+
+// initialize components based on data attribute selectors
+onMounted(() => {
+  initFlowbite();
+});
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
