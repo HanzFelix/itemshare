@@ -8,7 +8,7 @@ const itemShareStore = useItemShareStore();
 
 function attemptRegister() {
   // TODO: not yet complete
-  if (itemShareStore.login()) router.push("/");
+  if (itemShareStore.login()) router.push("/home");
 }
 </script>
 <template>

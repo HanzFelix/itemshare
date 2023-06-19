@@ -1,6 +1,6 @@
 <script setup>
-import { RouterView } from "vue-router";
-import ItemShareLogo from "../components/ItemShareLogo.vue";
+import { RouterView, RouterLink } from "vue-router";
+import ItemShareLogoLP from "../components/ItemShareLogoLP.vue";
 /*
 TODO:
 add bg image from figma's login page
@@ -21,10 +21,10 @@ add bg image from figma's login page
           <a href="#">About Us</a>
           <a href="#">Contacts</a>
         </nav>
-        <ItemShareLogo />
+        <ItemShareLogoLP />
       </header>
       <!--Move this section to separate file for RouterView-->
-      <div class="bg-white p-12 self-center rounded-3xl">
+      <div class="bg-white p-12 self-center rounded-3xl flex flex-col">
         <RouterView />
       </div>
       <footer class="text-right text-white">All Rights Reserved 2023. ®</footer>

@@ -53,7 +53,7 @@ function searchItem() {
         </li>
         <!--TODO: move logout to somewhere else-->
         <li>
-          <RouterLink to="/login">LOG OUT</RouterLink>
+          <RouterLink to="/">LOG OUT</RouterLink>
         </li>
         <!-- TODO: replace with user avatar-->
         <li>

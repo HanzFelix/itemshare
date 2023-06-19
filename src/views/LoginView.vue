@@ -7,7 +7,7 @@ const router = useRouter();
 const itemShareStore = useItemShareStore();
 
 function attemptLogin() {
-  if (itemShareStore.login()) router.push("/");
+  if (itemShareStore.login()) router.push("/home");
 }
 </script>
 <template>

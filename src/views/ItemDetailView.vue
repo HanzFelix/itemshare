@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
+import { RouterLink } from "vue-router";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
@@ -14,7 +15,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
 <template>
   <main class="flex flex-col py-8 container mx-auto px-4 gap-4">
     <section class="flex flex-row-reverse gap-2">
-      <button>Close X</button>
+      <RouterLink to="/home">Close X</RouterLink>
     </section>
     <!--Item-->
     <section class="flex gap-2 lg:flex-row flex-col">
