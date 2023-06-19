@@ -1,23 +1,67 @@
 <script setup>
 import { useItemShareStore } from "../stores/itemshare";
 import { useRouter } from "vue-router";
+import { ref } from "vue";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import db from "../firebase/firebaseInit.js";
 
 const router = useRouter();
-
 const itemShareStore = useItemShareStore();
 
-function attemptRegister() {
-  // TODO: not yet complete
-  if (itemShareStore.login()) router.push("/home");
-}
+const phoneNumber = ref("");
+const email = ref("");
+const firstName = ref("");
+const lastName = ref("");
+const gender = ref("");
+const birthday = ref("");
+const password = ref("");
+let error = ref(null);
+let errorMessage = ref("");
+
+const register = async () => {
+  if (
+    phoneNumber !== "" &&
+    email !== "" &&
+    firstName !== "" &&
+    lastName !== "" &&
+    gender !== "Select" &&
+    birthday !== "" &&
+    password !== ""
+  ) {
+    error = false;
+    errorMessage = "";
+    const firebaseAuth = await firebase.auth();
+    const createUser = await firebaseAuth.createUserWithEmailAndPassword(
+      email.value,
+      password.value
+    );
+    const result = await createUser;
+    const dataBase = db.collection("users").doc(result.user.uid);
+    await dataBase.set({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      phoneNumber: phoneNumber.value,
+      gender: gender.value,
+      birthday: birthday.value,
+    });
+    router.push("/home");
+    return;
+  }
+  error = true;
+  errorMessage = "Please fill out all the fields";
+};
 </script>
 <template>
-  <form class="flex gap-2 flex-col" @submit.stop.prevent="attemptRegister">
+  <div v-show="error" class="errorMessage">{{ errorMessage }}</div>
+  <form class="flex gap-2 flex-col" @submit.stop.prevent="register">
     <h1>Create an account</h1>
     <div class="flex gap-12 flex-wrap">
       <div class="flex flex-col gap-2">
         <label for="phone">Phone Number</label>
         <input
+          v-model="phoneNumber"
           name="phone"
           type="tel"
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
@@ -30,6 +74,7 @@ function attemptRegister() {
         </button>
         <label for="email">Email Address</label>
         <input
+          v-model="email"
           name="email"
           type="email"
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
@@ -37,6 +82,7 @@ function attemptRegister() {
         />
         <label for="fname">First Name</label>
         <input
+          v-model="firstName"
           name="fname"
           type="text"
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
@@ -44,6 +90,7 @@ function attemptRegister() {
         />
         <label for="lname">Last Name</label>
         <input
+          v-model="lastName"
           name="lname"
           type="text"
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
@@ -51,12 +98,13 @@ function attemptRegister() {
         />
       </div>
       <div class="flex flex-col gap-2">
-        <label for="fname">First Name</label>
+        <label for="fname">Gender</label>
         <select
+          v-model="gender"
           name="fname"
           type="text"
           class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
-          placeholder="First Name"
+          placeholder="Gender"
         >
           <option>Select</option>
           <option>Male</option>
@@ -65,12 +113,14 @@ function attemptRegister() {
         </select>
         <label for="bday">Birthday</label>
         <input
+          v-model="birthday"
           name="bday"
           type="date"
           class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
         />
         <label for="password">Password</label>
         <input
+          v-model="password"
           name="password"
           type="password"
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
