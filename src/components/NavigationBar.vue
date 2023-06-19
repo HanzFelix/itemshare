@@ -2,6 +2,7 @@
 import { RouterLink, useRouter } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import ItemShareLogo from "./ItemShareLogo.vue";
+import NotificationsPopup from "./NotificationsPopup.vue";
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
@@ -20,11 +21,21 @@ function searchItem() {
       class="flex items-center justify-between container mx-auto py-2 px-4 bg-green-600"
     >
       <ItemShareLogo />
-      <div class="flex gap-4 items-center">
-        <p class="flex gap-1">
-          <span class="material-icons lg:text-base text-3xl">notifications</span
-          ><span class="hidden lg:inline-block">NOTIFICATIONS</span>
-        </p>
+      <ul class="flex gap-4 items-center">
+        <li>
+          <button
+            type="button"
+            class="flex gap-1"
+            id="dropdownDefaultButton"
+            data-dropdown-toggle="dropdownNotifications"
+            data-dropdown-trigger="click"
+          >
+            <span class="material-icons lg:text-base text-3xl"
+              >notifications</span
+            ><span class="hidden lg:inline-block">NOTIFICATIONS</span>
+          </button>
+          <NotificationsPopup />
+        </li>
         <!--p class="flex gap-1">
           <span class="material-icons lg:text-base text-3xl">inbox</span
           ><span class="hidden lg:inline-block">MY ITEMS</span>
@@ -34,20 +45,26 @@ function searchItem() {
             >favorite_border</span
           ><span class="hidden lg:inline-block">FAVORITES</span>
         </p-->
-        <RouterLink to="/messages" class="flex gap-1">
-          <span class="material-icons lg:text-base text-3xl">chat</span
-          ><span class="hidden lg:inline-block">MESSAGES</span>
-        </RouterLink>
+        <li>
+          <RouterLink to="/messages" class="flex gap-1">
+            <span class="material-icons lg:text-base text-3xl">chat</span
+            ><span class="hidden lg:inline-block">MESSAGES</span>
+          </RouterLink>
+        </li>
         <!--TODO: move logout to somewhere else-->
-        <RouterLink to="/login">LOG OUT</RouterLink>
+        <li>
+          <RouterLink to="/login">LOG OUT</RouterLink>
+        </li>
         <!-- TODO: replace with user avatar-->
-        <RouterLink to="/profile">
-          <img
-            src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
-            alt=""
-            class="aspect-square w-10 rounded-full"
-        /></RouterLink>
-      </div>
+        <li>
+          <RouterLink to="/profile">
+            <img
+              src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+              alt=""
+              class="aspect-square w-10 rounded-full"
+          /></RouterLink>
+        </li>
+      </ul>
     </nav>
     <section class="bg-green-500">
       <div
