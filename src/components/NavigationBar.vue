@@ -30,6 +30,12 @@ function searchItem() {
       <ItemShareLogo />
       <ul class="flex gap-4 items-center">
         <li>
+          <RouterLink to="/create-item" class="flex gap-1">
+            <span class="material-icons lg:text-base text-3xl">add_box</span
+            ><span class="hidden lg:inline-block">CREATE ITEM</span>
+          </RouterLink>
+        </li>
+        <li>
           <button
             type="button"
             class="flex gap-1"
@@ -62,7 +68,6 @@ function searchItem() {
         <li>
           <RouterLink to="/">LOG OUT</RouterLink>
         </li>
-        <!-- TODO: replace with user avatar-->
         <li>
           <RouterLink to="/profile">
             <img
