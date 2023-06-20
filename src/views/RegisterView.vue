@@ -57,7 +57,7 @@ const register = async () => {
   <div v-show="error" class="errorMessage">{{ errorMessage }}</div>
   <form class="flex gap-2 flex-col" @submit.stop.prevent="register">
     <h1>Create an account</h1>
-    <div class="flex gap-12">
+    <div class="flex xl:gap-12 gap-2 xl:flex-row flex-col">
       <div class="flex flex-col gap-2 basis-1/2">
         <label for="phone">Phone Number</label>
         <input
