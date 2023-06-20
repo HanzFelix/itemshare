@@ -15,6 +15,7 @@ const gender = ref("");
 const birthday = ref("");
 const password = ref("");
 const verified = ref(false);
+const admin = ref(false);
 let error = ref(false);
 let errorMessage = ref("");
 
@@ -44,6 +45,7 @@ const register = async () => {
         gender: gender.value,
         birthday: birthday.value,
         verified: verified.value,
+        admin: admin.value,
       });
       router.push("/home");
       return;
