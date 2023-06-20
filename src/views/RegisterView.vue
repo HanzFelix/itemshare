@@ -11,7 +11,7 @@ const phoneNumber = ref("");
 const email = ref("");
 const firstName = ref("");
 const lastName = ref("");
-const gender = ref("");
+const gender = ref("Select");
 const birthday = ref("");
 const password = ref("");
 const verified = ref(false);
@@ -62,8 +62,8 @@ const register = async () => {
 <template>
   <form class="flex gap-2 flex-col" @submit.stop.prevent="register">
     <h1>Create an account</h1>
-    <div class="flex gap-12 flex-wrap">
-      <div class="flex flex-col gap-2">
+    <div class="flex xl:gap-12 gap-2 xl:flex-row flex-col">
+      <div class="flex flex-col gap-2 basis-1/2">
         <label for="phone">Phone Number</label>
         <input
           v-model="phoneNumber"
@@ -102,7 +102,7 @@ const register = async () => {
           placeholder="Last Name"
         />
       </div>
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2 basis-1/2">
         <label for="fname">Gender</label>
         <select
           v-model="gender"
@@ -137,6 +137,14 @@ const register = async () => {
           {{ errorMessage }}
         </div>
         <button class="py-3 px-5 text-white bg-green-800 rounded-xl mt-4">
+        <p class="text-sm">
+          <input type="checkbox" name="" id="" />
+          <span> I agree to the </span>
+          <RouterLink to="/terms-and-conditions" class="underline">
+            Terms and Conditions
+          </RouterLink>
+        </p>
+        <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
           CREATE ACCOUNT
         </button>
         <RouterLink
