@@ -144,6 +144,16 @@ const register = async () => {
           {{ errorMessage }}
         </div>
         <button class="py-3 px-5 text-white bg-green-800 rounded-xl mt-4">
+=========
+        <p class="text-sm">
+          <input type="checkbox" name="" id="" />
+          <span> I agree to the </span>
+          <RouterLink to="/terms-and-conditions" class="underline">
+            Terms and Conditions
+          </RouterLink>
+        </p>
+        <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
+>>>>>>>>> Temporary merge branch 2
           CREATE ACCOUNT
         </button>
         <RouterLink
