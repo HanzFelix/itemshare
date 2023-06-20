@@ -131,7 +131,7 @@ const register = async () => {
           placeholder="Password"
         />
         <p class="text-sm">
-          <input type="checkbox" name="" id="" />
+          <input type="checkbox" />
           <span> I agree to the </span>
           <RouterLink to="/terms-and-conditions" class="underline">
             Terms and Conditions
