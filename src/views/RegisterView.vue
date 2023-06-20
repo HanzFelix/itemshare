@@ -136,7 +136,6 @@ const register = async () => {
         >
           {{ errorMessage }}
         </div>
-        <button class="py-3 px-5 text-white bg-green-800 rounded-xl mt-4">
         <p class="text-sm">
           <input type="checkbox" name="" id="" />
           <span> I agree to the </span>
