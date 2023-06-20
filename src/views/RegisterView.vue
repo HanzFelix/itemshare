@@ -1,5 +1,4 @@
 <script setup>
-import { useItemShareStore } from "../stores/itemshare";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import firebase from "firebase/compat/app";
@@ -7,7 +6,6 @@ import "firebase/compat/auth";
 import db from "../firebase/firebaseInit.js";
 
 const router = useRouter();
-const itemShareStore = useItemShareStore();
 
 const phoneNumber = ref("");
 const email = ref("");
@@ -16,45 +14,50 @@ const lastName = ref("");
 const gender = ref("");
 const birthday = ref("");
 const password = ref("");
-let error = ref(null);
+const verified = ref(false);
+let error = ref(false);
 let errorMessage = ref("");
 
 const register = async () => {
-  if (
-    phoneNumber !== "" &&
-    email !== "" &&
-    firstName !== "" &&
-    lastName !== "" &&
-    gender !== "Select" &&
-    birthday !== "" &&
-    password !== ""
-  ) {
-    error = false;
-    errorMessage = "";
-    const firebaseAuth = await firebase.auth();
-    const createUser = await firebaseAuth.createUserWithEmailAndPassword(
-      email.value,
-      password.value
-    );
-    const result = await createUser;
-    const dataBase = db.collection("users").doc(result.user.uid);
-    await dataBase.set({
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: email.value,
-      phoneNumber: phoneNumber.value,
-      gender: gender.value,
-      birthday: birthday.value,
-    });
-    router.push("/home");
-    return;
+  try {
+    if (
+      phoneNumber.value !== "" &&
+      email.value !== "" &&
+      firstName.value !== "" &&
+      lastName.value !== "" &&
+      gender.value !== "Select" &&
+      birthday.value !== "" &&
+      password.value !== ""
+    ) {
+      const firebaseAuth = await firebase.auth();
+      const createUser = await firebaseAuth.createUserWithEmailAndPassword(
+        email.value,
+        password.value
+      );
+      const result = await createUser;
+      const dataBase = db.collection("users").doc(result.user.uid);
+      await dataBase.set({
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        phoneNumber: phoneNumber.value,
+        gender: gender.value,
+        birthday: birthday.value,
+        verified: verified.value,
+      });
+      router.push("/home");
+      return;
+    } else {
+      error.value = true;
+      errorMessage.value = "Please fill out all the fields!";
+    }
+  } catch (err) {
+    error.value = true;
+    errorMessage.value = err.message;
   }
-  error = true;
-  errorMessage = "Please fill out all the fields";
 };
 </script>
 <template>
-  <div v-show="error" class="errorMessage">{{ errorMessage }}</div>
   <form class="flex gap-2 flex-col" @submit.stop.prevent="register">
     <h1>Create an account</h1>
     <div class="flex gap-12 flex-wrap">
@@ -106,7 +109,6 @@ const register = async () => {
           class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
           placeholder="Gender"
         >
-          <option>Select</option>
           <option>Male</option>
           <option>Female</option>
           <option>Others</option>
@@ -126,6 +128,12 @@ const register = async () => {
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
           placeholder="Password"
         />
+        <div
+          v-show="error"
+          class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
+        >
+          {{ errorMessage }}
+        </div>
         <button class="py-3 px-5 text-white bg-green-800 rounded-xl mt-4">
           CREATE ACCOUNT
         </button>
