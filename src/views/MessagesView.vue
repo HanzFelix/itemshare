@@ -63,7 +63,7 @@ const conversations = ref([
   >
     <!--Recent Messages-->
     <aside
-      class="lg:flex flex-col basis-full lg:basis-1/3 box-border bg-white rounded-xl shadow-md shadow-gray-400 overflow-hidden"
+      class="flex flex-col basis-full lg:basis-1/3 box-border bg-white rounded-xl shadow-md shadow-gray-400 overflow-hidden"
       :class="['messages'].includes($route.name) ? '' : 'hidden'"
     >
       <h1 class="px-6 py-4 shadow-sm shadow-gray-300 z-10">Recent Messages</h1>

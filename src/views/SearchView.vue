@@ -6,7 +6,7 @@ const itemShareStore = useItemShareStore();
   <main class="flex flex-col lg:flex-row py-8 container mx-auto px-4 gap-4">
     <aside class="basis-1/3">
       <div
-        class="flex flex-col sticky p-4 box-border bg-white gap-2 rounded-xl shadow-sm shadow-gray-400"
+        class="flex flex-col p-4 box-border bg-white gap-2 rounded-xl shadow-sm shadow-gray-400"
       >
         <h1>Search for Items</h1>
         <form action="#" method="get" class="flex flex-col gap-2">
