@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import StarRating from "./StarRating.vue";
 
 const notifications = ref([
   {
@@ -43,19 +44,17 @@ const notifications = ref([
         NOTIFICATIONS
       </h2>
       <!--List of notifications go here-->
-      <div class="overflow-y-auto bg-green-100">
+      <div class="overflow-y-auto bg-green-50">
         <div class="flex flex-col gap-1 p-2">
           <article
             v-for="notification in notifications"
             class="p-2 text-sm shadow-sm bg-white shadow-gray-400 text-gray-700"
           >
             <p>{{ notification.message }}</p>
-            <!-- Haha inefficient way to write stars-->
-            <p v-if="notification.rating" class="text-green-600 whitespace-pre">
-              <span v-for="i in 5" class="material-icons-outlined">
-                {{ i < notification.rating ? "star" : "grade" }}
-              </span>
-            </p>
+            <StarRating
+              v-if="notification.rating"
+              :value="notification.rating"
+            />
             <p>{{ notification.time }}</p>
           </article>
         </div>

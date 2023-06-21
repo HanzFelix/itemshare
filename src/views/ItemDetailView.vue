@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import { RouterLink } from "vue-router";
+import StarRating from "../components/StarRating.vue";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
@@ -64,7 +65,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
             <!--rating-->
             <div class="flex gap-4">
               <span>4.0 / 5.0</span>
-              <span>⭐⭐⭐⭐⭐</span>
+              <StarRating value="4" />
             </div>
             <!--location-->
             <div class="flex">
@@ -82,6 +83,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
           <div class="flex gap-2">
             Tags:
             <ul class="flex gap-2 flex-wrap">
+              <!--Clicking on a tag should redirect user to search results with the same tag-->
               <li
                 v-for="tag in tags"
                 class="bg-yellow-200 text-yellow-700 text-xs py-1 border-2 px-4 border-yellow-500 rounded-full"
@@ -115,28 +117,28 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
             />
             <span class="whitespace-nowrap">Isaac Einstein</span>
           </div>
-          <button class="flex items-center gap-1">
+          <RouterLink to="/messages/3" class="flex items-center gap-1">
             <span class="material-icons text-green-600">forum</span>Chat
-          </button>
+          </RouterLink>
         </div>
         <!--rating-->
         <h2>Lender Ratings</h2>
-        <div class="flex gap-4 mb-4">
+        <div class="flex gap-4 mb-4 items-center">
           <span>4.0 / 5.0</span>
-          <span>⭐⭐⭐⭐⭐</span>
+          <StarRating value="4" />
         </div>
 
         <!--rating-->
         <h2>Chat Response Rate</h2>
-        <div class="flex gap-4 mb-4">
+        <div class="flex gap-4 mb-4 items-center">
           <span>4.0 / 5.0</span>
-          <span>⭐⭐⭐⭐⭐</span>
+          <StarRating value="4" />
         </div>
       </div>
     </section>
     <section class="flex flex-col gap-2">
       <div
-        class="flex md:flex-row flex-col justify-between p-4 bg-gray-50 gap-4"
+        class="flex md:flex-row flex-col justify-between p-4 bg-gray-50 gap-4 md:items-center"
       >
         <h1>Item Reviews and Rating</h1>
         <div
@@ -161,7 +163,6 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
       </div>
       <section class="flex flex-col gap-2">
         <article v-for="i in 6" class="bg-white p-4 flex flex-col gap-2">
-          <span>⭐⭐⭐⭐⭐</span>
           <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
@@ -169,7 +170,10 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
               alt=""
               srcset=""
             />
-            <span class="whitespace-nowrap text-gray-600">Isaac Einstein</span>
+            <div class="flex flex-col">
+              <StarRating value="4" />
+              <span class="truncate text-gray-700">Isaac Einstein</span>
+            </div>
           </div>
           <p class="py-2">user review........................</p>
         </article>

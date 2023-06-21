@@ -1,13 +1,14 @@
 <script setup>
 import { RouterLink } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
+import StarRating from "../components/StarRating.vue";
 const itemShareStore = useItemShareStore();
 </script>
 
 <template>
   <main class="flex flex-col py-8 container mx-auto px-4 gap-8">
     <section class="flex gap-2 lg:flex-row flex-col">
-      <div class="basis-9/12 flex gap-2">
+      <div class="basis-9/12 flex flex-col sm:flex-row gap-2">
         <!--Image-->
         <div class="basis-4/12 flex flex-col gap-2 p-4 bg-white">
           <img
@@ -29,33 +30,37 @@ const itemShareStore = useItemShareStore();
               </div>
             </div>
             <!--Ratings-->
-            <div class="my-4">
-              <h2>Lender Ratings</h2>
-              <div class="flex gap-4 mb-4">
-                <span>4.0 / 5.0</span>
-                <span>⭐⭐⭐⭐⭐</span>
+            <div class="my-4 block md:flex xl:block flex-row">
+              <div class="basis-full">
+                <h2>Lender Ratings</h2>
+                <div class="flex gap-4 mb-4 items-center">
+                  <span>3.0 / 5.0</span>
+                  <StarRating value="3" />
+                </div>
               </div>
-              <h2>Chat Response Rate</h2>
-              <div class="flex gap-4 mb-4">
-                <span>4.0 / 5.0</span>
-                <span>⭐⭐⭐⭐⭐</span>
+              <div class="basis-full">
+                <h2 class="">Chat Response Rate</h2>
+                <div class="flex gap-4 mb-4 items-center">
+                  <span>4.0 / 5.0</span>
+                  <StarRating value="4" />
+                </div>
               </div>
               <!--location-->
             </div>
           </div>
           <!--Button actions-->
-          <div class="flex flex-col items-start">
-            <div class="flex flex-col gap-2">
+          <div class="block lg:flex flex-col items-start">
+            <div class="flex flex-row lg:flex-col gap-2">
               <RouterLink
                 to="/messages/5"
-                class="py-3 px-5 text-white bg-green-600 rounded-lg justify-center flex items-center gap-1"
+                class="py-3 px-5 text-white bg-green-600 rounded-lg justify-center flex items-center gap-1 basis-full"
               >
                 <span class="material-icons">forum</span>
                 <span>Chat</span>
               </RouterLink>
               <!--Need some placeholder action-->
               <button
-                class="py-3 px-5 bg-yellow-200 text-yellow-800 border-2 border-yellow-500 rounded-lg justify-center flex items-center gap-1"
+                class="py-3 px-5 bg-yellow-200 text-yellow-800 border-2 border-yellow-500 rounded-lg basis-full justify-center flex items-center gap-1"
               >
                 <span class="material-icons">flag</span>
                 <span>Report user</span>
