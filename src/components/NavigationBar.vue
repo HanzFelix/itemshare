@@ -19,7 +19,6 @@ function searchItem() {
 }
 </script>
 <template>
-  <!-- Temporary header to demonstrate vue router -->
   <header
     class="bg-green-600 flex flex-col sticky w-full text-white shadow-sm shadow-gray-400"
     v-if="!['login', 'register'].includes($route.name)"
@@ -31,8 +30,8 @@ function searchItem() {
       <ul class="flex gap-4 items-center">
         <li>
           <RouterLink to="/create-item" class="flex gap-1">
-            <span class="material-icons lg:text-base text-3xl">add_box</span
-            ><span class="hidden lg:inline-block">CREATE ITEM</span>
+            <span class="material-icons lg:text-base text-3xl">add_box</span>
+            <span class="hidden lg:inline-block">CREATE ITEM</span>
           </RouterLink>
         </li>
         <li>
