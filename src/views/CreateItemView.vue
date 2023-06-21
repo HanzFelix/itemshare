@@ -70,6 +70,20 @@ personal idea lang on how to create item
       class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
       placeholder="Add an item name"
     />
+    <label for="fname">Location</label>
+    <input
+      name="fname"
+      type="text"
+      class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+      placeholder="Enter location..."
+    />
+    <label for="fname">Rent rate</label>
+    <input
+      name="fname"
+      type="text"
+      class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+      placeholder="rent rate..."
+    />
     <label for="fname">Tags</label>
     <input
       name="fname"
@@ -87,13 +101,14 @@ personal idea lang on how to create item
       <!-- TODO: User input from RegisterView is gone upon returning leaving TermsAndConditionVIew -->
       <!-- Probably some way to mark as check upon accepting the terms and conditions? -->
       <RouterLink
-        to="/register"
-        class="py-3 px-5 text-white bg-green-800 rounded-lg"
+        to="/item/1"
+        class="py-3 px-5 text-white bg-green-800 rounded-lg border-2 border-green-800"
       >
         CREATE
       </RouterLink>
+      <!--TODO: return to previous page using vue router-->
       <RouterLink
-        to="/register"
+        to="/home"
         class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-lg"
       >
         CANCEL
