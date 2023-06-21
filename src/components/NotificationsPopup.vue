@@ -34,7 +34,7 @@ const notifications = ref([
     id="dropdownNotifications"
   >
     <div
-      class="h-64 w-96 flex flex-col"
+      class="h-64 w-full md:w-96 flex flex-col"
       aria-labelledby="dropdownNotificationsButton"
     >
       <h2

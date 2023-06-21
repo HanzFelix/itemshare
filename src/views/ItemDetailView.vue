@@ -81,7 +81,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
         <div class="flex flex-col items-start mt-2">
           <div class="flex gap-2">
             Tags:
-            <ul class="flex gap-2">
+            <ul class="flex gap-2 flex-wrap">
               <li
                 v-for="tag in tags"
                 class="bg-yellow-200 text-yellow-700 text-xs py-1 border-2 px-4 border-yellow-500 rounded-full"
@@ -134,21 +134,25 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
         </div>
       </div>
     </section>
-    <section class="flex flex-col px-4 gap-2">
-      <div class="flex justify-between p-4 bg-gray-50">
+    <section class="flex flex-col gap-2">
+      <div
+        class="flex md:flex-row flex-col justify-between p-4 bg-gray-50 gap-4"
+      >
         <h1>Item Reviews and Rating</h1>
-        <div class="flex items-center gap-4">
+        <div
+          class="flex flex-wrap md:items-center items-start gap-4 text-sm sm:text-base"
+        >
           <div class="flex items-center gap-1">
             <span class="material-icons text-green-600">filter_alt</span>
             <span>Filter:</span>
-            <select name="" id="">
+            <select name="" id="" class="text-xs sm:text-base">
               <option value="">All Star</option>
             </select>
           </div>
           <div class="flex items-center gap-1">
             <span class="material-icons text-green-600">sort</span>
             <span>Sort:</span>
-            <select name="" id="">
+            <select name="" id="" class="text-xs sm:text-base">
               <option value="">Relevance</option>
               <option value="">???</option>
             </select>
