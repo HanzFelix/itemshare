@@ -95,7 +95,7 @@ function searchItem() {
         </ol>
         <div></div>
         <form
-          class="bg-yellow-200 border-2 pr-4 border-yellow-500 rounded-xl py-1 lg:py-0 flex my-3"
+          class="bg-yellow-200 border-2 border-yellow-500 rounded-xl flex my-3"
           v-if="!['search'].includes($route.name)"
           @submit.stop.prevent="searchItem()"
         >
@@ -103,11 +103,19 @@ function searchItem() {
             type="text"
             name=""
             id=""
-            class="placeholder-yellow-700 rounded-l-xl text-black py-1 px-4 text-sm bg-transparent w-full"
+            class="placeholder-yellow-700 rounded-l-xl text-black py-1 px-4 text-sm bg-transparent w-full border-none"
             placeholder="Search..."
           />
-          <button class="text-yellow-700 px-2">Q</button>
-          <RouterLink to="/search" class="text-yellow-700">=</RouterLink>
+          <button
+            class="text-yellow-700 px-2 py-1 lg:py-0 material-icons lg:text-lg"
+          >
+            search
+          </button>
+          <RouterLink
+            to="/search"
+            class="text-yellow-700 py-1 lg:py-0 material-icons lg:text-lg pr-2"
+            >menu</RouterLink
+          >
         </form>
       </div>
     </section>
