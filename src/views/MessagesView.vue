@@ -63,31 +63,35 @@ const conversations = ref([
   >
     <!--Recent Messages-->
     <aside
-      class="flex flex-col basis-full lg:basis-1/3 box-border bg-white rounded-xl shadow-md shadow-gray-400 overflow-hidden"
+      class="lg:block basis-full lg:basis-1/3 box-border bg-white rounded-xl shadow-md shadow-gray-400 overflow-hidden"
       :class="['messages'].includes($route.name) ? '' : 'hidden'"
     >
-      <h1 class="px-6 py-4 shadow-sm shadow-gray-300 z-10">Recent Messages</h1>
-      <!-- Container -->
-      <div class="overflow-y-auto px-2">
-        <!--Should link to user's conversation id instead-->
-        <RouterLink
-          v-for="conversation in conversations"
-          :to="'/messages/' + conversation.id"
-          class="flex gap-2 p-2 rounded-2xl my-2"
-          active-class="bg-yellow-200"
-        >
-          <img
-            :src="conversation.avatar"
-            alt=""
-            class="aspect-square w-12 rounded-full"
-          />
-          <div class="w-full truncate">
-            <p class="font-black truncate">{{ conversation.name }}</p>
-            <p class="truncate text-gray-800">
-              {{ conversation.message }}
-            </p>
-          </div>
-        </RouterLink>
+      <div class="flex flex-col overflow-hidden h-full">
+        <h1 class="px-6 py-4 shadow-sm shadow-gray-300 z-10">
+          Recent Messages
+        </h1>
+        <!-- Container -->
+        <div class="overflow-y-auto px-2">
+          <!--Should link to user's conversation id instead-->
+          <RouterLink
+            v-for="conversation in conversations"
+            :to="'/messages/' + conversation.id"
+            class="flex gap-2 p-2 rounded-2xl my-2"
+            active-class="bg-yellow-200"
+          >
+            <img
+              :src="conversation.avatar"
+              alt=""
+              class="aspect-square w-12 rounded-full"
+            />
+            <div class="w-full truncate">
+              <p class="font-black truncate">{{ conversation.name }}</p>
+              <p class="truncate text-gray-800">
+                {{ conversation.message }}
+              </p>
+            </div>
+          </RouterLink>
+        </div>
       </div>
     </aside>
     <!--Chat Window-->
