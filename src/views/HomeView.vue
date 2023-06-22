@@ -1,72 +1,19 @@
 <script setup>
 import { RouterLink } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
+import ItemsContainer from "../components/ItemsContainer.vue";
 const itemShareStore = useItemShareStore();
 </script>
 
 <template>
-  <main class="flex flex-col py-8 container mx-auto px-4 gap-8">
+  <main class="container mx-auto flex flex-col gap-8 px-4 py-8">
     <section class="flex flex-col gap-2">
       <h1>JUST FOR YOU</h1>
-      <!-- temporary bg-gradient, def. not in figma but might remove later-->
-      <div
-        class="grid grid-flow-row grid-cols-2 sm:grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 bg-gradient-to-b from-green-500 to-transparent bg-[length:auto_150px] bg-no-repeat rounded-xl p-4"
-      >
-        <RouterLink
-          :to="'/item/' + item.id"
-          v-for="item in itemShareStore.itemsInRange(12, 18)"
-          class="shadow-sm shadow-gray-400 p-2 bg-white"
-        >
-          <div class="w-full aspect-square">
-            <img
-              :src="item.img"
-              alt=""
-              srcset=""
-              loading="lazy"
-              class="object-contain"
-            />
-          </div>
-
-          <div class="flex flex-col">
-            <p>{{ item.name }}</p>
-            <p class="text-xs">{{ item.location }}</p>
-            <p class="text-green-800">
-              <span class="text-2xl">₱</span
-              >{{ item.price + " - " + item.rate }}
-            </p>
-          </div>
-        </RouterLink>
-      </div>
+      <ItemsContainer :items="itemShareStore.itemsInRange(12, 18)" />
     </section>
     <section class="flex flex-col gap-2">
       <h1>DISCOVER</h1>
-      <div
-        class="grid grid-flow-row grid-cols-2 sm:grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 bg-gradient-to-b from-green-500 to-transparent bg-[length:auto_150px] bg-no-repeat rounded-xl p-4"
-      >
-        <RouterLink
-          :to="'/item/' + item.id"
-          v-for="item in itemShareStore.itemsInRange(0, 18)"
-          class="shadow-sm shadow-gray-400 p-2 bg-white"
-        >
-          <div class="w-full aspect-square">
-            <img
-              :src="item.img"
-              alt=""
-              srcset=""
-              loading="lazy"
-              class="object-contain"
-            />
-          </div>
-          <div class="flex flex-col">
-            <p>{{ item.name }}</p>
-            <p class="text-xs">{{ item.location }}</p>
-            <p class="text-green-800">
-              <span class="text-2xl">₱</span
-              >{{ item.price + " - " + item.rate }}
-            </p>
-          </div>
-        </RouterLink>
-      </div>
+      <ItemsContainer :items="itemShareStore.itemsInRange(0, 18)" />
     </section>
   </main>
 </template>
