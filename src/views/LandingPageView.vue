@@ -1,25 +1,25 @@
 <template>
-  <div class="basis-full flex flex-col justify-between pt-16 px-4">
+  <div class="flex basis-full flex-col justify-between px-4 pt-16">
     <h1
-      class="text-5xl sm:text-6xl font-bold text-white md:shadow-none border-0 md:border-b-4 pb-8 border-green-400"
+      class="basis-full border-0 border-green-400 pb-8 text-5xl font-bold text-white sm:text-6xl md:border-b-4 md:shadow-none"
     >
       Hello, looking for something you like?
     </h1>
-    <div class="px-4 basis-full py-16 flex-col gap-8 flex">
-      <p class="text-white text-xl">
+    <div class="flex basis-full flex-col gap-8 px-4 py-16">
+      <p class="text-xl text-white">
         Unlock the value of your unused items: Earn, Share, and Connect with
         ItemShare
       </p>
-      <div class="gap-2 flex items-center">
+      <div class="flex items-center gap-2">
         <RouterLink
           to="/login"
-          class="py-3 px-5 text-green-800 border-2 bg-white border-white rounded-xl text-center"
+          class="rounded-xl border-2 border-white bg-white px-5 py-3 text-center text-green-800"
         >
           LOGIN
         </RouterLink>
         <RouterLink
           to="/register"
-          class="py-3 px-5 text-white border-2 border-white rounded-xl text-center"
+          class="rounded-xl border-2 border-white px-5 py-3 text-center text-white"
         >
           REGISTER
         </RouterLink>
