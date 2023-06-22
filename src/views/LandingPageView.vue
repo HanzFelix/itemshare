@@ -1,7 +1,7 @@
 <template>
   <div class="flex basis-full flex-col justify-between px-4 pt-16">
     <h1
-      class="basis-full border-0 border-green-400 pb-8 text-5xl font-bold text-white sm:text-6xl md:border-b-4 md:shadow-none"
+      class="basis-full border-0 border-green-400 text-5xl font-bold text-white sm:text-6xl md:border-b-4 md:shadow-none"
     >
       Hello, looking for something you like?
     </h1>
