@@ -170,7 +170,7 @@ const register = async () => {
           </RouterLink>
         </p>
         <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
-          >>>>>>>>> Temporary merge branch 2 CREATE ACCOUNT
+          CREATE ACCOUNT
         </button>
         <RouterLink
           to="/login"
