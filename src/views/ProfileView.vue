@@ -1,11 +1,14 @@
 <script setup>
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import { ref } from "vue";
 import StarRating from "../components/StarRating.vue";
 import ItemsContainer from "../components/ItemsContainer.vue";
 import EditProfile from "../components/EditProfile.vue";
 const itemShareStore = useItemShareStore();
+const route = useRoute();
+
+const id = parseInt(route.params.id) ? parseInt(route.params.id) : 0;
 
 const editDialog = ref(null);
 function showEditProfile() {
@@ -24,7 +27,7 @@ function hideEditProfile() {
         <!--Image-->
         <div class="flex basis-4/12 flex-col gap-2 bg-white p-4">
           <img
-            :src="itemShareStore.loadedProfile.image"
+            :src="itemShareStore.loadedProfile(id).image"
             alt=""
             srcset=""
             class="aspect-square w-full object-contain"
@@ -39,9 +42,9 @@ function hideEditProfile() {
               <div class="flex items-center gap-2">
                 <h1 class="text-3xl">
                   {{
-                    itemShareStore.loadedProfile.firstname +
+                    itemShareStore.loadedProfile(id).firstname +
                     " " +
-                    itemShareStore.loadedProfile.lastname
+                    itemShareStore.loadedProfile(id).lastname
                   }}
                 </h1>
                 <button
@@ -54,7 +57,7 @@ function hideEditProfile() {
               </div>
               <div class="flex">
                 <span class="material-icons text-green-600">location_on</span>
-                <span>{{ itemShareStore.loadedProfile.location }}</span>
+                <span>{{ itemShareStore.loadedProfile(id).location }}</span>
               </div>
             </div>
             <!--Ratings-->
@@ -120,6 +123,6 @@ function hideEditProfile() {
     </section>
   </main>
   <dialog ref="editDialog" class="rounded-xl backdrop:backdrop-brightness-50">
-    <EditProfile @close="hideEditProfile" />
+    <EditProfile @close="hideEditProfile" :userid="id" />
   </dialog>
 </template>

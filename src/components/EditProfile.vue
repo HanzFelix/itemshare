@@ -4,7 +4,16 @@ import { useItemShareStore } from "../stores/itemshare";
 const itemShareStore = useItemShareStore();
 const emit = defineEmits(["close"]);
 const reader = new FileReader();
-const profile = ref(Object.assign({}, itemShareStore.loadedProfile)); // duplicates it
+
+const props = defineProps({
+  // value is the number of stars
+  userid: {
+    default: 0,
+  },
+});
+const profile = ref(
+  Object.assign({}, itemShareStore.loadedProfile(props.userid))
+); // duplicates it
 
 function loadImageFile(e) {
   let file = e.target.files[0];
@@ -16,7 +25,7 @@ function loadImageFile(e) {
   };
 }
 function updateProfile() {
-  itemShareStore.loadedProfile = Object.assign({}, profile.value);
+  itemShareStore.sampleProfiles[0] = Object.assign({}, profile.value);
   emit("close");
 }
 </script>
