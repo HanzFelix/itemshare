@@ -15,8 +15,6 @@ const gender = ref("Select");
 const birthday = ref("");
 const password = ref("");
 const confirmPassword = ref("");
-const verified = ref(false);
-const admin = ref(false);
 const checkbox = ref(false);
 let error = ref(false);
 let errorMessage = ref("");
@@ -49,8 +47,8 @@ const register = async () => {
             phoneNumber: phoneNumber.value,
             gender: gender.value,
             birthday: birthday.value,
-            verified: verified.value,
-            admin: admin.value,
+            verified: false,
+            admin: false,
           });
           router.push("/home");
           return;
