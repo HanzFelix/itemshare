@@ -5,8 +5,13 @@ import ItemShareLogo from "./ItemShareLogo.vue";
 import NotificationsPopup from "./NotificationsPopup.vue";
 import { onMounted } from "vue";
 import { initFlowbite } from "flowbite";
+import { ref } from "vue";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import db from "../firebase/firebaseInit.js";
 
 // initialize components based on data attribute selectors
+
 onMounted(() => {
   initFlowbite();
 });
@@ -17,9 +22,23 @@ const itemShareStore = useItemShareStore();
 function searchItem() {
   if (itemShareStore.searchItem()) router.push("/search");
 }
+
+const signOut = () => {
+  firebase
+    .auth()
+    .signOut()
+    .then(
+      function () {
+        alert("Successfully Signed Out");
+        router.push("/");
+      },
+      function (error) {
+        alert("Sign Out Error", error);
+      }
+    );
+};
 </script>
 <template>
-  <!-- Temporary header to demonstrate vue router -->
   <header
     class="bg-green-600 flex flex-col sticky w-full text-white shadow-sm shadow-gray-400"
     v-if="!['login', 'register'].includes($route.name)"
@@ -29,6 +48,12 @@ function searchItem() {
     >
       <ItemShareLogo />
       <ul class="flex gap-4 items-center">
+        <li>
+          <RouterLink to="/create-item" class="flex gap-1">
+            <span class="material-icons lg:text-base text-3xl">add_box</span>
+            <span class="hidden lg:inline-block">CREATE ITEM</span>
+          </RouterLink>
+        </li>
         <li>
           <button
             type="button"
@@ -60,9 +85,8 @@ function searchItem() {
         </li>
         <!--TODO: move logout to somewhere else-->
         <li>
-          <RouterLink to="/">LOG OUT</RouterLink>
+          <button @click.prevent="signOut">LOG OUT</button>
         </li>
-        <!-- TODO: replace with user avatar-->
         <li>
           <RouterLink to="/profile">
             <img
@@ -71,6 +95,7 @@ function searchItem() {
               class="aspect-square w-10 rounded-full"
           /></RouterLink>
         </li>
+        <h5>sample name</h5>
       </ul>
     </nav>
     <section class="bg-green-500">
@@ -90,7 +115,7 @@ function searchItem() {
         </ol>
         <div></div>
         <form
-          class="bg-yellow-200 border-2 pr-4 border-yellow-500 rounded-xl py-1 lg:py-0 flex my-3"
+          class="bg-yellow-200 border-2 border-yellow-500 rounded-xl flex my-3"
           v-if="!['search'].includes($route.name)"
           @submit.stop.prevent="searchItem()"
         >
@@ -98,11 +123,19 @@ function searchItem() {
             type="text"
             name=""
             id=""
-            class="placeholder-yellow-700 rounded-l-xl text-black py-1 px-4 text-sm bg-transparent w-full"
+            class="placeholder-yellow-700 rounded-l-xl text-black py-1 px-4 text-sm bg-transparent w-full border-none"
             placeholder="Search..."
           />
-          <button class="text-yellow-700 px-2">Q</button>
-          <RouterLink to="/search" class="text-yellow-700">=</RouterLink>
+          <button
+            class="text-yellow-700 px-2 py-1 lg:py-0 material-icons lg:text-lg"
+          >
+            search
+          </button>
+          <RouterLink
+            to="/search"
+            class="text-yellow-700 py-1 lg:py-0 material-icons lg:text-lg pr-2"
+            >menu</RouterLink
+          >
         </form>
       </div>
     </section>

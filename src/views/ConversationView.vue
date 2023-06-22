@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, RouterLink } from "vue-router";
 const route = useRoute();
 
 const id = parseInt(route.params.id);
@@ -96,19 +96,26 @@ function isSameMessageSource(chat_id) {
 </script>
 <template>
   <div class="flex flex-col justify-between h-full">
-    <header class="bg-green-600 flex px-6 py-2 gap-2 shadow-md shadow-gray-400">
-      <img
-        src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
-        alt=""
-        class="aspect-square w-12 rounded-full"
-      />
-      <div class="flex flex-col text-white">
-        <p class="font-black">Elong Mah</p>
-        <div class="truncate flex gap-1 items-center">
-          <div class="h-2 rounded-full bg-green-300 w-2 inline-block"></div>
-          <span>Online</span>
+    <header
+      class="bg-green-600 flex justify-between px-6 py-2 shadow-md shadow-gray-400 items-center"
+    >
+      <div class="flex gap-2">
+        <img
+          src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+          alt=""
+          class="aspect-square w-12 rounded-full"
+        />
+        <div class="flex flex-col text-white">
+          <p class="font-black">Elong Mah</p>
+          <div class="truncate flex gap-1 items-center">
+            <div class="h-2 rounded-full bg-green-300 w-2 inline-block"></div>
+            <span>Online</span>
+          </div>
         </div>
       </div>
+      <RouterLink to="/messages" class="text-white material-icons"
+        >close</RouterLink
+      >
     </header>
     <!--Chat bubbles-->
     <main

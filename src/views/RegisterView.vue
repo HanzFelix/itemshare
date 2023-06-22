@@ -14,8 +14,10 @@ const lastName = ref("");
 const gender = ref("Select");
 const birthday = ref("");
 const password = ref("");
+const confirmPassword = ref("");
 const verified = ref(false);
 const admin = ref(false);
+const checkbox = ref(false);
 let error = ref(false);
 let errorMessage = ref("");
 
@@ -28,27 +30,38 @@ const register = async () => {
       lastName.value !== "" &&
       gender.value !== "Select" &&
       birthday.value !== "" &&
-      password.value !== ""
+      password.value !== "" &&
+      confirmPassword !== ""
     ) {
-      const firebaseAuth = await firebase.auth();
-      const createUser = await firebaseAuth.createUserWithEmailAndPassword(
-        email.value,
-        password.value
-      );
-      const result = await createUser;
-      const dataBase = db.collection("users").doc(result.user.uid);
-      await dataBase.set({
-        firstName: firstName.value,
-        lastName: lastName.value,
-        email: email.value,
-        phoneNumber: phoneNumber.value,
-        gender: gender.value,
-        birthday: birthday.value,
-        verified: verified.value,
-        admin: admin.value,
-      });
-      router.push("/home");
-      return;
+      if (password.value === confirmPassword.value) {
+        if (checkbox.value) {
+          const firebaseAuth = await firebase.auth();
+          const createUser = await firebaseAuth.createUserWithEmailAndPassword(
+            email.value,
+            password.value
+          );
+          const result = await createUser;
+          const dataBase = db.collection("users").doc(result.user.uid);
+          await dataBase.set({
+            firstName: firstName.value,
+            lastName: lastName.value,
+            email: email.value,
+            phoneNumber: phoneNumber.value,
+            gender: gender.value,
+            birthday: birthday.value,
+            verified: verified.value,
+            admin: admin.value,
+          });
+          router.push("/home");
+          return;
+        } else {
+          error.value = true;
+          errorMessage.value = "Please agree to the terms and conditions.";
+        }
+      } else {
+        error.value = true;
+        errorMessage.value = "Password does not match!";
+      }
     } else {
       error.value = true;
       errorMessage.value = "Please fill out all the fields!";
@@ -101,8 +114,6 @@ const register = async () => {
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
           placeholder="Last Name"
         />
-      </div>
-      <div class="flex flex-col gap-2 basis-1/2">
         <label for="fname">Gender</label>
         <select
           v-model="gender"
@@ -115,6 +126,8 @@ const register = async () => {
           <option>Female</option>
           <option>Others</option>
         </select>
+      </div>
+      <div class="flex flex-col gap-2 basis-1/2">
         <label for="bday">Birthday</label>
         <input
           v-model="birthday"
@@ -130,31 +143,34 @@ const register = async () => {
           class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
           placeholder="Password"
         />
-        <p class="text-sm">
-          <input type="checkbox" />
-          <span> I agree to the </span>
-          <RouterLink to="/terms-and-conditions" class="underline">
-            Terms and Conditions
-          </RouterLink>
-        </p>
+        <label for="confirm password">Confirm Password</label>
+        <input
+          v-model="confirmPassword"
+          name="confirm password"
+          type="password"
+          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+          placeholder="Confirm Password"
+        />
         <div
           v-show="error"
           class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
         >
           {{ errorMessage }}
         </div>
-        <button class="py-3 px-5 text-white bg-green-800 rounded-xl mt-4">
-=========
         <p class="text-sm">
-          <input type="checkbox" name="" id="" />
+          <input
+            type="checkbox"
+            name="checkbox"
+            id="checkbox"
+            v-model="checkbox"
+          />
           <span> I agree to the </span>
           <RouterLink to="/terms-and-conditions" class="underline">
             Terms and Conditions
           </RouterLink>
         </p>
         <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
->>>>>>>>> Temporary merge branch 2
-          CREATE ACCOUNT
+          >>>>>>>>> Temporary merge branch 2 CREATE ACCOUNT
         </button>
         <RouterLink
           to="/login"

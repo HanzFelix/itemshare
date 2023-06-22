@@ -21,7 +21,20 @@ const login = async () => {
       })
       .catch((err) => {
         error.value = true;
-        errorMessage.value = err.code;
+        switch (error.code) {
+          case "auth/invalid-email":
+            errorMessage.value = "Invalid email";
+            break;
+          case "auth/user-not-found":
+            errorMessage.value = "No account with that email was found";
+            break;
+          case "auth/wrong-password":
+            errorMessage.value = "Incorrect password";
+            break;
+          default:
+            errorMessage.value = "Email or password was incorrect";
+            break;
+        }
       });
   } else {
     error.value = true;

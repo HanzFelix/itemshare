@@ -13,6 +13,7 @@ import EmptyView from "../views/EmptyView.vue";
 import ConversationView from "../views/ConversationView.vue";
 import ForgotPasswordView from "../views/ForgotPasswordView.vue";
 import TermsAndConditionsView from "../views/TermsAndConditionsView.vue";
+import CreateItemView from "../views/CreateItemView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,6 +72,11 @@ const router = createRouter({
           path: "/search",
           name: "search",
           component: SearchView,
+        },
+        {
+          path: "/create-item",
+          name: "createItem",
+          component: CreateItemView,
         },
       ],
     },
