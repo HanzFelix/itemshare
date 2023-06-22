@@ -71,114 +71,117 @@ const register = async () => {
 };
 </script>
 <template>
-  <form class="flex gap-2 flex-col" @submit.stop.prevent="register">
-    <h1>Create an account</h1>
-    <div class="flex xl:gap-12 gap-2 xl:flex-row flex-col">
-      <div class="flex flex-col gap-2 basis-1/2">
-        <label for="phone">Phone Number</label>
-        <input
-          v-model="phoneNumber"
-          name="phone"
-          type="tel"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-          placeholder="Enter your phone number"
-        />
-        <button
-          class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-xl"
-        >
-          Send SMS Code
-        </button>
-        <label for="email">Email Address</label>
-        <input
-          v-model="email"
-          name="email"
-          type="email"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-          placeholder="Email"
-        />
-        <label for="fname">First Name</label>
-        <input
-          v-model="firstName"
-          name="fname"
-          type="text"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-          placeholder="First Name"
-        />
-        <label for="lname">Last Name</label>
-        <input
-          v-model="lastName"
-          name="lname"
-          type="text"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-          placeholder="Last Name"
-        />
-        <label for="fname">Gender</label>
-        <select
-          v-model="gender"
-          name="fname"
-          type="text"
-          class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
-          placeholder="Gender"
-        >
-          <option>Male</option>
-          <option>Female</option>
-          <option>Others</option>
-        </select>
-      </div>
-      <div class="flex flex-col gap-2 basis-1/2">
-        <label for="bday">Birthday</label>
-        <input
-          v-model="birthday"
-          name="bday"
-          type="date"
-          class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
-        />
-        <label for="password">Password</label>
-        <input
-          v-model="password"
-          name="password"
-          type="password"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-          placeholder="Password"
-        />
-        <label for="confirm password">Confirm Password</label>
-        <input
-          v-model="confirmPassword"
-          name="confirm password"
-          type="password"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-          placeholder="Confirm Password"
-        />
-        <div
-          v-show="error"
-          class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
-        >
-          {{ errorMessage }}
-        </div>
-        <p class="text-sm">
+  <div
+    class="bg-white p-8 self-center max-w-full rounded-3xl flex flex-col overflow-y-auto"
+  >
+    <form class="flex gap-2 flex-col" @submit.stop.prevent="register">
+      <h1>Create an account</h1>
+      <div class="flex xl:gap-12 gap-2 xl:flex-row flex-col">
+        <div class="flex flex-col gap-2 basis-1/2">
+          <label for="phone">Phone Number</label>
           <input
-            type="checkbox"
-            name="checkbox"
-            id="checkbox"
-            v-model="checkbox"
+            v-model="phoneNumber"
+            name="phone"
+            type="tel"
+            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            placeholder="Enter your phone number"
           />
-          <span> I agree to the </span>
-          <RouterLink to="/terms-and-conditions" class="underline">
-            Terms and Conditions
+          <button
+            class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-xl"
+          >
+            Send SMS Code
+          </button>
+          <label for="email">Email Address</label>
+          <input
+            v-model="email"
+            name="email"
+            type="email"
+            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            placeholder="Email"
+          />
+          <label for="fname">First Name</label>
+          <input
+            v-model="firstName"
+            name="fname"
+            type="text"
+            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            placeholder="First Name"
+          />
+          <label for="lname">Last Name</label>
+          <input
+            v-model="lastName"
+            name="lname"
+            type="text"
+            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            placeholder="Last Name"
+          />
+          <label for="fname">Gender</label>
+          <select
+            v-model="gender"
+            name="fname"
+            type="text"
+            class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
+            placeholder="Gender"
+          >
+            <option>Male</option>
+            <option>Female</option>
+            <option>Others</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-2 basis-1/2">
+          <label for="bday">Birthday</label>
+          <input
+            v-model="birthday"
+            name="bday"
+            type="date"
+            class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
+          />
+          <label for="password">Password</label>
+          <input
+            v-model="password"
+            name="password"
+            type="password"
+            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            placeholder="Password"
+          />
+          <label for="confirm password">Confirm Password</label>
+          <input
+            v-model="confirmPassword"
+            name="confirm password"
+            type="password"
+            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            placeholder="Confirm Password"
+          />
+          <div
+            v-show="error"
+            class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
+          >
+            {{ errorMessage }}
+          </div>
+          <p class="text-sm">
+            <input
+              type="checkbox"
+              name="checkbox"
+              id="checkbox"
+              v-model="checkbox"
+            />
+            <span> I agree to the </span>
+            <RouterLink to="/terms-and-conditions" class="underline">
+              Terms and Conditions
+            </RouterLink>
+          </p>
+          <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
+            CREATE ACCOUNT
+          </button>
+          <RouterLink
+            to="/login"
+            class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-xl text-center"
+          >
+            GO BACK
           </RouterLink>
-        </p>
-        <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
-          CREATE ACCOUNT
-        </button>
-        <RouterLink
-          to="/login"
-          class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-xl text-center"
-        >
-          GO BACK
-        </RouterLink>
+        </div>
       </div>
-    </div>
-    <!--
+      <!--
     <input
       type="text"
       class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
@@ -196,6 +199,6 @@ const register = async () => {
       >
     </p>
     <button class="py-3 px-5 text-white bg-green-800 rounded-xl">Login</button>
-    -->
-  </form>
+    --></form>
+  </div>
 </template>

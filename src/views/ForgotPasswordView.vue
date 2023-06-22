@@ -37,37 +37,43 @@ const resetPassword = async () => {
 </script>
 
 <template>
-  <div v-show="success" class="successMessage bg-white rounded-md">
-    {{ successMessage }}
-    <button
-      class="py-3 px-5 text-white bg-gray-800 rounded-xl flex flex-col m-auto mt-5"
-    >
-      <RouterLink to="/login">Close</RouterLink>
-    </button>
-  </div>
-  <form
-    @submit.stop.prevent="resetPassword"
-    v-show="!success"
-    class="flex gap-2 flex-col"
+  <div
+    class="bg-white p-8 self-center rounded-3xl flex flex-col overflow-y-auto max-w-full"
   >
-    <h2>Enter Email that is associated with your account.</h2>
-    <input
-      v-model="email"
-      type="text"
-      class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-      placeholder="Email Address"
-    />
-    <div
-      v-show="error"
-      class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
-    >
-      {{ errorMessage }}
+    <div v-show="success" class="successMessage bg-white rounded-md">
+      {{ successMessage }}
+      <button
+        class="py-3 px-5 text-white bg-gray-800 rounded-xl flex flex-col m-auto mt-5"
+      >
+        <RouterLink to="/login">Close</RouterLink>
+      </button>
     </div>
-    <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
-      Reset Password
-    </button>
-    <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
-      <RouterLink to="/login">Back</RouterLink>
-    </button>
-  </form>
+    <form
+      @submit.stop.prevent="resetPassword"
+      v-show="!success"
+      class="flex gap-2 flex-col"
+    >
+      <h2>Enter Email that is associated with your account.</h2>
+      <input
+        v-model="email"
+        type="text"
+        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        placeholder="Email Address"
+      />
+      <div
+        v-show="error"
+        class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
+      >
+        {{ errorMessage }}
+      </div>
+      <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
+        Reset Password
+      </button>
+      <RouterLink
+        to="/login"
+        class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-xl text-center"
+        >Back</RouterLink
+      >
+    </form>
+  </div>
 </template>
