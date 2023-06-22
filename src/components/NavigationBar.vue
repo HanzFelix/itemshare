@@ -8,12 +8,35 @@ import { initFlowbite } from "flowbite";
 import { ref } from "vue";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import db from "../firebase/firebaseInit.js";
+import { collection, getDocs } from "firebase/firestore";
 
 // initialize components based on data attribute selectors
+const db = firebase.firestore();
+
+const displayName = ref("");
+const currentUser = ref();
+const currentUserFName = ref();
+const currentUserLName = ref();
 
 onMounted(() => {
   initFlowbite();
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (user) {
+      // User logged in already or has just logged in.
+      currentUser.value = user.uid;
+      const querySnapshot = await getDocs(collection(db, "users"));
+      querySnapshot.forEach((doc) => {
+        if (user.uid == doc.id) {
+          currentUserFName.value = `${doc.data().firstName}`;
+          currentUserLName.value = `${doc.data().lastName}`;
+          displayName.value =
+            currentUserFName.value + " " + currentUserLName.value;
+        }
+      });
+    } else {
+      // User not logged in or has just logged out.
+    }
+  });
 });
 
 const router = useRouter();
@@ -95,7 +118,7 @@ const signOut = () => {
               class="aspect-square w-10 rounded-full"
           /></RouterLink>
         </li>
-        <h5>sample name</h5>
+        <h5>{{ displayName }}</h5>
       </ul>
     </nav>
     <section class="bg-green-500">
