@@ -18,6 +18,27 @@ function loadImageFile(e) {
     imagePreviews.value.push(event.target.result);
   };
 }
+
+const tagInput = ref("");
+const tags = ref(["stainless steel", "watch", "3d"]);
+
+function deleteTag(index) {
+  tags.value.splice(index, 1);
+}
+
+function addTag() {
+  if (!tags.value.includes(tagInput.value)) {
+    tags.value.push(tagInput.value);
+  }
+  tagInput.value = "";
+}
+
+function validateTag() {
+  if (tagInput.value.endsWith(",")) {
+    tagInput.value = tagInput.value.slice(0, -1);
+    addTag();
+  }
+}
 /*
 
 personal idea lang on how to create item
@@ -35,7 +56,6 @@ const itemName = ref("");
 const location = ref("");
 const rentAmount = ref(0);
 const rentRate = ref("");
-const tags = ref("");
 const description = ref("");
 let error = ref(false);
 let errorMessage = ref("");
@@ -83,7 +103,7 @@ const addItem = async () => {
 <template>
   <main>
     <form
-      class="flex flex-col py-8 container mx-auto px-4"
+      class="container mx-auto flex flex-col px-4 py-8"
       @submit.stop.prevent="addItem"
     >
       <h1>Create an item</h1>
@@ -103,10 +123,10 @@ const addItem = async () => {
       srcset=""
     /-->
       <label for="images">Images</label>
-      <div class="w-full overflow-x-auto p-4 bg-red-200" id="images">
+      <div class="w-full overflow-x-auto bg-red-200 p-4" id="images">
         <div class="flex gap-2">
           <img
-            class="h-40 gap-2 aspect-square object-contain"
+            class="aspect-square h-40 gap-2 object-contain"
             v-for="image in imagePreviews"
             :src="image"
             alt=""
@@ -114,7 +134,7 @@ const addItem = async () => {
           />
           <label
             for="add-image"
-            class="bg-green-400 cursor-pointer h-40 aspect-square text-center py-4"
+            class="aspect-square h-40 cursor-pointer bg-green-400 py-4 text-center"
           >
             Add image...
           </label>
@@ -124,14 +144,14 @@ const addItem = async () => {
       <input
         name="fname"
         type="text"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="Add an item name"
       />
       <label for="fname">Location</label>
       <input
         name="fname"
         type="text"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="Enter location..."
       />
       <label for="fname">Rent rate</label>
@@ -139,48 +159,66 @@ const addItem = async () => {
         <input
           name="fname"
           type="text"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+          class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
           placeholder="Amount"
         />
         <input
           name="fname"
           type="text"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+          class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
           placeholder="Rate (e.d. per day, per week, per month)"
         />
       </div>
-      <label for="fname">Tags</label>
-      <input
-        name="fname"
-        type="text"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-        placeholder="tag1, tag2, tag3"
-      />
+      <h2>Tags</h2>
+      <div class="flex flex-wrap gap-2 border border-black p-2">
+        <div
+          v-for="(tag, index) in tags"
+          class="flex items-center gap-1 whitespace-nowrap rounded-md bg-red-300 px-2 py-1"
+        >
+          <span>{{ tag }}</span>
+          <button
+            class="material-icons aspect-square rounded-lg bg-red-500 px-1.5 text-xs text-white"
+            @click="deleteTag(index)"
+          >
+            close
+          </button>
+        </div>
+        <input
+          type="text"
+          name=""
+          id=""
+          placeholder="Add a tag..."
+          @input="validateTag()"
+          @keydown.enter.prevent="addTag()"
+          v-model="tagInput"
+          class="flex-1 border-none py-0"
+        />
+      </div>
       <label for="fname">Description</label>
       <textarea
         name="description"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="A short description on what the item is about"
       ></textarea>
       <div
         v-show="error"
-        class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
+        class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
       >
         {{ errorMessage }}
       </div>
-      <div class="flex justify-end gap-2 mt-4">
+      <div class="mt-4 flex justify-end gap-2">
         <!-- TODO: User input from RegisterView is gone upon returning leaving TermsAndConditionVIew -->
         <!-- Probably some way to mark as check upon accepting the terms and conditions? -->
         <button
           to="/item/1"
-          class="py-3 px-5 text-white bg-green-800 rounded-lg border-2 border-green-800"
+          class="rounded-lg border-2 border-green-800 bg-green-800 px-5 py-3 text-white"
         >
           CREATE
         </button>
         <!--TODO: return to previous page using vue router-->
         <RouterLink
           to="/home"
-          class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-lg"
+          class="rounded-lg border-2 border-green-800 bg-white px-5 py-3 text-green-800"
         >
           CANCEL
         </RouterLink>
