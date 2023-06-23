@@ -140,7 +140,11 @@ function isSameMessageSource(chat_id) {
           class="my-1 flex items-end gap-2"
         >
           <img
-            src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+            :src="
+              chat.user == 'me'
+                ? 'https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg'
+                : itemShareStore.loadedProfile(id).image
+            "
             alt=""
             class="aspect-square w-12 rounded-full"
             :class="isSamePerson(index) ? 'opacity-0' : ''"
