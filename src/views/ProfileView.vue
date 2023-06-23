@@ -1,6 +1,7 @@
 <script setup>
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
+import { ref } from "vue";
 import StarRating from "../components/StarRating.vue";
 //import ItemsContainer from "../components/ItemsContainer.vue";
 import { onMounted, ref } from "vue";
@@ -57,7 +58,23 @@ onMounted(async () => {
 function gridSize(text) {
   return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8";
 }
+
+//import ItemsContainer from "../components/ItemsContainer.vue";
+import EditProfile from "../components/EditProfile.vue";
+
 const itemShareStore = useItemShareStore();
+const route = useRoute();
+
+const id = parseInt(route.params.id) ? parseInt(route.params.id) : 0;
+
+const editDialog = ref(null);
+function showEditProfile() {
+  editDialog.value.showModal();
+}
+
+function hideEditProfile() {
+  editDialog.value.close();
+}
 </script>
 
 <template>
@@ -67,9 +84,10 @@ const itemShareStore = useItemShareStore();
         <!--Image-->
         <div class="flex basis-4/12 flex-col gap-2 bg-white p-4">
           <img
-            src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+            :src="itemShareStore.loadedProfile(id).image"
             alt=""
             srcset=""
+            class="aspect-square w-full object-contain"
           />
         </div>
         <!--Details-->
@@ -78,12 +96,21 @@ const itemShareStore = useItemShareStore();
         >
           <div>
             <div class="flex flex-wrap items-start justify-between gap-2">
-              <h1 class="text-3xl">
+              <div class="flex items-center gap-2">
+                <h1 class="text-3xl">
                 {{ currentUserFName + " " + currentUserLName }}
-              </h1>
+                </h1>
+                <button
+                  v-if="true"
+                  @click="showEditProfile"
+                  class="material-icons rounded-md border border-yellow-500 bg-yellow-200 p-0.5 px-1.5 text-base text-yellow-800"
+                >
+                  edit
+                </button>
+              </div>
               <div class="flex">
                 <span class="material-icons text-green-600">location_on</span>
-                <span>Baybay City</span>
+                <span>{{ itemShareStore.loadedProfile(id).location }}</span>
               </div>
             </div>
             <!--Ratings-->
@@ -176,4 +203,7 @@ const itemShareStore = useItemShareStore();
       </div>
     </section>
   </main>
+  <dialog ref="editDialog" class="rounded-xl backdrop:backdrop-brightness-50">
+    <EditProfile @close="hideEditProfile" :userid="id" />
+  </dialog>
 </template>

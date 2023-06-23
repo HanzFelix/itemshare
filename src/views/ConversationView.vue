@@ -1,12 +1,17 @@
 <script setup>
-import { ref } from "vue";
+import { onUpdated, ref } from "vue";
 import { useRoute, RouterLink } from "vue-router";
+import { useItemShareStore } from "../stores/itemshare";
 const route = useRoute();
 
-const id = parseInt(route.params.id);
+const itemShareStore = useItemShareStore();
+
+var id = parseInt(route.params.id);
 const messageDraft = ref("");
 const scrollToElement = ref();
-
+onUpdated(() => {
+  id = parseInt(route.params.id);
+});
 const chatHistory = ref([
   {
     user: "me",
@@ -95,38 +100,44 @@ function isSameMessageSource(chat_id) {
 }
 </script>
 <template>
-  <div class="flex flex-col justify-between h-full">
+  <div class="flex h-full flex-col justify-between">
     <header
-      class="bg-green-600 flex justify-between px-6 py-2 shadow-md shadow-gray-400 items-center"
+      class="flex items-center justify-between bg-green-600 px-6 py-2 shadow-md shadow-gray-400"
     >
       <div class="flex gap-2">
         <img
-          src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+          :src="itemShareStore.loadedProfile(id).image"
           alt=""
           class="aspect-square w-12 rounded-full"
         />
         <div class="flex flex-col text-white">
-          <p class="font-black">Elong Mah</p>
-          <div class="truncate flex gap-1 items-center">
-            <div class="h-2 rounded-full bg-green-300 w-2 inline-block"></div>
+          <p class="font-black">
+            {{
+              itemShareStore.loadedProfile(id).firstname +
+              " " +
+              itemShareStore.loadedProfile(id).lastname
+            }}
+          </p>
+          <div class="flex items-center gap-1 truncate">
+            <div class="inline-block h-2 w-2 rounded-full bg-green-300"></div>
             <span>Online</span>
           </div>
         </div>
       </div>
-      <RouterLink to="/messages" class="text-white material-icons"
+      <RouterLink to="/messages" class="material-icons text-white"
         >close</RouterLink
       >
     </header>
     <!--Chat bubbles-->
     <main
-      class="flex flex-col-reverse overflow-y-auto basis-full"
+      class="flex basis-full flex-col-reverse overflow-y-auto"
       ref="scrollToElement"
     >
       <div class="bg-white px-6 pt-12">
         <div
           v-for="(chat, index) in chatHistory"
           :class="chat.user == 'me' ? 'flex-row-reverse' : 'flex-row'"
-          class="flex gap-2 my-1 items-end"
+          class="my-1 flex items-end gap-2"
         >
           <img
             src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
@@ -135,28 +146,28 @@ function isSameMessageSource(chat_id) {
             :class="isSamePerson(index) ? 'opacity-0' : ''"
           />
           <div
-            class="max-w-md rounded-3xl py-3 px-4"
+            class="max-w-md rounded-3xl px-4 py-3"
             :class="isSameMessageSource(index)"
           >
             <p>{{ chat.message }}</p>
           </div>
         </div>
-        <section class="bg-white pb-4 sticky bottom-0 mt-4 rounded-t-xl">
+        <section class="sticky bottom-0 mt-4 rounded-t-xl bg-white pb-4">
           <form
-            class="bg-amber-400 flex gap-2 p-2 rounded-xl shadow-sm shadow-gray-400"
+            class="flex gap-2 rounded-xl bg-amber-400 p-2 shadow-sm shadow-gray-400"
             @submit.prevent="sendMessage()"
           >
             <input
               type="text"
               name=""
               placeholder="Enter message..."
-              class="w-full py-2 px-4 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+              class="w-full rounded-xl border-2 border-yellow-500 bg-yellow-200 px-4 py-2 placeholder-yellow-700"
               id=""
               v-model="messageDraft"
             />
             <button
               type="submit"
-              class="py-2 px-6 text-white bg-green-700 rounded-xl"
+              class="rounded-xl bg-green-700 px-6 py-2 text-white"
             >
               Send
             </button>

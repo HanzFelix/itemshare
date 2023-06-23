@@ -115,6 +115,7 @@ onMounted(async () => {
           <div class="flex gap-2">
             Tags:
             <ul class="flex flex-wrap gap-2">
+              <!--Clicking on a tag should redirect user to search results with the same tag-->
               <li
                 v-for="tag in tags"
                 class="rounded-full border-2 border-yellow-500 bg-yellow-200 px-4 py-1 text-xs text-yellow-700"
@@ -142,7 +143,7 @@ onMounted(async () => {
           <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
-              src="https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
+              :src="itemShareStore.loadedProfile(item.userid).image"
               alt=""
               srcset=""
             />
@@ -156,7 +157,7 @@ onMounted(async () => {
         </div>
         <!--rating-->
         <h2>Lender Ratings</h2>
-        <div class="mb-4 flex gap-4">
+        <div class="mb-4 flex items-center gap-4">
           <span>4.0 / 5.0</span>
           <span>⭐⭐⭐⭐⭐</span>
         </div>
@@ -199,11 +200,20 @@ onMounted(async () => {
           <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
-              src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+              :src="itemShareStore.loadedProfile(i).image"
               alt=""
               srcset=""
             />
-            <span class="whitespace-nowrap text-gray-600">Isaac Einstein</span>
+            <div class="flex flex-col">
+              <StarRating value="4" />
+              <span class="truncate text-gray-700">
+                {{
+                  itemShareStore.loadedProfile(i).firstname +
+                  " " +
+                  itemShareStore.loadedProfile(i).lastname
+                }}</span
+              >
+            </div>
           </div>
           <p class="py-2">user review........................</p>
         </article>
