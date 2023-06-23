@@ -1,7 +1,6 @@
 <script setup>
 import { RouterLink, useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
-import { ref } from "vue";
 import StarRating from "../components/StarRating.vue";
 //import ItemsContainer from "../components/ItemsContainer.vue";
 import { onMounted, ref } from "vue";
@@ -98,7 +97,7 @@ function hideEditProfile() {
             <div class="flex flex-wrap items-start justify-between gap-2">
               <div class="flex items-center gap-2">
                 <h1 class="text-3xl">
-                {{ currentUserFName + " " + currentUserLName }}
+                  {{ currentUserFName + " " + currentUserLName }}
                 </h1>
                 <button
                   v-if="true"

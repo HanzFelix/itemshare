@@ -9,7 +9,7 @@ import { collection, getDocs } from "firebase/firestore";
 
 import db from "../firebase/firebaseInit.js";
 
-//const itemShareStore = useItemShareStore();
+const itemShareStore = useItemShareStore();
 const route = useRoute();
 
 const itemId = ref(route.params.id);
@@ -143,7 +143,7 @@ onMounted(async () => {
           <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
-              :src="itemShareStore.loadedProfile(item.userid).image"
+              :src="itemShareStore.loadedProfile(1).image"
               alt=""
               srcset=""
             />
