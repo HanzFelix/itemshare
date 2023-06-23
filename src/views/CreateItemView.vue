@@ -1,6 +1,45 @@
 <script setup>
 // LAYOUT IS WIP
-import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { onMounted, ref } from "vue";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import db from "../firebase/firebaseInit.js";
+import "firebase/storage";
+/*import {
+  getStorage,
+  ref as stRef,
+  uploadBytes,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";*/
+
+const currentUserID = ref();
+const currentUserFName = ref("");
+const currentUserLName = ref("");
+//const imagePreview = ref();
+//const imgPath = ref();
+
+onMounted(() => {
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (user) {
+      // User logged in already or has just logged in.
+      currentUserID.value = user.uid;
+      const querySnapshot = await getDocs(collection(db, "users"));
+      querySnapshot.forEach((doc) => {
+        if (user.uid == doc.id) {
+          currentUserFName.value = doc.data().firstName;
+          currentUserLName.value = doc.data().lastName;
+        }
+      });
+    } else {
+      // User not logged in or has just logged out.
+    }
+  });
+});
+
+const router = useRouter();
 
 const reader = new FileReader();
 const imageFiles = ref([]);
@@ -20,7 +59,7 @@ function loadImageFile(e) {
 }
 
 const tagInput = ref("");
-const tags = ref(["stainless steel", "watch", "3d"]);
+const tags = ref([]);
 
 function deleteTag(index) {
   tags.value.splice(index, 1);
@@ -39,6 +78,7 @@ function validateTag() {
     addTag();
   }
 }
+
 /*
 
 personal idea lang on how to create item
@@ -51,10 +91,9 @@ personal idea lang on how to create item
 
 */
 
-const image = ref([]);
 const itemName = ref("");
 const location = ref("");
-const rentAmount = ref(0);
+const rentAmount = ref();
 const rentRate = ref("");
 const description = ref("");
 let error = ref(false);
@@ -63,20 +102,20 @@ let errorMessage = ref("");
 const addItem = async () => {
   try {
     if (
-      image !== null &&
+      /*image !== null &&*/
       itemName.value !== "" &&
       location.value !== "" &&
       rentAmount.value !== "" &&
-      rentRate.value !== "Select" &&
-      tags.value !== "" &&
+      rentRate.value !== "" &&
+      tags.value !== null &&
       description.value !== ""
     ) {
       try {
-        const docRef = await addDoc(collection(db, "items"), {
-          ownerId: currentUser,
-          ownerFname: currentUserFName,
-          ownerLname: currentUserLname,
-          image: imageFiles,
+        await addDoc(collection(db, "items"), {
+          ownerId: currentUserID.value,
+          ownerFName: currentUserFName.value,
+          ownerLName: currentUserLName.value,
+          //image: imageFiles.value,
           itemName: itemName.value,
           location: location.value,
           rentAmount: rentAmount.value,
@@ -84,12 +123,12 @@ const addItem = async () => {
           tags: tags.value,
           description: description.value,
         });
+        router.push("/home");
+        return;
       } catch (err) {
         error.value = true;
         errorMessage.value = err.message;
       }
-      router.push("/home");
-      return;
     } else {
       error.value = true;
       errorMessage.value = "Please fill out all the fields!";
@@ -99,6 +138,22 @@ const addItem = async () => {
     errorMessage.value = err.message;
   }
 };
+/*
+async function uploadImage(img) {
+  //console.log(img.name);
+  const storageRef = stRef(storage, "postImages/" + img.name);
+  const taskUpload = uploadBytesResumable(storageRef, img);
+  await taskUpload;
+  const imageURL = getDownloadURL(storageRef);
+  return await imageURL;
+}
+
+async function handleUploadImage(event) {
+  const img = event.target.files[0];
+  imagePreview.value = URL.createObjectURL(img);
+  imgPath.value = await uploadImage(img);
+}
+*/
 </script>
 <template>
   <main>
@@ -113,16 +168,7 @@ const addItem = async () => {
         @change="loadImageFile($event)"
         hidden
       />
-      <!--button type="button" @click="uploadImage" class="bg-red-300 p-4">
-      Add
-    </button-->
-      <!--img
-      class="h-48 aspect-square p-4 bg-blue-200"
-      :src="tempImage"
-      alt=""
-      srcset=""
-    /-->
-      <label for="images">Images</label>
+      <label for="images">Add Images</label>
       <div class="w-full overflow-x-auto bg-red-200 p-4" id="images">
         <div class="flex gap-2">
           <img
@@ -142,6 +188,7 @@ const addItem = async () => {
       </div>
       <label for="fname">Item Name</label>
       <input
+        v-model="itemName"
         name="fname"
         type="text"
         class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -149,6 +196,7 @@ const addItem = async () => {
       />
       <label for="fname">Location</label>
       <input
+        v-model="location"
         name="fname"
         type="text"
         class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -157,12 +205,14 @@ const addItem = async () => {
       <label for="fname">Rent rate</label>
       <div class="rent-rate">
         <input
+          v-model="rentAmount"
           name="fname"
           type="text"
           class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
           placeholder="Amount"
         />
         <input
+          v-model="rentRate"
           name="fname"
           type="text"
           class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -196,6 +246,7 @@ const addItem = async () => {
       </div>
       <label for="fname">Description</label>
       <textarea
+        v-model="description"
         name="description"
         class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="A short description on what the item is about"
@@ -210,7 +261,6 @@ const addItem = async () => {
         <!-- TODO: User input from RegisterView is gone upon returning leaving TermsAndConditionVIew -->
         <!-- Probably some way to mark as check upon accepting the terms and conditions? -->
         <button
-          to="/item/1"
           class="rounded-lg border-2 border-green-800 bg-green-800 px-5 py-3 text-white"
         >
           CREATE
