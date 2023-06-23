@@ -48,6 +48,7 @@ onMounted(async () => {
           fItems.push(item);
         }
       });
+      console.log;
       items.value = fItems;
     } else {
       // User not logged in or has just logged out.
@@ -116,13 +117,13 @@ function hideEditProfile() {
             <div class="my-4">
               <h2>Lender Ratings</h2>
               <div class="mb-4 flex gap-4">
-                <span>4.0 / 5.0</span>
-                <span>⭐⭐⭐⭐⭐</span>
+                <span>3.0 / 5.0</span>
+                <StarRating value="3" />
               </div>
               <h2>Chat Response Rate</h2>
               <div class="mb-4 flex gap-4">
                 <span>4.0 / 5.0</span>
-                <span>⭐⭐⭐⭐⭐</span>
+                <StarRating value="4" />
               </div>
               <!--location-->
             </div>
