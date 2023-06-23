@@ -1,7 +1,6 @@
 <script setup>
 import { RouterLink, useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
-import { ref } from "vue";
 import StarRating from "../components/StarRating.vue";
 //import ItemsContainer from "../components/ItemsContainer.vue";
 import { onMounted, ref } from "vue";
@@ -49,6 +48,7 @@ onMounted(async () => {
           fItems.push(item);
         }
       });
+      console.log;
       items.value = fItems;
     } else {
       // User not logged in or has just logged out.
@@ -98,7 +98,7 @@ function hideEditProfile() {
             <div class="flex flex-wrap items-start justify-between gap-2">
               <div class="flex items-center gap-2">
                 <h1 class="text-3xl">
-                {{ currentUserFName + " " + currentUserLName }}
+                  {{ currentUserFName + " " + currentUserLName }}
                 </h1>
                 <button
                   v-if="true"
@@ -117,13 +117,13 @@ function hideEditProfile() {
             <div class="my-4">
               <h2>Lender Ratings</h2>
               <div class="mb-4 flex gap-4">
-                <span>4.0 / 5.0</span>
-                <span>⭐⭐⭐⭐⭐</span>
+                <span>3.0 / 5.0</span>
+                <StarRating value="3" />
               </div>
               <h2>Chat Response Rate</h2>
               <div class="mb-4 flex gap-4">
                 <span>4.0 / 5.0</span>
-                <span>⭐⭐⭐⭐⭐</span>
+                <StarRating value="4" />
               </div>
               <!--location-->
             </div>

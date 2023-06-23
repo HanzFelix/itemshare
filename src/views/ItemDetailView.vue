@@ -6,10 +6,11 @@ import { onMounted, ref } from "vue";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { collection, getDocs } from "firebase/firestore";
+import StarRating from "../components/StarRating.vue";
 
 import db from "../firebase/firebaseInit.js";
 
-//const itemShareStore = useItemShareStore();
+const itemShareStore = useItemShareStore();
 const route = useRoute();
 
 const itemId = ref(route.params.id);
@@ -98,7 +99,7 @@ onMounted(async () => {
             <!--rating-->
             <div class="flex gap-4">
               <span>4.0 / 5.0</span>
-              <span>⭐⭐⭐⭐⭐</span>
+              <StarRating value="4" />
             </div>
             <!--location-->
             <div class="flex">
@@ -143,7 +144,7 @@ onMounted(async () => {
           <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
-              :src="itemShareStore.loadedProfile(item.userid).image"
+              :src="itemShareStore.loadedProfile(1).image"
               alt=""
               srcset=""
             />
@@ -159,14 +160,14 @@ onMounted(async () => {
         <h2>Lender Ratings</h2>
         <div class="mb-4 flex items-center gap-4">
           <span>4.0 / 5.0</span>
-          <span>⭐⭐⭐⭐⭐</span>
+          <StarRating value="4" />
         </div>
 
         <!--rating-->
         <h2>Chat Response Rate</h2>
         <div class="mb-4 flex items-center gap-4">
-          <span>4.0 / 5.0</span>
-          <span>⭐⭐⭐⭐⭐</span>
+          <span>3.0 / 5.0</span>
+          <StarRating value="3" />
         </div>
       </div>
     </section>

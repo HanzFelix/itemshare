@@ -47,6 +47,11 @@ const itemShareStore = useItemShareStore();
             placeholder="Location"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-4 py-2 placeholder-yellow-700"
           />
+          <input
+            type="text"
+            placeholder="Tags"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-4 py-2 placeholder-yellow-700"
+          />
         </form>
         <section>
           <h2>Category</h2>
