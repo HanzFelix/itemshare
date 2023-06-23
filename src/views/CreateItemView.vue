@@ -1,6 +1,45 @@
 <script setup>
 // LAYOUT IS WIP
-import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { onMounted, ref } from "vue";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import db from "../firebase/firebaseInit.js";
+/*import {
+  getStorage,
+  ref as stRef,
+  uploadBytes,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";*/
+import "firebase/storage";
+
+const currentUserID = ref();
+const currentUserFName = ref("");
+const currentUserLName = ref("");
+//const imagePreview = ref();
+//const imgPath = ref();
+
+onMounted(() => {
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (user) {
+      // User logged in already or has just logged in.
+      currentUserID.value = user.uid;
+      const querySnapshot = await getDocs(collection(db, "users"));
+      querySnapshot.forEach((doc) => {
+        if (user.uid == doc.id) {
+          currentUserFName.value = `${doc.data().firstName}`;
+          currentUserLName.value = `${doc.data().lastName}`;
+        }
+      });
+    } else {
+      // User not logged in or has just logged out.
+    }
+  });
+});
+
+const router = useRouter();
 
 const reader = new FileReader();
 const imageFiles = ref([]);
@@ -30,10 +69,9 @@ personal idea lang on how to create item
 
 */
 
-const image = ref([]);
 const itemName = ref("");
 const location = ref("");
-const rentAmount = ref(0);
+const rentAmount = ref();
 const rentRate = ref("");
 const tags = ref("");
 const description = ref("");
@@ -43,7 +81,7 @@ let errorMessage = ref("");
 const addItem = async () => {
   try {
     if (
-      image !== null &&
+      /*image !== null &&*/
       itemName.value !== "" &&
       location.value !== "" &&
       rentAmount.value !== "" &&
@@ -52,11 +90,11 @@ const addItem = async () => {
       description.value !== ""
     ) {
       try {
-        const docRef = await addDoc(collection(db, "items"), {
-          ownerId: currentUser,
-          ownerFname: currentUserFName,
-          ownerLname: currentUserLname,
-          image: imageFiles,
+        await addDoc(collection(db, "items"), {
+          ownerId: currentUserID.value,
+          ownerFName: currentUserFName.value,
+          ownerLName: currentUserLName.value,
+          //image: imageFiles.value,
           itemName: itemName.value,
           location: location.value,
           rentAmount: rentAmount.value,
@@ -64,12 +102,12 @@ const addItem = async () => {
           tags: tags.value,
           description: description.value,
         });
+        router.push("/home");
+        return;
       } catch (err) {
         error.value = true;
         errorMessage.value = err.message;
       }
-      router.push("/home");
-      return;
     } else {
       error.value = true;
       errorMessage.value = "Please fill out all the fields!";
@@ -79,11 +117,27 @@ const addItem = async () => {
     errorMessage.value = err.message;
   }
 };
+/*
+async function uploadImage(img) {
+  //console.log(img.name);
+  const storageRef = stRef(storage, "postImages/" + img.name);
+  const taskUpload = uploadBytesResumable(storageRef, img);
+  await taskUpload;
+  const imageURL = getDownloadURL(storageRef);
+  return await imageURL;
+}
+
+async function handleUploadImage(event) {
+  const img = event.target.files[0];
+  imagePreview.value = URL.createObjectURL(img);
+  imgPath.value = await uploadImage(img);
+}
+*/
 </script>
 <template>
   <main>
     <form
-      class="flex flex-col py-8 container mx-auto px-4"
+      class="container mx-auto flex flex-col px-4 py-8"
       @submit.stop.prevent="addItem"
     >
       <h1>Create an item</h1>
@@ -103,18 +157,20 @@ const addItem = async () => {
       srcset=""
     /-->
       <label for="images">Images</label>
-      <div class="w-full overflow-x-auto p-4 bg-red-200" id="images">
+      <div class="w-full overflow-x-auto bg-red-200 p-4" id="images">
         <div class="flex gap-2">
           <img
-            class="h-40 gap-2 aspect-square object-contain"
+            class="aspect-square h-40 gap-2 object-contain"
             v-for="image in imagePreviews"
             :src="image"
             alt=""
             srcset=""
           />
           <label
+            ref="fileInput"
+            @change="handleUploadImage"
             for="add-image"
-            class="bg-green-400 cursor-pointer h-40 aspect-square text-center py-4"
+            class="aspect-square h-40 cursor-pointer bg-green-400 py-4 text-center"
           >
             Add image...
           </label>
@@ -122,30 +178,34 @@ const addItem = async () => {
       </div>
       <label for="fname">Item Name</label>
       <input
+        v-model="itemName"
         name="fname"
         type="text"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="Add an item name"
       />
       <label for="fname">Location</label>
       <input
+        v-model="location"
         name="fname"
         type="text"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="Enter location..."
       />
       <label for="fname">Rent rate</label>
       <div class="rent-rate">
         <input
+          v-model="rentAmount"
           name="fname"
           type="text"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+          class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
           placeholder="Amount"
         />
         <input
+          v-model="rentRate"
           name="fname"
           type="text"
-          class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+          class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
           placeholder="Rate (e.d. per day, per week, per month)"
         />
       </div>
@@ -153,34 +213,35 @@ const addItem = async () => {
       <input
         name="fname"
         type="text"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="tag1, tag2, tag3"
       />
       <label for="fname">Description</label>
       <textarea
+        v-model="description"
         name="description"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="A short description on what the item is about"
       ></textarea>
       <div
         v-show="error"
-        class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
+        class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
       >
         {{ errorMessage }}
       </div>
-      <div class="flex justify-end gap-2 mt-4">
+      <div class="mt-4 flex justify-end gap-2">
         <!-- TODO: User input from RegisterView is gone upon returning leaving TermsAndConditionVIew -->
         <!-- Probably some way to mark as check upon accepting the terms and conditions? -->
         <button
           to="/item/1"
-          class="py-3 px-5 text-white bg-green-800 rounded-lg border-2 border-green-800"
+          class="rounded-lg border-2 border-green-800 bg-green-800 px-5 py-3 text-white"
         >
           CREATE
         </button>
         <!--TODO: return to previous page using vue router-->
         <RouterLink
           to="/home"
-          class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-lg"
+          class="rounded-lg border-2 border-green-800 bg-white px-5 py-3 text-green-800"
         >
           CANCEL
         </RouterLink>

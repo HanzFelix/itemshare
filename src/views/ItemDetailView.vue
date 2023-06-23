@@ -1,55 +1,89 @@
 <script setup>
-import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import { RouterLink } from "vue-router";
+import { onMounted, ref } from "vue";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { collection, getDocs } from "firebase/firestore";
 
-const itemShareStore = useItemShareStore();
+import db from "../firebase/firebaseInit.js";
+
+//const itemShareStore = useItemShareStore();
 const route = useRoute();
 
-const id = parseInt(route.params.id);
-const item = itemShareStore.itemById(id);
+const itemId = ref(route.params.id);
+//const item = itemShareStore.itemById(id);
 
-const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
+const sampleimg = ref(
+  "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
+);
+
+const currentUserFName = ref("");
+const currentUserLName = ref("");
+const itemName = ref("");
+const location = ref("");
+const rentAmount = ref("");
+const rentRate = ref("");
+const description = ref("");
+const tags = ref([]);
+//const imagePreview = ref();
+//const imgPath = ref();
+
+onMounted(async () => {
+  const querySnapshot = await getDocs(collection(db, "items"));
+  querySnapshot.forEach((doc) => {
+    if (itemId.value == doc.id) {
+      currentUserFName.value = doc.data().ownerFName;
+      currentUserLName.value = doc.data().ownerLName;
+      itemName.value = doc.data().itemName;
+      location.value = doc.data().location;
+      rentAmount.value = doc.data().rentAmount;
+      rentRate.value = doc.data().rentRate;
+      description.value = doc.data().description;
+      tags.value = doc.data().tags;
+    }
+  });
+});
 </script>
 <template>
-  <main class="flex flex-col py-8 container mx-auto px-4 gap-4">
+  <main class="container mx-auto flex flex-col gap-4 px-4 py-8">
     <section class="flex flex-row-reverse gap-2">
       <RouterLink to="/home">Close X</RouterLink>
     </section>
     <!--Item-->
-    <section class="flex gap-2 lg:flex-row flex-col">
+    <section class="flex flex-col gap-2 lg:flex-row">
       <!--Images-->
-      <div class="basis-3/12 flex flex-col gap-2 p-4 bg-white">
-        <img :src="item.img" alt="" srcset="" />
+      <div class="flex basis-3/12 flex-col gap-2 bg-white p-4">
+        <img :src="sampleimg" alt="" srcset="" />
         <div class="flex w-full">
           <img
-            class="w-1/3 px-1 aspect-auto"
-            :src="item.img"
+            class="aspect-auto w-1/3 px-1"
+            :src="sampleimg"
             alt=""
             srcset=""
           />
           <img
-            class="w-1/3 px-1 aspect-auto"
-            :src="item.img"
+            class="aspect-auto w-1/3 px-1"
+            :src="sampleimg"
             alt=""
             srcset=""
           />
           <img
-            class="w-1/3 px-1 aspect-auto"
-            :src="item.img"
+            class="aspect-auto w-1/3 px-1"
+            :src="sampleimg"
             alt=""
             srcset=""
           />
         </div>
       </div>
       <!--Details-->
-      <div class="basis-6/12 flex flex-col justify-between w-full p-4 bg-white">
+      <div class="flex w-full basis-6/12 flex-col justify-between bg-white p-4">
         <div>
-          <div class="flex justify-between items-start">
-            <h1>{{ item.name }}</h1>
+          <div class="flex items-start justify-between">
+            <h1>{{ itemName }}</h1>
             <span
-              class="bg-green-600 text-white text-xs py-1 px-4 rounded-full font-black"
+              class="rounded-full bg-green-600 px-4 py-1 text-xs font-black text-white"
             >
               AVAILABLE
             </span>
@@ -58,8 +92,8 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
           <!--rent rate-->
           <div class="my-4">
             <p class="text-green-600">
-              <span class="text-2xl mr-2">₱</span
-              >{{ item.price + " - " + item.rate }}
+              <span class="mr-2 text-2xl">₱</span
+              >{{ rentAmount + " - " + rentRate }}
             </p>
             <!--rating-->
             <div class="flex gap-4">
@@ -69,33 +103,32 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
             <!--location-->
             <div class="flex">
               <span class="material-icons text-green-600">location_on</span>
-              <span>{{ item.location }}</span>
+              <span>{{ location }}</span>
             </div>
           </div>
           <!--description-->
           <p>
-            Quality: 3d scanner, perfect for real object to graphic conversion
-            chuchu text wrap verbose text paragraph really long line yes...
+            {{ description }}
           </p>
         </div>
-        <div class="flex flex-col items-start mt-2">
+        <div class="mt-2 flex flex-col items-start">
           <div class="flex gap-2">
             Tags:
-            <ul class="flex gap-2 flex-wrap">
+            <ul class="flex flex-wrap gap-2">
               <li
                 v-for="tag in tags"
-                class="bg-yellow-200 text-yellow-700 text-xs py-1 border-2 px-4 border-yellow-500 rounded-full"
+                class="rounded-full border-2 border-yellow-500 bg-yellow-200 px-4 py-1 text-xs text-yellow-700"
               >
                 {{ tag }}
               </li>
             </ul>
           </div>
           <div class="flex flex-col gap-2">
-            <button class="py-3 px-5 text-white bg-green-600 rounded-lg mt-4">
+            <button class="mt-4 rounded-lg bg-green-600 px-5 py-3 text-white">
               Rent
             </button>
             <button
-              class="py-3 px-5 bg-yellow-200 text-yellow-800 border-2 border-yellow-500 rounded-lg text-center"
+              class="rounded-lg border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-center text-yellow-800"
             >
               Add to Favorites
             </button>
@@ -105,7 +138,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
       <!--Lender Details-->
       <div class="basis-3/12 bg-white p-4">
         <h2>Lender</h2>
-        <div class="flex items-center gap-2 justify-between mb-4 flex-wrap">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
@@ -113,7 +146,9 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
               alt=""
               srcset=""
             />
-            <span class="whitespace-nowrap">Isaac Einstein</span>
+            <span class="whitespace-nowrap">{{
+              currentUserFName + " " + currentUserLName
+            }}</span>
           </div>
           <button class="flex items-center gap-1">
             <span class="material-icons text-green-600">forum</span>Chat
@@ -121,14 +156,14 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
         </div>
         <!--rating-->
         <h2>Lender Ratings</h2>
-        <div class="flex gap-4 mb-4">
+        <div class="mb-4 flex gap-4">
           <span>4.0 / 5.0</span>
           <span>⭐⭐⭐⭐⭐</span>
         </div>
 
         <!--rating-->
         <h2>Chat Response Rate</h2>
-        <div class="flex gap-4 mb-4">
+        <div class="mb-4 flex items-center gap-4">
           <span>4.0 / 5.0</span>
           <span>⭐⭐⭐⭐⭐</span>
         </div>
@@ -136,11 +171,11 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
     </section>
     <section class="flex flex-col gap-2">
       <div
-        class="flex md:flex-row flex-col justify-between p-4 bg-gray-50 gap-4"
+        class="flex flex-col justify-between gap-4 bg-gray-50 p-4 md:flex-row md:items-center"
       >
         <h1>Item Reviews and Rating</h1>
         <div
-          class="flex flex-wrap md:items-center items-start gap-4 text-sm sm:text-base"
+          class="flex flex-wrap items-start gap-4 text-sm sm:text-base md:items-center"
         >
           <div class="flex items-center gap-1">
             <span class="material-icons text-green-600">filter_alt</span>
@@ -160,8 +195,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
         </div>
       </div>
       <section class="flex flex-col gap-2">
-        <article v-for="i in 6" class="bg-white p-4 flex flex-col gap-2">
-          <span>⭐⭐⭐⭐⭐</span>
+        <article v-for="i in 6" class="flex flex-col gap-2 bg-white p-4">
           <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
