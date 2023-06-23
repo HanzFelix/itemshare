@@ -72,22 +72,25 @@ const register = async () => {
 </script>
 <template>
   <div
-    class="bg-white p-8 self-center max-w-full rounded-3xl flex flex-col overflow-y-auto"
+    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-white p-8"
   >
-    <form class="flex gap-2 flex-col" @submit.stop.prevent="register">
+    <form
+      class="flex max-w-full flex-col gap-2"
+      @submit.stop.prevent="register"
+    >
       <h1>Create an account</h1>
-      <div class="flex xl:gap-12 gap-2 xl:flex-row flex-col">
-        <div class="flex flex-col gap-2 basis-1/2">
+      <div class="flex flex-col gap-2 xl:flex-row xl:gap-8">
+        <div class="flex basis-1/2 flex-col gap-2">
           <label for="phone">Phone Number</label>
           <input
             v-model="phoneNumber"
             name="phone"
             type="tel"
-            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
             placeholder="Enter your phone number"
           />
           <button
-            class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-xl"
+            class="rounded-xl border-2 border-green-800 bg-white px-5 py-3 text-green-800"
           >
             Send SMS Code
           </button>
@@ -96,7 +99,7 @@ const register = async () => {
             v-model="email"
             name="email"
             type="email"
-            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
             placeholder="Email"
           />
           <label for="fname">First Name</label>
@@ -104,7 +107,7 @@ const register = async () => {
             v-model="firstName"
             name="fname"
             type="text"
-            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
             placeholder="First Name"
           />
           <label for="lname">Last Name</label>
@@ -112,7 +115,7 @@ const register = async () => {
             v-model="lastName"
             name="lname"
             type="text"
-            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
             placeholder="Last Name"
           />
           <label for="fname">Gender</label>
@@ -120,7 +123,7 @@ const register = async () => {
             v-model="gender"
             name="fname"
             type="text"
-            class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-700"
             placeholder="Gender"
           >
             <option>Male</option>
@@ -128,20 +131,20 @@ const register = async () => {
             <option>Others</option>
           </select>
         </div>
-        <div class="flex flex-col gap-2 basis-1/2">
+        <div class="flex basis-1/2 flex-col gap-2">
           <label for="bday">Birthday</label>
           <input
             v-model="birthday"
             name="bday"
             type="date"
-            class="py-3 px-5 bg-yellow-200 text-yellow-700 border-2 border-yellow-500 rounded-xl"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-700"
           />
           <label for="password">Password</label>
           <input
             v-model="password"
             name="password"
             type="password"
-            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
             placeholder="Password"
           />
           <label for="confirm password">Confirm Password</label>
@@ -149,12 +152,12 @@ const register = async () => {
             v-model="confirmPassword"
             name="confirm password"
             type="password"
-            class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
             placeholder="Confirm Password"
           />
           <div
             v-show="error"
-            class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
+            class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
           >
             {{ errorMessage }}
           </div>
@@ -170,12 +173,12 @@ const register = async () => {
               Terms and Conditions
             </RouterLink>
           </p>
-          <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
+          <button class="rounded-xl bg-green-800 px-5 py-3 text-white">
             CREATE ACCOUNT
           </button>
           <RouterLink
             to="/login"
-            class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-xl text-center"
+            class="rounded-xl border-2 border-green-800 bg-white px-5 py-3 text-center text-green-800"
           >
             GO BACK
           </RouterLink>

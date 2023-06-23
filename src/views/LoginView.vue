@@ -44,25 +44,25 @@ const login = async () => {
 </script>
 <template>
   <div
-    class="bg-white p-8 self-center max-w-full rounded-3xl flex flex-col overflow-y-auto"
+    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-white p-8"
   >
-    <form class="flex gap-2 flex-col" @submit.stop.prevent="login">
+    <form class="flex max-w-full flex-col gap-2" @submit.stop.prevent="login">
       <h1>Login</h1>
       <input
         v-model="email"
         type="text"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="Email"
       />
       <input
         v-model="password"
         type="password"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
+        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="Password"
       />
       <div
         v-show="error"
-        class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
+        class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
       >
         {{ errorMessage }}
       </div>
@@ -77,7 +77,7 @@ const login = async () => {
           >Create an account!</RouterLink
         >
       </p>
-      <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
+      <button class="rounded-xl bg-green-800 px-5 py-3 text-white">
         Login
       </button>
     </form>
