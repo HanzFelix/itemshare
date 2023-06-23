@@ -1,17 +1,50 @@
 <script setup>
-import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import { RouterLink } from "vue-router";
-import StarRating from "../components/StarRating.vue";
+import { onMounted, ref } from "vue";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { collection, getDocs } from "firebase/firestore";
 
-const itemShareStore = useItemShareStore();
+import db from "../firebase/firebaseInit.js";
+
+//const itemShareStore = useItemShareStore();
 const route = useRoute();
 
-const id = parseInt(route.params.id);
-const item = itemShareStore.itemById(id);
+const itemId = ref(route.params.id);
+//const item = itemShareStore.itemById(id);
 
-const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
+const sampleimg = ref(
+  "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
+);
+
+const currentUserFName = ref("");
+const currentUserLName = ref("");
+const itemName = ref("");
+const location = ref("");
+const rentAmount = ref("");
+const rentRate = ref("");
+const description = ref("");
+const tags = ref([]);
+//const imagePreview = ref();
+//const imgPath = ref();
+
+onMounted(async () => {
+  const querySnapshot = await getDocs(collection(db, "items"));
+  querySnapshot.forEach((doc) => {
+    if (itemId.value == doc.id) {
+      currentUserFName.value = doc.data().ownerFName;
+      currentUserLName.value = doc.data().ownerLName;
+      itemName.value = doc.data().itemName;
+      location.value = doc.data().location;
+      rentAmount.value = doc.data().rentAmount;
+      rentRate.value = doc.data().rentRate;
+      description.value = doc.data().description;
+      tags.value = doc.data().tags;
+    }
+  });
+});
 </script>
 <template>
   <main class="container mx-auto flex flex-col gap-4 px-4 py-8">
@@ -22,23 +55,23 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
     <section class="flex flex-col gap-2 lg:flex-row">
       <!--Images-->
       <div class="flex basis-3/12 flex-col gap-2 bg-white p-4">
-        <img :src="item.img" alt="" srcset="" />
+        <img :src="sampleimg" alt="" srcset="" />
         <div class="flex w-full">
           <img
             class="aspect-auto w-1/3 px-1"
-            :src="item.img"
+            :src="sampleimg"
             alt=""
             srcset=""
           />
           <img
             class="aspect-auto w-1/3 px-1"
-            :src="item.img"
+            :src="sampleimg"
             alt=""
             srcset=""
           />
           <img
             class="aspect-auto w-1/3 px-1"
-            :src="item.img"
+            :src="sampleimg"
             alt=""
             srcset=""
           />
@@ -48,7 +81,7 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
       <div class="flex w-full basis-6/12 flex-col justify-between bg-white p-4">
         <div>
           <div class="flex items-start justify-between">
-            <h1>{{ item.name }}</h1>
+            <h1>{{ itemName }}</h1>
             <span
               class="rounded-full bg-green-600 px-4 py-1 text-xs font-black text-white"
             >
@@ -60,23 +93,22 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
           <div class="my-4">
             <p class="text-green-600">
               <span class="mr-2 text-2xl">₱</span
-              >{{ item.price + " - " + item.rate }}
+              >{{ rentAmount + " - " + rentRate }}
             </p>
             <!--rating-->
             <div class="flex gap-4">
               <span>4.0 / 5.0</span>
-              <StarRating value="4" />
+              <span>⭐⭐⭐⭐⭐</span>
             </div>
             <!--location-->
             <div class="flex">
               <span class="material-icons text-green-600">location_on</span>
-              <span>{{ item.location }}</span>
+              <span>{{ location }}</span>
             </div>
           </div>
           <!--description-->
           <p>
-            Quality: 3d scanner, perfect for real object to graphic conversion
-            chuchu text wrap verbose text paragraph really long line yes...
+            {{ description }}
           </p>
         </div>
         <div class="mt-2 flex flex-col items-start">
@@ -108,40 +140,33 @@ const tags = ref(["scanner", "3d", "technology", "gadget", "device"]);
       <div class="basis-3/12 bg-white p-4">
         <h2>Lender</h2>
         <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <RouterLink
-            :to="'/profile/' + item.userid"
-            class="flex items-center gap-2"
-          >
+          <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
               :src="itemShareStore.loadedProfile(item.userid).image"
               alt=""
               srcset=""
             />
-            <span class="whitespace-nowrap">
-              {{
-                itemShareStore.loadedProfile(item.userid).firstname +
-                " " +
-                itemShareStore.loadedProfile(item.userid).lastname
-              }}</span
-            >
-          </RouterLink>
-          <RouterLink to="/messages/3" class="flex items-center gap-1">
+            <span class="whitespace-nowrap">{{
+              currentUserFName + " " + currentUserLName
+            }}</span>
+          </div>
+          <button class="flex items-center gap-1">
             <span class="material-icons text-green-600">forum</span>Chat
-          </RouterLink>
+          </button>
         </div>
         <!--rating-->
         <h2>Lender Ratings</h2>
         <div class="mb-4 flex items-center gap-4">
           <span>4.0 / 5.0</span>
-          <StarRating value="4" />
+          <span>⭐⭐⭐⭐⭐</span>
         </div>
 
         <!--rating-->
         <h2>Chat Response Rate</h2>
         <div class="mb-4 flex items-center gap-4">
           <span>4.0 / 5.0</span>
-          <StarRating value="4" />
+          <span>⭐⭐⭐⭐⭐</span>
         </div>
       </div>
     </section>

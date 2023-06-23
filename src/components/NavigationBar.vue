@@ -14,7 +14,6 @@ import { collection, getDocs } from "firebase/firestore";
 const db = firebase.firestore();
 
 const displayName = ref("");
-const currentUser = ref();
 const currentUserFName = ref();
 const currentUserLName = ref();
 
@@ -23,7 +22,6 @@ onMounted(() => {
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
       // User logged in already or has just logged in.
-      currentUser.value = user.uid;
       const querySnapshot = await getDocs(collection(db, "users"));
       querySnapshot.forEach((doc) => {
         if (user.uid == doc.id) {
@@ -63,17 +61,17 @@ const signOut = () => {
 </script>
 <template>
   <header
-    class="bg-green-600 flex flex-col sticky w-full text-white shadow-sm shadow-gray-400"
+    class="sticky flex w-full flex-col bg-green-600 text-white shadow-sm shadow-gray-400"
     v-if="!['login', 'register'].includes($route.name)"
   >
     <nav
-      class="flex items-center justify-between container mx-auto py-2 px-4 bg-green-600"
+      class="container mx-auto flex items-center justify-between bg-green-600 px-4 py-2"
     >
       <ItemShareLogo />
-      <ul class="flex gap-4 items-center">
+      <ul class="flex items-center gap-4">
         <li>
           <RouterLink to="/create-item" class="flex gap-1">
-            <span class="material-icons lg:text-base text-3xl">add_box</span>
+            <span class="material-icons text-3xl lg:text-base">add_box</span>
             <span class="hidden lg:inline-block">CREATE ITEM</span>
           </RouterLink>
         </li>
@@ -85,7 +83,7 @@ const signOut = () => {
             data-dropdown-toggle="dropdownNotifications"
             data-dropdown-trigger="click"
           >
-            <span class="material-icons lg:text-base text-3xl"
+            <span class="material-icons text-3xl lg:text-base"
               >notifications</span
             ><span class="hidden lg:inline-block">NOTIFICATIONS</span>
           </button>
@@ -102,7 +100,7 @@ const signOut = () => {
         </p-->
         <li>
           <RouterLink to="/messages" class="flex gap-1">
-            <span class="material-icons lg:text-base text-3xl">chat</span
+            <span class="material-icons text-3xl lg:text-base">chat</span
             ><span class="hidden lg:inline-block">MESSAGES</span>
           </RouterLink>
         </li>
@@ -123,10 +121,10 @@ const signOut = () => {
     </nav>
     <section class="bg-green-500">
       <div
-        class="container mx-auto flex flex-col-reverse lg:flex-row justify-between items-stretch px-4"
+        class="container mx-auto flex flex-col-reverse items-stretch justify-between px-4 lg:flex-row"
       >
         <ol
-          class="flex px-4 gap-8 lg:py-4 pb-4 whitespace-nowrap overflow-x-auto scroll-p-12"
+          class="flex scroll-p-12 gap-8 overflow-x-auto whitespace-nowrap px-4 pb-4 lg:py-4"
           v-if="['home'].includes($route.name)"
         >
           <li>NEW</li>
@@ -138,7 +136,7 @@ const signOut = () => {
         </ol>
         <div></div>
         <form
-          class="bg-yellow-200 border-2 border-yellow-500 rounded-xl flex my-3"
+          class="my-3 flex rounded-xl border-2 border-yellow-500 bg-yellow-200"
           v-if="!['search'].includes($route.name)"
           @submit.stop.prevent="searchItem()"
         >
@@ -146,17 +144,17 @@ const signOut = () => {
             type="text"
             name=""
             id=""
-            class="placeholder-yellow-700 rounded-l-xl text-black py-1 px-4 text-sm bg-transparent w-full border-none"
+            class="w-full rounded-l-xl border-none bg-transparent px-4 py-1 text-sm text-black placeholder-yellow-700"
             placeholder="Search..."
           />
           <button
-            class="text-yellow-700 px-2 py-1 lg:py-0 material-icons lg:text-lg"
+            class="material-icons px-2 py-1 text-yellow-700 lg:py-0 lg:text-lg"
           >
             search
           </button>
           <RouterLink
             to="/search"
-            class="text-yellow-700 py-1 lg:py-0 material-icons lg:text-lg pr-2"
+            class="material-icons py-1 pr-2 text-yellow-700 lg:py-0 lg:text-lg"
             >menu</RouterLink
           >
         </form>
