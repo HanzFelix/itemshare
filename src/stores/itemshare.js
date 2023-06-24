@@ -1,9 +1,15 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
+import db from "../firebase/firebaseInit.js";
 
 export const useItemShareStore = defineStore("itemshare", {
   state: () => ({
     temp: 1,
+    useruid: localStorage.getItem("useruid") || null,
     editProfile: {
       id: 9,
       firstname: "Isaac",
@@ -275,11 +281,37 @@ export const useItemShareStore = defineStore("itemshare", {
     loadedProfile(state) {
       return (index) => state.sampleProfiles[index];
     },
+    loggedInUser(state) {
+      return state.useruid;
+    },
   },
   actions: {
-    login() {
-      // some login processing
-      return true; //login successful
+    async login(email, password) {
+      const auth = getAuth();
+      if (email !== "" && password !== "") {
+        try {
+          return signInWithEmailAndPassword(auth, email, password).then(
+            (userCredential) => {
+              this.useruid = userCredential.user.uid;
+              localStorage.setItem("useruid", this.useruid); // to retain useruid after browser refresh
+              return true; // returned and returned to LoginView to redirect to home
+            }
+          );
+        } catch (error) {
+          switch (error.code) {
+            case "auth/invalid-email":
+              throw "Invalid email";
+            case "auth/user-not-found":
+              throw "No account with that email was found";
+            case "auth/wrong-password":
+              throw "Incorrect password";
+            default:
+              throw error.code;
+          }
+        }
+      } else {
+        throw "Please fill out all the fields!";
+      }
     },
     searchItem() {
       // some search processing

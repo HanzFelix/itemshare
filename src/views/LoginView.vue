@@ -2,45 +2,27 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import firebase from "firebase/compat/app";
+import { useItemShareStore } from "../stores/itemshare";
 import "firebase/compat/auth";
 
 const router = useRouter();
+const itemShareStore = useItemShareStore();
 
 let error = ref(false);
 let errorMessage = ref("");
-const email = ref("");
-const password = ref("");
+const email = ref("hidol@gmail.com");
+const password = ref("iloveyou143");
 
-const login = async () => {
-  if (email.value !== "" && password.value !== "") {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email.value, password.value)
-      .then(() => {
-        router.push("/home");
-      })
-      .catch((err) => {
-        error.value = true;
-        switch (error.code) {
-          case "auth/invalid-email":
-            errorMessage.value = "Invalid email";
-            break;
-          case "auth/user-not-found":
-            errorMessage.value = "No account with that email was found";
-            break;
-          case "auth/wrong-password":
-            errorMessage.value = "Incorrect password";
-            break;
-          default:
-            errorMessage.value = "Email or password was incorrect";
-            break;
-        }
-      });
-  } else {
+async function login() {
+  try {
+    if (await itemShareStore.login(email.value, password.value)) {
+      router.push("/home");
+    }
+  } catch (err) {
     error.value = true;
-    errorMessage.value = "Please fill out all the fields!";
+    errorMessage.value = err;
   }
-};
+}
 </script>
 <template>
   <div
