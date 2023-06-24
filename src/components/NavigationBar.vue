@@ -16,15 +16,9 @@ const db = firebase.firestore();
 const router = useRouter();
 const itemShareStore = useItemShareStore();
 
-const displayName = ref("");
-
 onMounted(async () => {
   initFlowbite();
   await itemShareStore.initMyProfile();
-  displayName.value =
-    itemShareStore.myProfile.firstName +
-    " " +
-    itemShareStore.myProfile.lastName;
 });
 
 function searchItem() {
@@ -104,7 +98,11 @@ const signOut = () => {
           /></RouterLink>
         </li>
         <h5>
-          {{ displayName }}
+          {{
+            itemShareStore.myProfile.firstName +
+            " " +
+            itemShareStore.myProfile.lastName
+          }}
         </h5>
       </ul>
     </nav>

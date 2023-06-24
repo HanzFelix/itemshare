@@ -48,7 +48,7 @@ function gridSize(text) {
     :class="gridSize(gridfor)"
   >
     <RouterLink
-      :to="'/item/' + item.id"
+      :to="'/item/' + item.itemId"
       v-for="item in items"
       class="bg-white p-2 shadow-sm shadow-gray-400"
     >

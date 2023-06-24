@@ -7,7 +7,14 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
-import { collection, getDoc, getDocs, doc } from "firebase/firestore";
+import {
+  collection,
+  getDoc,
+  getDocs,
+  doc,
+  limit,
+  query,
+} from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
 import router from "../router/index.js";
 
@@ -15,11 +22,11 @@ export const useItemShareStore = defineStore("itemshare", {
   state: () => ({
     temp: 1,
     myUserUid: localStorage.getItem("useruid") || null,
-    myProfile: {},
+    myProfile: { firstName: "", lastName: "" },
     editProfile: {
       id: 9,
-      firstname: "Isaac",
-      lastname: "Einstein",
+      firstName: "Isaac",
+      lastName: "Einstein",
       image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
       location: "Baybay City",
     },
@@ -97,165 +104,183 @@ export const useItemShareStore = defineStore("itemshare", {
     rentedItems: [],
     sampleItems: [
       {
-        id: 1,
-        name: "Lampshade",
+        itemId: 1,
+        itemName: "Lampshade",
         location: "Baybay City",
-        price: "150.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg",
+        rentAmount: "150.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg",
         userid: 0,
       },
       {
-        id: 2,
-        name: "Outdoor Bench",
+        itemId: 2,
+        itemName: "Outdoor Bench",
         location: "Tacloban City",
-        price: "150.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/naemmaroe-bench-with-backrest-outdoor-light-brown-stained__1185522_pe898423_s5.jpg",
+        rentAmount: "150.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/naemmaroe-bench-with-backrest-outdoor-light-brown-stained__1185522_pe898423_s5.jpg",
         userid: 1,
       },
       {
-        id: 3,
-        name: "Cushion set A",
+        itemId: 3,
+        itemName: "Cushion set A",
         location: "Maasin City",
-        price: "50.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/gurli-cushion-cover-golden-yellow__0889329_pe655204_s5.jpg",
+        rentAmount: "50.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/gurli-cushion-cover-golden-yellow__0889329_pe655204_s5.jpg",
         userid: 2,
       },
       {
-        id: 4,
+        itemId: 4,
         name: "Table",
         location: "Ormoc City",
-        price: "100.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/ekedalen-extendable-table-dark-brown__0719960_pe732334_s5.jpg",
+        rentAmount: "100.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/ekedalen-extendable-table-dark-brown__0719960_pe732334_s5.jpg",
         userid: 3,
       },
       {
-        id: 5,
-        name: "Chair",
+        itemId: 5,
+        itemName: "Chair",
         location: "Sogod, Southern Leyte",
-        price: "75.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/pello-armchair-holmby-natural__0841137_pe600889_s5.jpg",
+        rentAmount: "75.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/pello-armchair-holmby-natural__0841137_pe600889_s5.jpg",
         userid: 4,
       },
       {
-        id: 6,
-        name: "Bookshelf",
+        itemId: 6,
+        itemName: "Bookshelf",
         location: "Biliran",
-        price: "200.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/baggebo-shelf-unit-metal-white__0981563_pe815398_s5.jpg",
+        rentAmount: "200.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/baggebo-shelf-unit-metal-white__0981563_pe815398_s5.jpg",
         userid: 5,
       },
       {
-        id: 7,
-        name: "Sofa",
+        itemId: 7,
+        itemName: "Sofa",
         location: "Ormoc City",
-        price: "250.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/friheten-sleeper-sofa-bomstad-black__0620065_pe689376_s5.jpg",
+        rentAmount: "250.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/friheten-sleeper-sofa-bomstad-black__0620065_pe689376_s5.jpg",
         userid: 6,
       },
       {
-        id: 8,
-        name: "Dining Table",
+        itemId: 8,
+        itemName: "Dining Table",
         location: "Baybay City",
-        price: "180.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/jokkmokk-table-and-4-chairs-antique-stain__0870916_pe716638_s5.jpg",
+        rentAmount: "180.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/jokkmokk-table-and-4-chairs-antique-stain__0870916_pe716638_s5.jpg",
         userid: 7,
       },
       {
-        id: 9,
-        name: "Kitchen Cabinet",
+        itemId: 9,
+        itemName: "Kitchen Cabinet",
         location: "Maasin, Southern Leyte",
-        price: "220.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/metod-maximera-base-cab-w-wire-basket-drawer-door__0260116_pe403633_s5.jpg",
+        rentAmount: "220.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/metod-maximera-base-cab-w-wire-basket-drawer-door__0260116_pe403633_s5.jpg",
         userid: 8,
       },
       {
-        id: 10,
-        name: "Desk",
+        itemId: 10,
+        itemName: "Desk",
         location: "Tacloban City",
-        price: "120.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/torald-desk-white__1073186_pe855653_s5.jpg",
+        rentAmount: "120.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/torald-desk-white__1073186_pe855653_s5.jpg",
         userid: 0,
       },
       {
-        id: 11,
-        name: "Bed Frame",
+        itemId: 11,
+        itemName: "Bed Frame",
         location: "Ormoc City",
-        price: "200.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/songesand-bed-frame-with-2-storage-boxes-white-luroey__1101546_pe866675_s5.jpg",
+        rentAmount: "200.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/songesand-bed-frame-with-2-storage-boxes-white-luroey__1101546_pe866675_s5.jpg",
         userid: 1,
       },
       {
-        id: 12,
-        name: "Mattress",
+        itemId: 12,
+        itemName: "Mattress",
         location: "Baybay City",
-        price: "100.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/raholt-guest-mattress-gray__1079894_pe857765_s5.jpg",
+        rentAmount: "100.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/raholt-guest-mattress-gray__1079894_pe857765_s5.jpg",
         userid: 2,
       },
       {
-        id: 13,
-        name: "Wardrobe",
+        itemId: 13,
+        itemName: "Wardrobe",
         location: "Tacloban City",
-        price: "180.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/kleppstad-wardrobe-with-2-doors-white__0733323_pe748780_s5.jpg",
+        rentAmount: "180.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/kleppstad-wardrobe-with-2-doors-white__0733323_pe748780_s5.jpg",
         userid: 3,
       },
       {
-        id: 14,
-        name: "Television",
+        itemId: 14,
+        itemName: "Television",
         location: "Maasin, Southern Leyte",
-        price: "150.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/lack-tv-unit-white__0984219_pe816163_s5.jpg",
+        rentAmount: "150.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/lack-tv-unit-white__0984219_pe816163_s5.jpg",
         userid: 4,
       },
       {
-        id: 15,
-        name: "Coffee Table",
+        itemId: 15,
+        itemName: "Coffee Table",
         location: "Ormoc City",
-        price: "90.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/lack-coffee-table-white__0702217_pe724349_s5.jpg",
+        rentAmount: "90.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/lack-coffee-table-white__0702217_pe724349_s5.jpg",
         userid: 5,
       },
       {
-        id: 16,
-        name: "Side Table",
+        itemId: 16,
+        itemName: "Side Table",
         location: "Baybay City",
-        price: "60.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/knarrevik-nightstand-black__0858302_pe669481_s5.jpg",
+        rentAmount: "60.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/knarrevik-nightstand-black__0858302_pe669481_s5.jpg",
         userid: 6,
       },
       {
-        id: 17,
-        name: "Dresser",
+        itemId: 17,
+        itemName: "Dresser",
         location: "Tacloban City",
-        price: "180.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/kullen-6-drawer-dresser-black-brown__0778046_pe758818_s5.jpg",
+        rentAmount: "180.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/kullen-6-drawer-dresser-black-brown__0778046_pe758818_s5.jpg",
         userid: 7,
       },
       {
-        id: 18,
-        name: "Armchair",
+        itemId: 18,
+        itemName: "Armchair",
         location: "Maasin, Southern Leyte",
-        price: "120.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/poaeng-armchair-frame-birch-veneer__65988_pe177918_s5.jpg",
+        rentAmount: "120.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/poaeng-armchair-frame-birch-veneer__65988_pe177918_s5.jpg",
         userid: 8,
       },
     ],
@@ -281,9 +306,6 @@ export const useItemShareStore = defineStore("itemshare", {
     itemById(state) {
       return (id) => state.sampleItems.find((item) => item.id == id);
     },
-    myProfile(state) {
-      return state.sampleProfiles[0];
-    },
     loadedProfile(state) {
       return (index) => state.sampleProfiles[index];
     },
@@ -293,24 +315,23 @@ export const useItemShareStore = defineStore("itemshare", {
   },
   actions: {
     async initMyProfile() {
-      return firebase.auth().onAuthStateChanged(async (user) => {
+      firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
-          this.useruid = user.uid;
-          this.myProfile = Object.assign({}, this.loadProfile(user.uid));
-          return true;
+          this.myUserUid = user.uid;
+          this.myProfile = await this.loadProfile(user.uid);
         } else {
           this.useruid = null;
-          return false;
+          return {};
         }
       });
     },
     async loadProfile(useruid) {
       const profileSnap = await getDoc(doc(db, "users", useruid));
-      let profile = {};
       if (profileSnap.exists()) {
-        profile.firstname = profileSnap.data().firstName;
-        profile.lastname = profileSnap.data().lastName;
-        return Object.assign({}, profile);
+        return {
+          firstName: profileSnap.data().firstName,
+          lastName: profileSnap.data().lastName,
+        };
       }
     },
     async login(email, password) {
@@ -339,6 +360,28 @@ export const useItemShareStore = defineStore("itemshare", {
       } else {
         throw "Please fill out all the fields!";
       }
+    },
+    async loadItems(maxlimit = 12) {
+      let q = query(collection(db, "items"), limit(maxlimit));
+      const querySnapshot = await getDocs(q);
+      let fItems = [];
+      querySnapshot.forEach((doc) => {
+        const item = {
+          itemId: doc.id,
+          //ownerID: doc.data().ownerId,
+          //ownerName: doc.data().ownerFName + " " + doc.data().ownerLName,
+          itemName: doc.data().itemName,
+          location: doc.data().location,
+          rentAmount: doc.data().rentAmount,
+          rentRate: doc.data().rentRate,
+          image:
+            "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg",
+          //tags: doc.data().tags,
+          //description: doc.data().description,
+        };
+        fItems.push(item);
+      });
+      return fItems;
     },
     searchItem() {
       // some search processing
