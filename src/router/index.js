@@ -14,6 +14,7 @@ import ConversationView from "../views/ConversationView.vue";
 import ForgotPasswordView from "../views/ForgotPasswordView.vue";
 import TermsAndConditionsView from "../views/TermsAndConditionsView.vue";
 import CreateItemView from "../views/CreateItemView.vue";
+import { useItemShareStore } from "../stores/itemshare";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,7 @@ const router = createRouter({
     {
       path: "/",
       component: LandingView,
+      meta: { requiresAuth: false },
       children: [
         { path: "", name: "getStarted", component: LandingPageView },
         { path: "/login", name: "login", component: LoginView },
@@ -40,6 +42,7 @@ const router = createRouter({
     {
       path: "/home",
       component: HomePageView,
+      meta: { requiresAuth: true },
       children: [
         {
           path: "",
@@ -86,6 +89,22 @@ const router = createRouter({
       ],
     },
   ],
+});
+
+// checks if user is logged in
+router.beforeEach((to, from, next) => {
+  const itemShareStore = useItemShareStore();
+  console.log("Hello, " + itemShareStore.loggedInUser);
+
+  if (to.meta.requiresAuth && !itemShareStore.loggedInUser) {
+    // non-user accessing user-only sites -> to landing
+    next("/");
+  } else if (!to.meta.requiresAuth && itemShareStore.loggedInUser) {
+    // user accessing landing page -> to home
+    next("/home");
+  } else {
+    next();
+  }
 });
 
 export default router;
