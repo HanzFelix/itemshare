@@ -3,9 +3,9 @@ import { RouterLink } from "vue-router";
 import itemShareLogo from "../assets/ItemShareLogo.png";
 </script>
 <template>
-  <RouterLink to="/home" class="flex gap-2 items-center">
+  <RouterLink to="/" class="flex items-center gap-2">
     <span
-      class="text-3xl text-white font-poppins font-black underline decoration-green-900 underline-offset-4 decoration-4 md:inline-block hidden select-none"
+      class="font-poppins hidden select-none text-3xl font-black text-white underline decoration-green-900 decoration-4 underline-offset-4 md:inline-block"
       >ItemShare</span
     >
     <img :src="itemShareLogo" class="w-10 rounded-xl" loading="lazy"
