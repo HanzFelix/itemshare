@@ -2,26 +2,26 @@
 import { RouterLink, useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import StarRating from "../components/StarRating.vue";
-//import ItemsContainer from "../components/ItemsContainer.vue";
+import ItemsContainer from "../components/ItemsContainer.vue";
 import { onMounted, ref } from "vue";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, where, query } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
-//const itemShareStore = useItemShareStore();
+import EditProfile from "../components/EditProfile.vue";
 
+const itemShareStore = useItemShareStore();
+const route = useRoute();
+const id = route.params.id || itemShareStore.myUserId;
+
+const items = ref([]);
 const profile = ref({
   id: 9,
-  firstname: "Isaac",
-  lastname: "Einstein",
+  firstName: "Isaac",
+  lastName: "Einstein",
   image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
   location: "Baybay City",
 });
-
-const items = ref([]);
-const sampleimg = ref(
-  "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
-);
 
 onMounted(async () => {
   initFlowbite();
@@ -31,44 +31,37 @@ onMounted(async () => {
       const querySnapshot = await getDocs(collection(db, "users"));
       querySnapshot.forEach((doc) => {
         if (user.uid == doc.id) {
-          profile.value.firstname = `${doc.data().firstName}`;
-          profile.value.lastname = `${doc.data().lastName}`;
+          profile.value.firstName = `${doc.data().firstName}`;
+          profile.value.lastName = `${doc.data().lastName}`;
           profile.value.location = `${doc.data().location}`;
+          profile.value.image = doc.data().image;
         }
       });
 
-      const querySnapshot1 = await getDocs(collection(db, "items"));
+      const querySnapshot1 = query(
+        collection(db, "items"),
+        where("ownerId", "==", user.uid)
+      );
+      const querySnapshotf = await getDocs(querySnapshot1);
       let fItems = [];
-      querySnapshot1.forEach((doc) => {
-        if (user.uid == doc.data().ownerId) {
-          const item = {
-            itemId: doc.id,
-            itemName: doc.data().itemName,
-            location: doc.data().location,
-            rentAmount: doc.data().rentAmount,
-            rentRate: doc.data().rentRate,
-          };
-          fItems.push(item);
-        }
+      querySnapshotf.forEach((doc) => {
+        const item = {
+          itemId: doc.id,
+          itemName: doc.data().itemName,
+          location: doc.data().location,
+          rentAmount: doc.data().rentAmount,
+          rentRate: doc.data().rentRate,
+          image:
+            "https://www.ikea.com/ph/en/images/products/torald-desk-white__1073186_pe855653_s5.jpg",
+        };
+        fItems.push(item);
       });
-      console.log;
       items.value = fItems;
     } else {
       // User not logged in or has just logged out.
     }
   });
 });
-function gridSize(text) {
-  return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8";
-}
-
-//import ItemsContainer from "../components/ItemsContainer.vue";
-import EditProfile from "../components/EditProfile.vue";
-
-const itemShareStore = useItemShareStore();
-const route = useRoute();
-
-const id = parseInt(route.params.id) ? parseInt(route.params.id) : 0;
 
 const editDialog = ref(null);
 function showEditProfile() {
@@ -84,7 +77,7 @@ function hideEditProfile() {
 <template>
   <main class="container mx-auto flex flex-col gap-8 px-4 py-8">
     <section class="flex flex-col gap-2 lg:flex-row">
-      <div class="flex basis-9/12 gap-2">
+      <div class="flex basis-9/12 flex-col gap-2 sm:flex-row">
         <!--Image-->
         <div class="flex basis-4/12 flex-col gap-2 bg-white p-4">
           <img
@@ -102,7 +95,7 @@ function hideEditProfile() {
             <div class="flex flex-wrap items-start justify-between gap-2">
               <div class="flex items-center gap-2">
                 <h1 class="text-3xl">
-                  {{ profile.firstname + " " + profile.lastname }}
+                  {{ profile.firstName + " " + profile.lastName }}
                 </h1>
                 <button
                   v-if="true"
@@ -174,37 +167,9 @@ function hideEditProfile() {
     </section>-->
     <section class="flex flex-col gap-2">
       <h1>
-        {{ profile.firstname + " " + profile.lastname + "'s Item(s)" }}
+        {{ profile.firstName + " " + profile.lastName + "'s Item(s)" }}
       </h1>
-      <div
-        class="grid grid-flow-row gap-2 rounded-xl bg-gradient-to-b from-green-500 to-transparent bg-[length:100%_150px] bg-no-repeat p-4"
-        :class="gridSize(gridfor)"
-      >
-        <RouterLink
-          :to="'/item/' + item.itemId"
-          v-for="item in items"
-          class="bg-white p-2 shadow-sm shadow-gray-400"
-        >
-          <div class="aspect-square w-full">
-            <img
-              :src="sampleimg"
-              alt=""
-              srcset=""
-              loading="lazy"
-              class="object-contain"
-            />
-          </div>
-
-          <div class="flex flex-col">
-            <p>{{ item.itemName }}</p>
-            <p class="text-xs">{{ item.location }}</p>
-            <p class="text-green-800">
-              <span class="text-2xl">₱</span
-              >{{ item.rentAmount + " - " + item.rentRate }}
-            </p>
-          </div>
-        </RouterLink>
-      </div>
+      <ItemsContainer :items="items" />
     </section>
   </main>
   <dialog ref="editDialog" class="rounded-xl backdrop:backdrop-brightness-50">
