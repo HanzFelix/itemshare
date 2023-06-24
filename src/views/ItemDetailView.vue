@@ -3,7 +3,6 @@ import { useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import { RouterLink } from "vue-router";
 import { onMounted, ref } from "vue";
-import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { collection, getDocs } from "firebase/firestore";
 import StarRating from "../components/StarRating.vue";
@@ -15,10 +14,13 @@ const route = useRoute();
 
 const itemId = ref(route.params.id);
 //const item = itemShareStore.itemById(id);
-
-const sampleimg = ref(
-  "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg"
-);
+const activeImg = ref(0);
+const sampleImgs = ref([
+  "https://www.ikea.com/ph/en/images/products/pello-armchair-holmby-natural__0841137_pe600889_s5.jpg",
+  "https://www.ikea.com/ph/en/images/products/baggebo-shelf-unit-metal-white__0981563_pe815398_s5.jpg",
+  "https://www.ikea.com/ph/en/images/products/friheten-sleeper-sofa-bomstad-black__0620065_pe689376_s5.jpg",
+  "https://www.ikea.com/ph/en/images/products/jokkmokk-table-and-4-chairs-antique-stain__0870916_pe716638_s5.jpg",
+]);
 
 const currentUserFName = ref("");
 const currentUserLName = ref("");
@@ -28,8 +30,10 @@ const rentAmount = ref("");
 const rentRate = ref("");
 const description = ref("");
 const tags = ref([]);
-//const imagePreview = ref();
-//const imgPath = ref();
+
+function viewImage(index) {
+  activeImg.value = index;
+}
 
 onMounted(async () => {
   const querySnapshot = await getDocs(collection(db, "items"));
@@ -50,29 +54,25 @@ onMounted(async () => {
 <template>
   <main class="container mx-auto flex flex-col gap-4 px-4 py-8">
     <section class="flex flex-row-reverse gap-2">
+      <!--Update to go back one page-->
       <RouterLink to="/home">Close X</RouterLink>
     </section>
     <!--Item-->
     <section class="flex flex-col gap-2 lg:flex-row">
       <!--Images-->
       <div class="flex basis-3/12 flex-col gap-2 bg-white p-4">
-        <img :src="sampleimg" alt="" srcset="" />
-        <div class="flex w-full">
+        <img
+          :src="sampleImgs[activeImg]"
+          alt=""
+          srcset=""
+          class="aspect-square w-full object-contain"
+        />
+        <div class="flex w-full gap-2 overflow-x-auto">
           <img
-            class="aspect-auto w-1/3 px-1"
-            :src="sampleimg"
-            alt=""
-            srcset=""
-          />
-          <img
-            class="aspect-auto w-1/3 px-1"
-            :src="sampleimg"
-            alt=""
-            srcset=""
-          />
-          <img
-            class="aspect-auto w-1/3 px-1"
-            :src="sampleimg"
+            class="aspect-square h-24 cursor-pointer object-contain"
+            v-for="(img, index) in sampleImgs"
+            :src="img"
+            @click="viewImage(index)"
             alt=""
             srcset=""
           />
