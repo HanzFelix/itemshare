@@ -59,15 +59,15 @@ const conversations = ref([
 </script>
 <template>
   <main
-    class="flex flex-row items-stretch py-8 container mx-auto px-4 gap-4 h-full"
+    class="container mx-auto flex h-full flex-row items-stretch gap-4 px-4 py-8"
   >
     <!--Recent Messages-->
     <aside
-      class="lg:block basis-full lg:basis-1/3 box-border bg-white rounded-xl shadow-md shadow-gray-400 overflow-hidden"
+      class="box-border basis-full overflow-hidden rounded-xl bg-white shadow-md shadow-gray-400 lg:block lg:basis-1/3"
       :class="['messages'].includes($route.name) ? '' : 'hidden'"
     >
-      <div class="flex flex-col overflow-hidden h-full">
-        <h1 class="px-6 py-4 shadow-sm shadow-gray-300 z-10">
+      <div class="flex h-full flex-col overflow-hidden">
+        <h1 class="z-10 px-6 py-4 shadow-sm shadow-gray-300">
           Recent Messages
         </h1>
         <!-- Container -->
@@ -76,7 +76,7 @@ const conversations = ref([
           <RouterLink
             v-for="conversation in conversations"
             :to="'/messages/' + conversation.id"
-            class="flex gap-2 p-2 rounded-2xl my-2"
+            class="my-2 flex gap-2 rounded-2xl p-2"
             active-class="bg-yellow-200"
           >
             <img
@@ -85,7 +85,7 @@ const conversations = ref([
               class="aspect-square w-12 rounded-full"
             />
             <div class="w-full truncate">
-              <p class="font-black truncate">{{ conversation.name }}</p>
+              <p class="truncate font-black">{{ conversation.name }}</p>
               <p class="truncate text-gray-800">
                 {{ conversation.message }}
               </p>
@@ -96,7 +96,7 @@ const conversations = ref([
     </aside>
     <!--Chat Window-->
     <div
-      class="basis-full lg:basis-2/3 lg:block bg-white overflow-hidden rounded-xl shadow-md shadow-gray-400"
+      class="basis-full overflow-hidden rounded-xl bg-white shadow-md shadow-gray-400 lg:block lg:basis-2/3"
       :class="['messages'].includes($route.name) ? 'hidden' : ''"
     >
       <RouterView />
