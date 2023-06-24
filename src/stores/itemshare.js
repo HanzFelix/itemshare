@@ -9,6 +9,7 @@ import {
   doc,
   limit,
   query,
+  where,
 } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
 
@@ -365,7 +366,7 @@ export const useItemShareStore = defineStore("itemshare", {
       }
     },
 
-    async loadItems(maxlimit = 12, ownerId = null) {
+    async loadItems(maxlimit = 12, ownerId = "") {
       let q = query(collection(db, "items"));
       if (ownerId) {
         q = query(q, where("ownerId", "==", ownerId));
@@ -373,7 +374,6 @@ export const useItemShareStore = defineStore("itemshare", {
       q = query(q, limit(maxlimit));
       const querySnapshot = await getDocs(q);
       const fItems = [];
-      console.log(fItems);
       querySnapshot.forEach((doc) => {
         const item = {
           itemId: doc.id,
@@ -390,7 +390,6 @@ export const useItemShareStore = defineStore("itemshare", {
         };
         fItems.push(item);
       });
-      console.log(fItems);
       return fItems;
     },
     searchItem() {

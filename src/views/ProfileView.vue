@@ -12,11 +12,10 @@ import EditProfile from "../components/EditProfile.vue";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
-const id = route.params.id || itemShareStore.myUserId;
+var useruid = route.params.id || itemShareStore.myUserUid;
 
 const items = ref([]);
 const profile = ref({
-  id: 9,
   firstName: "Isaac",
   lastName: "Einstein",
   image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
@@ -25,42 +24,8 @@ const profile = ref({
 
 onMounted(async () => {
   initFlowbite();
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      // User logged in already or has just logged in.
-      const querySnapshot = await getDocs(collection(db, "users"));
-      querySnapshot.forEach((doc) => {
-        if (user.uid == doc.id) {
-          profile.value.firstName = `${doc.data().firstName}`;
-          profile.value.lastName = `${doc.data().lastName}`;
-          profile.value.location = `${doc.data().location}`;
-          profile.value.image = doc.data().image;
-        }
-      });
-
-      const querySnapshot1 = query(
-        collection(db, "items"),
-        where("ownerId", "==", user.uid)
-      );
-      const querySnapshotf = await getDocs(querySnapshot1);
-      let fItems = [];
-      querySnapshotf.forEach((doc) => {
-        const item = {
-          itemId: doc.id,
-          itemName: doc.data().itemName,
-          location: doc.data().location,
-          rentAmount: doc.data().rentAmount,
-          rentRate: doc.data().rentRate,
-          image:
-            "https://www.ikea.com/ph/en/images/products/torald-desk-white__1073186_pe855653_s5.jpg",
-        };
-        fItems.push(item);
-      });
-      items.value = fItems;
-    } else {
-      // User not logged in or has just logged out.
-    }
-  });
+  profile.value = await itemShareStore.loadProfile(useruid);
+  items.value = await itemShareStore.loadItems(12, useruid);
 });
 
 const editDialog = ref(null);
@@ -98,7 +63,7 @@ function hideEditProfile() {
                   {{ profile.firstName + " " + profile.lastName }}
                 </h1>
                 <button
-                  v-if="true"
+                  v-if="useruid == itemShareStore.myUserUid"
                   @click="showEditProfile"
                   class="material-icons rounded-md border border-yellow-500 bg-yellow-200 p-0.5 px-1.5 text-base text-yellow-800"
                 >
@@ -173,6 +138,10 @@ function hideEditProfile() {
     </section>
   </main>
   <dialog ref="editDialog" class="rounded-xl backdrop:backdrop-brightness-50">
-    <EditProfile @close="hideEditProfile" :userid="id" />
+    <EditProfile
+      @close="hideEditProfile"
+      :useruid="useruid"
+      :profile="profile"
+    />
   </dialog>
 </template>
