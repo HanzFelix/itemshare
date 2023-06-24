@@ -1,14 +1,10 @@
 <script setup>
-import { RouterView, RouterLink } from "vue-router";
-import ItemShareLogoLP from "../components/ItemShareLogoLP.vue";
-/*
-TODO:
-add bg image from figma's login page
-*/
+import { RouterView } from "vue-router";
+import ItemShareLogo from "../components/ItemShareLogo.vue";
 </script>
 <template>
   <div
-    class="h-full bg-green-100 flex md:flex-row-reverse flex-col-reverse"
+    class="flex h-full flex-col-reverse bg-green-100 md:flex-row-reverse"
     style="
       background-image: url('https://wordpress.heals.com/blog/wp-content/uploads/2021/08/Colourful-sofa-cushions-1024x485.jpg;');
       background-size: cover;
@@ -18,20 +14,20 @@ add bg image from figma's login page
     <div
       class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
     ></div>
-    <div class="basis-1/2 bg-green-600 z-10"></div>
+    <div class="z-10 basis-1/2 bg-green-600"></div>
   </div>
   <div
-    class="absolute top-0 h-screen flex md:flex-row-reverse flex-col w-full z-20"
+    class="absolute top-0 z-20 flex h-screen w-full flex-col md:flex-row-reverse"
   >
     <div
-      class="basis-full md:basis-1/2 p-8 flex flex-col justify-between w-full gap-4 overflow-y-auto"
+      class="flex w-full basis-full flex-col justify-between gap-4 overflow-y-auto p-8 md:basis-1/2"
     >
-      <header class="flex justify-between items-center">
+      <header class="flex items-center justify-between">
         <nav class="flex gap-4 text-white">
           <a href="#">About Us</a>
           <a href="#">Contacts</a>
         </nav>
-        <ItemShareLogoLP />
+        <ItemShareLogo />
       </header>
       <RouterView />
       <footer class="text-right text-white">All Rights Reserved 2023. ®</footer>

@@ -111,7 +111,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per week",
         image:
           "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg",
-        userid: 0,
+        ownerId: 0,
       },
       {
         itemId: 2,
@@ -121,7 +121,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/naemmaroe-bench-with-backrest-outdoor-light-brown-stained__1185522_pe898423_s5.jpg",
-        userid: 1,
+        ownerId: 1,
       },
       {
         itemId: 3,
@@ -131,7 +131,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per week",
         image:
           "https://www.ikea.com/ph/en/images/products/gurli-cushion-cover-golden-yellow__0889329_pe655204_s5.jpg",
-        userid: 2,
+        ownerId: 2,
       },
       {
         itemId: 4,
@@ -141,7 +141,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/ekedalen-extendable-table-dark-brown__0719960_pe732334_s5.jpg",
-        userid: 3,
+        ownerId: 3,
       },
       {
         itemId: 5,
@@ -151,7 +151,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/pello-armchair-holmby-natural__0841137_pe600889_s5.jpg",
-        userid: 4,
+        ownerId: 4,
       },
       {
         itemId: 6,
@@ -161,7 +161,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per week",
         image:
           "https://www.ikea.com/ph/en/images/products/baggebo-shelf-unit-metal-white__0981563_pe815398_s5.jpg",
-        userid: 5,
+        ownerId: 5,
       },
       {
         itemId: 7,
@@ -171,7 +171,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/friheten-sleeper-sofa-bomstad-black__0620065_pe689376_s5.jpg",
-        userid: 6,
+        ownerId: 6,
       },
       {
         itemId: 8,
@@ -181,7 +181,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/jokkmokk-table-and-4-chairs-antique-stain__0870916_pe716638_s5.jpg",
-        userid: 7,
+        ownerId: 7,
       },
       {
         itemId: 9,
@@ -191,7 +191,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per week",
         image:
           "https://www.ikea.com/ph/en/images/products/metod-maximera-base-cab-w-wire-basket-drawer-door__0260116_pe403633_s5.jpg",
-        userid: 8,
+        ownerId: 8,
       },
       {
         itemId: 10,
@@ -201,7 +201,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/torald-desk-white__1073186_pe855653_s5.jpg",
-        userid: 0,
+        ownerId: 0,
       },
       {
         itemId: 11,
@@ -211,7 +211,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per week",
         image:
           "https://www.ikea.com/ph/en/images/products/songesand-bed-frame-with-2-storage-boxes-white-luroey__1101546_pe866675_s5.jpg",
-        userid: 1,
+        ownerId: 1,
       },
       {
         itemId: 12,
@@ -221,7 +221,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/raholt-guest-mattress-gray__1079894_pe857765_s5.jpg",
-        userid: 2,
+        ownerId: 2,
       },
       {
         itemId: 13,
@@ -231,7 +231,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per week",
         image:
           "https://www.ikea.com/ph/en/images/products/kleppstad-wardrobe-with-2-doors-white__0733323_pe748780_s5.jpg",
-        userid: 3,
+        ownerId: 3,
       },
       {
         itemId: 14,
@@ -241,7 +241,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/lack-tv-unit-white__0984219_pe816163_s5.jpg",
-        userid: 4,
+        ownerId: 4,
       },
       {
         itemId: 15,
@@ -251,7 +251,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/lack-coffee-table-white__0702217_pe724349_s5.jpg",
-        userid: 5,
+        ownerId: 5,
       },
       {
         itemId: 16,
@@ -261,7 +261,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per week",
         image:
           "https://www.ikea.com/ph/en/images/products/knarrevik-nightstand-black__0858302_pe669481_s5.jpg",
-        userid: 6,
+        ownerId: 6,
       },
       {
         itemId: 17,
@@ -271,7 +271,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per day",
         image:
           "https://www.ikea.com/ph/en/images/products/kullen-6-drawer-dresser-black-brown__0778046_pe758818_s5.jpg",
-        userid: 7,
+        ownerId: 7,
       },
       {
         itemId: 18,
@@ -281,7 +281,7 @@ export const useItemShareStore = defineStore("itemshare", {
         rentRate: "per week",
         image:
           "https://www.ikea.com/ph/en/images/products/poaeng-armchair-frame-birch-veneer__65988_pe177918_s5.jpg",
-        userid: 8,
+        ownerId: 8,
       },
     ],
     sampleConvos: [
@@ -345,7 +345,7 @@ export const useItemShareStore = defineStore("itemshare", {
             .auth()
             .signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
-              this.useruid = userCredential.user.uid;
+              this.myUserUid = userCredential.user.uid;
               localStorage.setItem("useruid", this.myUserUid);
               return true; // returned and returned to LoginView to redirect to home
             });
@@ -395,6 +395,17 @@ export const useItemShareStore = defineStore("itemshare", {
     searchItem() {
       // some search processing
       return true;
+    },
+
+    async logout() {
+      try {
+        await firebase.auth().signOut();
+
+        this.myUserUid = null;
+        localStorage.removeItem("useruid");
+      } catch (error) {
+        throw error;
+      }
     },
   },
 });

@@ -25,20 +25,14 @@ function searchItem() {
   if (itemShareStore.searchItem()) router.push("/search");
 }
 
-const signOut = () => {
-  firebase
-    .auth()
-    .signOut()
-    .then(
-      function () {
-        alert("Successfully Signed Out");
-        router.push("/");
-      },
-      function (error) {
-        alert("Sign Out Error", error);
-      }
-    );
-};
+async function logout() {
+  try {
+    await itemShareStore.logout();
+    router.push("/");
+  } catch (error) {
+    alert("Sign Out Error" + error);
+  }
+}
 </script>
 <template>
   <header
@@ -87,7 +81,7 @@ const signOut = () => {
         </li>
         <!--TODO: move logout to somewhere else-->
         <li>
-          <button @click.prevent="signOut">LOG OUT</button>
+          <button @click.prevent="logout">LOG OUT</button>
         </li>
         <li>
           <RouterLink to="/profile">
