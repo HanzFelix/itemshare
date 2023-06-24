@@ -47,6 +47,7 @@ const register = async () => {
             phoneNumber: phoneNumber.value,
             gender: gender.value,
             birthday: birthday.value,
+            location: "unspecified",
             verified: false,
             admin: false,
           });

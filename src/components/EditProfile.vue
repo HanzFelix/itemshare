@@ -11,9 +11,7 @@ const props = defineProps({
     default: 0,
   },
 });
-const profile = ref(
-  Object.assign({}, itemShareStore.loadedProfile(props.userid))
-); // duplicates it
+const profile = ref(Object.assign({}, itemShareStore.editProfile)); // duplicates it
 
 function loadImageFile(e) {
   let file = e.target.files[0];
@@ -25,7 +23,7 @@ function loadImageFile(e) {
   };
 }
 function updateProfile() {
-  itemShareStore.sampleProfiles[0] = Object.assign({}, profile.value);
+  itemShareStore.editProfile = Object.assign({}, profile.value);
   emit("close");
 }
 </script>

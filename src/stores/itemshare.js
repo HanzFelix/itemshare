@@ -4,6 +4,13 @@ import { defineStore } from "pinia";
 export const useItemShareStore = defineStore("itemshare", {
   state: () => ({
     temp: 1,
+    editProfile: {
+      id: 9,
+      firstname: "Isaac",
+      lastname: "Einstein",
+      image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
+      location: "Baybay City",
+    },
     sampleProfiles: [
       {
         id: 0,

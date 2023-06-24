@@ -10,9 +10,13 @@ import { collection, getDocs } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
 //const itemShareStore = useItemShareStore();
 
-const displayName = ref("");
-const currentUserFName = ref("");
-const currentUserLName = ref("");
+const profile = ref({
+  id: 9,
+  firstname: "Isaac",
+  lastname: "Einstein",
+  image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
+  location: "Baybay City",
+});
 
 const items = ref([]);
 const sampleimg = ref(
@@ -27,10 +31,9 @@ onMounted(async () => {
       const querySnapshot = await getDocs(collection(db, "users"));
       querySnapshot.forEach((doc) => {
         if (user.uid == doc.id) {
-          currentUserFName.value = `${doc.data().firstName}`;
-          currentUserLName.value = `${doc.data().lastName}`;
-          displayName.value =
-            currentUserFName.value + " " + currentUserLName.value;
+          profile.value.firstname = `${doc.data().firstName}`;
+          profile.value.lastname = `${doc.data().lastName}`;
+          profile.value.location = `${doc.data().location}`;
         }
       });
 
@@ -69,6 +72,7 @@ const id = parseInt(route.params.id) ? parseInt(route.params.id) : 0;
 
 const editDialog = ref(null);
 function showEditProfile() {
+  itemShareStore.editProfile = profile.value;
   editDialog.value.showModal();
 }
 
@@ -84,7 +88,7 @@ function hideEditProfile() {
         <!--Image-->
         <div class="flex basis-4/12 flex-col gap-2 bg-white p-4">
           <img
-            :src="itemShareStore.loadedProfile(id).image"
+            :src="profile.image"
             alt=""
             srcset=""
             class="aspect-square w-full object-contain"
@@ -98,7 +102,7 @@ function hideEditProfile() {
             <div class="flex flex-wrap items-start justify-between gap-2">
               <div class="flex items-center gap-2">
                 <h1 class="text-3xl">
-                  {{ currentUserFName + " " + currentUserLName }}
+                  {{ profile.firstname + " " + profile.lastname }}
                 </h1>
                 <button
                   v-if="true"
@@ -110,7 +114,7 @@ function hideEditProfile() {
               </div>
               <div class="flex">
                 <span class="material-icons text-green-600">location_on</span>
-                <span>{{ itemShareStore.loadedProfile(id).location }}</span>
+                <span>{{ profile.location }}</span>
               </div>
             </div>
             <!--Ratings-->
@@ -170,14 +174,14 @@ function hideEditProfile() {
     </section>-->
     <section class="flex flex-col gap-2">
       <h1>
-        {{ currentUserFName + " " + currentUserLName + "'s Item(s)" }}
+        {{ profile.firstname + " " + profile.lastname + "'s Item(s)" }}
       </h1>
       <div
         class="grid grid-flow-row gap-2 rounded-xl bg-gradient-to-b from-green-500 to-transparent bg-[length:100%_150px] bg-no-repeat p-4"
         :class="gridSize(gridfor)"
       >
         <RouterLink
-          :to="'/item/' + item.id"
+          :to="'/item/' + item.itemId"
           v-for="item in items"
           class="bg-white p-2 shadow-sm shadow-gray-400"
         >

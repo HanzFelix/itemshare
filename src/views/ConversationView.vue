@@ -1,17 +1,22 @@
 <script setup>
-import { onUpdated, ref } from "vue";
+import { onUpdated, ref, watch } from "vue";
 import { useRoute, RouterLink } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 const route = useRoute();
 
 const itemShareStore = useItemShareStore();
 
-var id = parseInt(route.params.id);
+const id = ref(route.params.id);
 const messageDraft = ref("");
 const scrollToElement = ref();
-onUpdated(() => {
-  id = parseInt(route.params.id);
-});
+const loadedProfile = ref(itemShareStore.loadedProfile(id.value));
+
+watch(
+  () => route.params.id,
+  async (newId) => {
+    loadedProfile.value = await itemShareStore.loadedProfile(newId);
+  }
+);
 const chatHistory = ref([
   {
     user: "me",
@@ -106,17 +111,13 @@ function isSameMessageSource(chat_id) {
     >
       <div class="flex gap-2">
         <img
-          :src="itemShareStore.loadedProfile(id).image"
+          :src="loadedProfile.image"
           alt=""
           class="aspect-square w-12 rounded-full"
         />
         <div class="flex flex-col text-white">
           <p class="font-black">
-            {{
-              itemShareStore.loadedProfile(id).firstname +
-              " " +
-              itemShareStore.loadedProfile(id).lastname
-            }}
+            {{ loadedProfile.firstname + " " + loadedProfile.lastname }}
           </p>
           <div class="flex items-center gap-1 truncate">
             <div class="inline-block h-2 w-2 rounded-full bg-green-300"></div>
@@ -143,7 +144,7 @@ function isSameMessageSource(chat_id) {
             :src="
               chat.user == 'me'
                 ? 'https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg'
-                : itemShareStore.loadedProfile(id).image
+                : loadedProfile.image
             "
             alt=""
             class="aspect-square w-12 rounded-full"

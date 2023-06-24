@@ -10,20 +10,22 @@ const props = defineProps({
     type: Array,
     default: [
       {
-        id: 1,
-        name: "Lampshade",
+        itemId: 1,
+        itemName: "Lampshade",
         location: "Baybay City",
-        price: "150.00",
-        rate: "per week",
-        img: "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg",
+        rentAmount: "150.00",
+        rentRate: "per week",
+        image:
+          "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg",
       },
       {
         id: 2,
         name: "Outdoor Bench",
         location: "Tacloban City",
-        price: "150.00",
-        rate: "per day",
-        img: "https://www.ikea.com/ph/en/images/products/naemmaroe-bench-with-backrest-outdoor-light-brown-stained__1185522_pe898423_s5.jpg",
+        rentAmount: "150.00",
+        rentRate: "per day",
+        image:
+          "https://www.ikea.com/ph/en/images/products/naemmaroe-bench-with-backrest-outdoor-light-brown-stained__1185522_pe898423_s5.jpg",
       },
     ],
   },
@@ -52,7 +54,7 @@ function gridSize(text) {
     >
       <div class="aspect-square w-full">
         <img
-          :src="item.img"
+          :src="item.image"
           alt=""
           srcset=""
           loading="lazy"
@@ -61,10 +63,11 @@ function gridSize(text) {
       </div>
 
       <div class="flex flex-col">
-        <p>{{ item.name }}</p>
+        <p>{{ item.itemName }}</p>
         <p class="text-xs">{{ item.location }}</p>
         <p class="text-green-800">
-          <span class="text-2xl">₱</span>{{ item.price + " - " + item.rate }}
+          <span class="text-2xl">₱</span
+          >{{ item.rentAmount + " - " + item.rentRate }}
         </p>
       </div>
     </RouterLink>
