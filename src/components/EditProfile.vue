@@ -1,5 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import {
+  onMounted,
+  onUpdated,
+  onActivated,
+  ref,
+  onBeforeUpdate,
+  onBeforeMount,
+} from "vue";
 import { useItemShareStore } from "../stores/itemshare";
 const itemShareStore = useItemShareStore();
 const emit = defineEmits(["close"]);
@@ -7,11 +14,19 @@ const reader = new FileReader();
 
 const props = defineProps({
   // value is the number of stars
-  userid: {
+  useruid: {
     default: 0,
   },
+  profile: {
+    default: {
+      firstName: "",
+      lastName: "",
+      image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
+      location: "Baybay City",
+    },
+  },
 });
-const profile = ref(Object.assign({}, itemShareStore.editProfile)); // duplicates it
+const profile = ref(Object.assign({}, props.profile)); // duplicates it
 
 function loadImageFile(e) {
   let file = e.target.files[0];
@@ -23,12 +38,18 @@ function loadImageFile(e) {
   };
 }
 function updateProfile() {
+  // insert firebase stuff
   itemShareStore.editProfile = Object.assign({}, profile.value);
   emit("close");
 }
+
+onBeforeMount(async () => {
+  // redundant retrieval from server, might be possible to rework, idk
+  profile.value = await itemShareStore.loadProfile(props.useruid);
+});
 </script>
 <template>
-  <form action="#" @submit.stop.prevent="">
+  <form action="#" @submit.stop.prevent="updateProfile">
     <h1>Edit Profile</h1>
     <div class="flex flex-col gap-2 p-2 md:gap-4">
       <div class="flex flex-col gap-4 md:flex-row md:items-start md:gap-8">
@@ -61,7 +82,7 @@ function updateProfile() {
           <div class="flex flex-col">
             <label for="fname">First Name</label>
             <input
-              v-model="profile.firstname"
+              v-model="profile.firstName"
               name="fname"
               type="text"
               class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-2 placeholder-yellow-700"
@@ -71,7 +92,7 @@ function updateProfile() {
           <div class="flex flex-col">
             <label for="lname">Last Name</label>
             <input
-              v-model="profile.lastname"
+              v-model="profile.lastName"
               name="lname"
               type="text"
               class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-2 placeholder-yellow-700"
@@ -94,7 +115,6 @@ function updateProfile() {
     <footer class="mt-4 flex flex-col justify-end gap-2 px-2 md:flex-row">
       <button
         type="submit"
-        @click="updateProfile"
         class="rounded-lg border-2 border-green-800 bg-green-800 px-5 py-3 text-white"
       >
         Save changes
