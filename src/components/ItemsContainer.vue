@@ -35,7 +35,7 @@ function gridSize(text) {
   switch (text) {
     // list of classes to include in SearchView, mostly for grid size
     case "search":
-      return "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
+      return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
     // classes to include for the rest of them
     default:
       return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8";
