@@ -3,11 +3,6 @@ import { defineStore } from "pinia";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
-import {
   collection,
   getDoc,
   getDocs,
@@ -16,13 +11,17 @@ import {
   query,
 } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
-import router from "../router/index.js";
 
 export const useItemShareStore = defineStore("itemshare", {
   state: () => ({
     temp: 1,
     myUserUid: localStorage.getItem("useruid") || null,
-    myProfile: { firstName: "", lastName: "" },
+    myProfile: {
+      firstName: "",
+      lastName: "",
+      image: "",
+      location: "",
+    },
     editProfile: {
       id: 9,
       firstName: "Isaac",
@@ -325,15 +324,19 @@ export const useItemShareStore = defineStore("itemshare", {
         }
       });
     },
+
     async loadProfile(useruid) {
       const profileSnap = await getDoc(doc(db, "users", useruid));
       if (profileSnap.exists()) {
         return {
           firstName: profileSnap.data().firstName,
           lastName: profileSnap.data().lastName,
+          location: profileSnap.data().location,
+          image: profileSnap.data().image,
         };
       }
     },
+
     async login(email, password) {
       if (email !== "" && password !== "") {
         try {
@@ -361,10 +364,16 @@ export const useItemShareStore = defineStore("itemshare", {
         throw "Please fill out all the fields!";
       }
     },
-    async loadItems(maxlimit = 12) {
-      let q = query(collection(db, "items"), limit(maxlimit));
+
+    async loadItems(maxlimit = 12, ownerId = null) {
+      let q = query(collection(db, "items"));
+      if (ownerId) {
+        q = query(q, where("ownerId", "==", ownerId));
+      }
+      q = query(q, limit(maxlimit));
       const querySnapshot = await getDocs(q);
-      let fItems = [];
+      const fItems = [];
+      console.log(fItems);
       querySnapshot.forEach((doc) => {
         const item = {
           itemId: doc.id,
@@ -381,6 +390,7 @@ export const useItemShareStore = defineStore("itemshare", {
         };
         fItems.push(item);
       });
+      console.log(fItems);
       return fItems;
     },
     searchItem() {
