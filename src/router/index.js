@@ -51,12 +51,12 @@ const router = createRouter({
         },
         {
           path: "/profile/:id",
-          name: "myProfile",
+          name: "profile",
           component: ProfileView,
         },
         {
           path: "/profile",
-          name: "profile",
+          name: "myProfile",
           component: ProfileView,
         },
         {
@@ -94,7 +94,6 @@ const router = createRouter({
 // checks if user is logged in before navigating
 router.beforeEach((to, from, next) => {
   const itemShareStore = useItemShareStore();
-
   if (to.meta.requiresAuth && !itemShareStore.loggedInUser) {
     // redirect non-user accessing user-only sites to landing
     next("/");
