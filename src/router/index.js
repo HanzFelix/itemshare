@@ -91,18 +91,18 @@ const router = createRouter({
   ],
 });
 
-// checks if user is logged in
+// checks if user is logged in before navigating
 router.beforeEach((to, from, next) => {
   const itemShareStore = useItemShareStore();
-  console.log("Hello, " + itemShareStore.loggedInUser);
 
   if (to.meta.requiresAuth && !itemShareStore.loggedInUser) {
-    // non-user accessing user-only sites -> to landing
+    // redirect non-user accessing user-only sites to landing
     next("/");
   } else if (!to.meta.requiresAuth && itemShareStore.loggedInUser) {
-    // user accessing landing page -> to home
+    // redirect user accessing landing page to home
     next("/home");
   } else {
+    // proceed as usual (even when refreshed)
     next();
   }
 });

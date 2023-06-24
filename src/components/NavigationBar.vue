@@ -13,32 +13,19 @@ import { collection, getDocs } from "firebase/firestore";
 // initialize components based on data attribute selectors
 const db = firebase.firestore();
 
-const displayName = ref("");
-const currentUserFName = ref();
-const currentUserLName = ref();
-
-onMounted(() => {
-  initFlowbite();
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      // User logged in already or has just logged in.
-      const querySnapshot = await getDocs(collection(db, "users"));
-      querySnapshot.forEach((doc) => {
-        if (user.uid == doc.id) {
-          currentUserFName.value = `${doc.data().firstName}`;
-          currentUserLName.value = `${doc.data().lastName}`;
-          displayName.value =
-            currentUserFName.value + " " + currentUserLName.value;
-        }
-      });
-    } else {
-      // User not logged in or has just logged out.
-    }
-  });
-});
-
 const router = useRouter();
 const itemShareStore = useItemShareStore();
+
+const displayName = ref("");
+
+onMounted(async () => {
+  initFlowbite();
+  await itemShareStore.initMyProfile();
+  displayName.value =
+    itemShareStore.myProfile.firstName +
+    " " +
+    itemShareStore.myProfile.lastName;
+});
 
 function searchItem() {
   if (itemShareStore.searchItem()) router.push("/search");
@@ -116,7 +103,9 @@ const signOut = () => {
               class="aspect-square w-10 rounded-full"
           /></RouterLink>
         </li>
-        <h5>{{ displayName }}</h5>
+        <h5>
+          {{ displayName }}
+        </h5>
       </ul>
     </nav>
     <section class="bg-green-500">

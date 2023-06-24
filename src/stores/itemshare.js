@@ -2,14 +2,20 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { collection, getDoc, getDocs, doc } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
+import router from "../router/index.js";
 
 export const useItemShareStore = defineStore("itemshare", {
   state: () => ({
     temp: 1,
-    useruid: localStorage.getItem("useruid") || null,
+    myUserUid: localStorage.getItem("useruid") || null,
+    myProfile: {},
     editProfile: {
       id: 9,
       firstname: "Isaac",
@@ -282,21 +288,42 @@ export const useItemShareStore = defineStore("itemshare", {
       return (index) => state.sampleProfiles[index];
     },
     loggedInUser(state) {
-      return state.useruid;
+      return state.myUserUid;
     },
   },
   actions: {
+    async initMyProfile() {
+      return firebase.auth().onAuthStateChanged(async (user) => {
+        if (user) {
+          this.useruid = user.uid;
+          this.myProfile = Object.assign({}, this.loadProfile(user.uid));
+          return true;
+        } else {
+          this.useruid = null;
+          return false;
+        }
+      });
+    },
+    async loadProfile(useruid) {
+      const profileSnap = await getDoc(doc(db, "users", useruid));
+      let profile = {};
+      if (profileSnap.exists()) {
+        profile.firstname = profileSnap.data().firstName;
+        profile.lastname = profileSnap.data().lastName;
+        return Object.assign({}, profile);
+      }
+    },
     async login(email, password) {
-      const auth = getAuth();
       if (email !== "" && password !== "") {
         try {
-          return signInWithEmailAndPassword(auth, email, password).then(
-            (userCredential) => {
+          return firebase
+            .auth()
+            .signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
               this.useruid = userCredential.user.uid;
-              localStorage.setItem("useruid", this.useruid); // to retain useruid after browser refresh
+              localStorage.setItem("useruid", this.myUserUid);
               return true; // returned and returned to LoginView to redirect to home
-            }
-          );
+            });
         } catch (error) {
           switch (error.code) {
             case "auth/invalid-email":
