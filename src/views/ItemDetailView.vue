@@ -3,11 +3,7 @@ import { useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import { RouterLink } from "vue-router";
 import { onMounted, ref } from "vue";
-import "firebase/compat/auth";
-import { collection, getDocs } from "firebase/firestore";
 import StarRating from "../components/StarRating.vue";
-
-import db from "../firebase/firebaseInit.js";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
@@ -22,33 +18,26 @@ const sampleImgs = ref([
   "https://www.ikea.com/ph/en/images/products/jokkmokk-table-and-4-chairs-antique-stain__0870916_pe716638_s5.jpg",
 ]);
 
-const currentUserFName = ref("");
-const currentUserLName = ref("");
-const itemName = ref("");
-const location = ref("");
-const rentAmount = ref("");
-const rentRate = ref("");
-const description = ref("");
-const tags = ref([]);
+// temporarily uses placeholder profile until onMounted is called
+const profile = ref(itemShareStore.loadedProfile(5));
+
+const item = ref({
+  itemName: "",
+  location: "",
+  rentAmount: "",
+  rentRate: "",
+  description: "",
+  ownerId: "",
+  tags: [],
+});
 
 function viewImage(index) {
   activeImg.value = index;
 }
 
 onMounted(async () => {
-  const querySnapshot = await getDocs(collection(db, "items"));
-  querySnapshot.forEach((doc) => {
-    if (itemId.value == doc.id) {
-      currentUserFName.value = doc.data().ownerFName;
-      currentUserLName.value = doc.data().ownerLName;
-      itemName.value = doc.data().itemName;
-      location.value = doc.data().location;
-      rentAmount.value = doc.data().rentAmount;
-      rentRate.value = doc.data().rentRate;
-      description.value = doc.data().description;
-      tags.value = doc.data().tags;
-    }
-  });
+  item.value = await itemShareStore.loadItem(itemId.value);
+  profile.value = await itemShareStore.loadProfile(item.value.ownerId);
 });
 </script>
 <template>
@@ -82,7 +71,7 @@ onMounted(async () => {
       <div class="flex w-full basis-6/12 flex-col justify-between bg-white p-4">
         <div>
           <div class="flex items-start justify-between">
-            <h1>{{ itemName }}</h1>
+            <h1>{{ item.itemName }}</h1>
             <span
               class="rounded-full bg-green-600 px-4 py-1 text-xs font-black text-white"
             >
@@ -94,7 +83,7 @@ onMounted(async () => {
           <div class="my-4">
             <p class="text-green-600">
               <span class="mr-2 text-2xl">₱</span
-              >{{ rentAmount + " - " + rentRate }}
+              >{{ item.rentAmount + " - " + item.rentRate }}
             </p>
             <!--rating-->
             <div class="flex gap-4">
@@ -104,12 +93,12 @@ onMounted(async () => {
             <!--location-->
             <div class="flex">
               <span class="material-icons text-green-600">location_on</span>
-              <span>{{ location }}</span>
+              <span>{{ item.location }}</span>
             </div>
           </div>
           <!--description-->
           <p>
-            {{ description }}
+            {{ item.description }}
           </p>
         </div>
         <div class="mt-2 flex flex-col items-start">
@@ -118,7 +107,7 @@ onMounted(async () => {
             <ul class="flex flex-wrap gap-2">
               <!--Clicking on a tag should redirect user to search results with the same tag-->
               <li
-                v-for="tag in tags"
+                v-for="tag in item.tags"
                 class="rounded-full border-2 border-yellow-500 bg-yellow-200 px-4 py-1 text-xs text-yellow-700"
               >
                 {{ tag }}
@@ -141,17 +130,17 @@ onMounted(async () => {
       <div class="basis-3/12 bg-white p-4">
         <h2>Lender</h2>
         <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <div class="flex items-center gap-2">
+          <RouterLink to="" class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
-              :src="itemShareStore.loadedProfile(1).image"
+              :src="profile.image"
               alt=""
               srcset=""
             />
             <span class="whitespace-nowrap">{{
-              currentUserFName + " " + currentUserLName
+              profile.firstName + " " + profile.lastName
             }}</span>
-          </div>
+          </RouterLink>
           <button class="flex items-center gap-1">
             <span class="material-icons text-green-600">forum</span>Chat
           </button>
@@ -209,9 +198,9 @@ onMounted(async () => {
               <StarRating value="4" />
               <span class="truncate text-gray-700">
                 {{
-                  itemShareStore.loadedProfile(i).firstname +
+                  itemShareStore.loadedProfile(i).firstName +
                   " " +
-                  itemShareStore.loadedProfile(i).lastname
+                  itemShareStore.loadedProfile(i).lastName
                 }}</span
               >
             </div>

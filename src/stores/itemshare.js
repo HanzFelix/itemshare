@@ -33,71 +33,71 @@ export const useItemShareStore = defineStore("itemshare", {
     sampleProfiles: [
       {
         id: 0,
-        firstname: "Isaac",
-        lastname: "Einstein",
+        firstName: "Isaac",
+        lastName: "Einstein",
         image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
         location: "Baybay City",
       },
       {
         id: 1,
-        firstname: "John",
-        lastname: "Smith",
+        firstName: "John",
+        lastName: "Smith",
         image: "https://img.getimg.ai/generated/img-NBSWR192z1P7HQLAUP4hR.jpeg",
         location: "Baybay City",
       },
       {
         id: 2,
-        firstname: "Emily",
-        lastname: "Johnson",
+        firstName: "Emily",
+        lastName: "Johnson",
         image: "https://img.getimg.ai/generated/img-BiRtUIr1MBupBILYwExbV.jpeg",
         location: "Tacloban City",
       },
       {
         id: 3,
-        firstname: "David",
-        lastname: "Brown",
+        firstName: "David",
+        lastName: "Brown",
         image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
         location: "Calbayog City",
       },
       {
         id: 4,
-        firstname: "Sarah",
-        lastname: "Davis",
+        firstName: "Sarah",
+        lastName: "Davis",
         image: "https://img.getimg.ai/generated/img-A1VWmtSrpbnz3IaAZoRGd.jpeg",
         location: "Tacloban City",
       },
       {
         id: 5,
-        firstname: "Michael",
-        lastname: "Wilson",
+        firstName: "Michael",
+        lastName: "Wilson",
         image: "https://img.getimg.ai/generated/img-LGspJ7ZY9oQAd8wXCvllL.jpeg",
         location: "Ormoc City",
       },
       {
         id: 6,
-        firstname: "Jessica",
-        lastname: "Thompson",
+        firstName: "Jessica",
+        lastName: "Thompson",
         image: "https://th.bing.com/th/id/OIG.8wsk4S4V4bwjD_ptJt.d?pid=ImgGn",
         location: "Maasin City",
       },
       {
         id: 7,
-        firstname: "Christopher",
-        lastname: "Martinez",
+        firstName: "Christopher",
+        lastName: "Martinez",
         image: "https://th.bing.com/th/id/OIG.cK203xdTu6lyf1bhWnDk?pid=ImgGn",
         location: "Tacloban City",
       },
       {
         id: 8,
-        firstname: "Megan",
-        lastname: "Taylor",
+        firstName: "Megan",
+        lastName: "Taylor",
         image: "https://th.bing.com/th/id/OIG.IseiFm0qbzVS.fUqNwqS?pid=ImgGn",
         location: "Calbayog City",
       },
     ],
     /*loadedProfile: {
-      firstname: "Isaac",
-      lastname: "Einstein",
+      firstName: "Isaac",
+      lastName: "Einstein",
       image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
       location: "Baybay City",
     },*/
@@ -314,6 +314,7 @@ export const useItemShareStore = defineStore("itemshare", {
     },
   },
   actions: {
+    // verifies if user is already logged in
     async initMyProfile() {
       firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
@@ -326,6 +327,7 @@ export const useItemShareStore = defineStore("itemshare", {
       });
     },
 
+    // loads a profile based on user's uid
     async loadProfile(useruid) {
       const profileSnap = await getDoc(doc(db, "users", useruid));
       if (profileSnap.exists()) {
@@ -338,6 +340,7 @@ export const useItemShareStore = defineStore("itemshare", {
       }
     },
 
+    // returns true if login is successful
     async login(email, password) {
       if (email !== "" && password !== "") {
         try {
@@ -366,6 +369,7 @@ export const useItemShareStore = defineStore("itemshare", {
       }
     },
 
+    // returns an array of items, paramters are maximum to retrieve, or just user's uid
     async loadItems(maxlimit = 12, ownerId = "") {
       let q = query(collection(db, "items"));
       if (ownerId) {
@@ -392,17 +396,37 @@ export const useItemShareStore = defineStore("itemshare", {
       });
       return fItems;
     },
+
+    // returns one item based on item's id
+    async loadItem(itemid) {
+      const itemSnap = await getDoc(doc(db, "items", itemid));
+      if (itemSnap.exists()) {
+        return {
+          itemName: itemSnap.data().itemName,
+          location: itemSnap.data().location,
+          rentAmount: itemSnap.data().rentAmount,
+          rentRate: itemSnap.data().rentRate,
+          description: itemSnap.data().description,
+          tags: itemSnap.data().tags,
+          ownerId: itemSnap.data().ownerId,
+        };
+      }
+    },
+
+    // returns a list of items based on search queries of tags
     searchItem() {
       // some search processing
       return true;
     },
 
+    // returns true if successful?
     async logout() {
       try {
         await firebase.auth().signOut();
 
         this.myUserUid = null;
         localStorage.removeItem("useruid");
+        return true;
       } catch (error) {
         throw error;
       }
