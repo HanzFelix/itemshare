@@ -8,10 +8,9 @@ import "firebase/compat/auth";
 const router = useRouter();
 const itemShareStore = useItemShareStore();
 
-let error = ref(false);
 let errorMessage = ref("");
-const email = ref("hidol@gmail.com");
-const password = ref("iloveyou143");
+const email = ref("");
+const password = ref("");
 
 async function login() {
   try {
@@ -19,7 +18,6 @@ async function login() {
       router.push("/home");
     }
   } catch (err) {
-    error.value = true;
     errorMessage.value = err;
   }
 }
@@ -43,7 +41,7 @@ async function login() {
         placeholder="Password"
       />
       <div
-        v-show="error"
+        v-show="errorMessage"
         class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
       >
         {{ errorMessage }}
