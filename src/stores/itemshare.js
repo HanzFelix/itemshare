@@ -344,14 +344,12 @@ export const useItemShareStore = defineStore("itemshare", {
     async login(email, password) {
       if (email !== "" && password !== "") {
         try {
-          return firebase
+          const userCredential = await firebase
             .auth()
-            .signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-              this.myUserUid = userCredential.user.uid;
-              localStorage.setItem("useruid", this.myUserUid);
-              return true; // returned and returned to LoginView to redirect to home
-            });
+            .signInWithEmailAndPassword(email, password);
+          this.myUserUid = userCredential.user.uid;
+          localStorage.setItem("useruid", this.myUserUid);
+          return true; // returned and returned to LoginView to redirect to home
         } catch (error) {
           switch (error.code) {
             case "auth/invalid-email":
@@ -369,7 +367,7 @@ export const useItemShareStore = defineStore("itemshare", {
       }
     },
 
-    // returns an array of items, paramters are maximum to retrieve, or just user's uid
+    // returns an array of items, paramters are: max number to retrieve, or just user's uid
     async loadItems(maxlimit = 12, ownerId = "") {
       let q = query(collection(db, "items"));
       if (ownerId) {
@@ -416,6 +414,56 @@ export const useItemShareStore = defineStore("itemshare", {
     // returns a list of items based on search queries of tags
     searchItem() {
       // some search processing
+      return [];
+    },
+
+    async register(details) {
+      console.log(details);
+      if (
+        details.phoneNumber == "" ||
+        details.email == "" ||
+        details.firstName == "" ||
+        details.lastName == "" ||
+        details.gender == "Select" ||
+        details.birthday == "" ||
+        details.password == "" ||
+        details.confirmPassword == ""
+      ) {
+        throw "Please fill out all the fields!";
+      }
+
+      if (details.password != details.confirmPassword) {
+        throw "Password does not match!";
+      }
+
+      if (!details.terms) {
+        throw "Please agree to the terms and conditions.";
+      }
+
+      try {
+        const createdUser = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(details.email, details.password);
+        const dataBase = db.collection("users").doc(createdUser.user.uid);
+        await dataBase.set({
+          firstName: details.firstName,
+          lastName: details.lastName,
+          email: details.email,
+          phoneNumber: details.phoneNumber,
+          gender: details.gender,
+          birthday: details.birthday,
+          location: "unspecified",
+          verified: false,
+          admin: false,
+        });
+
+        this.myUserUid = createdUser.user.uid;
+        localStorage.setItem("useruid", this.myUserUid);
+      } catch (error) {
+        throw error.message;
+      }
+
+      // if all is a success
       return true;
     },
 

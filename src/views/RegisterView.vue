@@ -1,75 +1,32 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import db from "../firebase/firebaseInit.js";
+import { useItemShareStore } from "../stores/itemshare";
 
 const router = useRouter();
-
-const phoneNumber = ref("");
-const email = ref("");
-const firstName = ref("");
-const lastName = ref("");
-const gender = ref("Select");
-const birthday = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-const checkbox = ref(false);
-let error = ref(false);
+const itemShareStore = useItemShareStore();
 let errorMessage = ref("");
 
-const register = async () => {
+const registerDetails = ref({
+  phoneNumber: "",
+  email: "",
+  firstName: "",
+  lastName: "",
+  gender: "Select",
+  birthday: "",
+  password: "",
+  confirmPassword: "",
+  terms: false,
+});
+
+async function register() {
   try {
-    if (
-      phoneNumber.value !== "" &&
-      email.value !== "" &&
-      firstName.value !== "" &&
-      lastName.value !== "" &&
-      gender.value !== "Select" &&
-      birthday.value !== "" &&
-      password.value !== "" &&
-      confirmPassword !== ""
-    ) {
-      if (password.value === confirmPassword.value) {
-        if (checkbox.value) {
-          const firebaseAuth = await firebase.auth();
-          const createUser = await firebaseAuth.createUserWithEmailAndPassword(
-            email.value,
-            password.value
-          );
-          const result = await createUser;
-          const dataBase = db.collection("users").doc(result.user.uid);
-          await dataBase.set({
-            firstName: firstName.value,
-            lastName: lastName.value,
-            email: email.value,
-            phoneNumber: phoneNumber.value,
-            gender: gender.value,
-            birthday: birthday.value,
-            location: "unspecified",
-            verified: false,
-            admin: false,
-          });
-          router.push("/home");
-          return;
-        } else {
-          error.value = true;
-          errorMessage.value = "Please agree to the terms and conditions.";
-        }
-      } else {
-        error.value = true;
-        errorMessage.value = "Password does not match!";
-      }
-    } else {
-      error.value = true;
-      errorMessage.value = "Please fill out all the fields!";
-    }
-  } catch (err) {
-    error.value = true;
-    errorMessage.value = err.message;
+    if (await itemShareStore.register(registerDetails.value))
+      router.push("/home");
+  } catch (error) {
+    errorMessage.value = error;
   }
-};
+}
 </script>
 <template>
   <div
@@ -84,7 +41,7 @@ const register = async () => {
         <div class="flex basis-1/2 flex-col gap-2">
           <label for="phone">Phone Number</label>
           <input
-            v-model="phoneNumber"
+            v-model="registerDetails.phoneNumber"
             name="phone"
             type="tel"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -97,7 +54,7 @@ const register = async () => {
           </button>
           <label for="email">Email Address</label>
           <input
-            v-model="email"
+            v-model="registerDetails.email"
             name="email"
             type="email"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -105,7 +62,7 @@ const register = async () => {
           />
           <label for="fname">First Name</label>
           <input
-            v-model="firstName"
+            v-model="registerDetails.firstName"
             name="fname"
             type="text"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -113,7 +70,7 @@ const register = async () => {
           />
           <label for="lname">Last Name</label>
           <input
-            v-model="lastName"
+            v-model="registerDetails.lastName"
             name="lname"
             type="text"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -121,9 +78,8 @@ const register = async () => {
           />
           <label for="fname">Gender</label>
           <select
-            v-model="gender"
+            v-model="registerDetails.gender"
             name="fname"
-            type="text"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-700"
             placeholder="Gender"
           >
@@ -135,14 +91,14 @@ const register = async () => {
         <div class="flex basis-1/2 flex-col gap-2">
           <label for="bday">Birthday</label>
           <input
-            v-model="birthday"
+            v-model="registerDetails.birthday"
             name="bday"
             type="date"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-700"
           />
           <label for="password">Password</label>
           <input
-            v-model="password"
+            v-model="registerDetails.password"
             name="password"
             type="password"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -150,14 +106,14 @@ const register = async () => {
           />
           <label for="confirm password">Confirm Password</label>
           <input
-            v-model="confirmPassword"
+            v-model="registerDetails.confirmPassword"
             name="confirm password"
             type="password"
             class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
             placeholder="Confirm Password"
           />
           <div
-            v-show="error"
+            v-show="errorMessage"
             class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
           >
             {{ errorMessage }}
@@ -167,7 +123,7 @@ const register = async () => {
               type="checkbox"
               name="checkbox"
               id="checkbox"
-              v-model="checkbox"
+              v-model="registerDetails.terms"
             />
             <span> I agree to the </span>
             <RouterLink to="/terms-and-conditions" class="underline">
