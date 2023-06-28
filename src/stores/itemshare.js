@@ -8,10 +8,20 @@ import {
   getDocs,
   doc,
   limit,
+  addDoc,
   query,
   where,
+  orderBy,
 } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
+import {
+  ref as stRef,
+  getStorage,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+
+const storage = getStorage();
 
 export const useItemShareStore = defineStore("itemshare", {
   state: () => ({
@@ -373,6 +383,7 @@ export const useItemShareStore = defineStore("itemshare", {
       if (ownerId) {
         q = query(q, where("ownerId", "==", ownerId));
       }
+      // q = query(q, orderBy("dateCreated", "desc")); // temp, please uncomment this later
       q = query(q, limit(maxlimit));
       const querySnapshot = await getDocs(q);
       const fItems = [];
@@ -412,6 +423,55 @@ export const useItemShareStore = defineStore("itemshare", {
           ],
           ownerId: itemSnap.data().ownerId,
         };
+      }
+    },
+
+    // returns an the imageURL
+    async uploadImage(image) {
+      // set the filename to timestamp.jpg or something in itemImages folder
+      const storageRef = stRef(
+        storage,
+        "itemImages/" + Date.now() + "." + image.name.split(".").pop()
+      );
+      await uploadBytesResumable(storageRef, image);
+      return await getDownloadURL(storageRef);
+    },
+
+    // returns true if operation is successful
+    async createItem(item) {
+      if (
+        item.imageFiles.length == 0 ||
+        item.itemName == "" ||
+        item.location == "" ||
+        item.rentAmount == "" ||
+        item.rentRate == "" ||
+        item.tags.length == 0 ||
+        item.description == ""
+      ) {
+        throw "Please fill out all the fields!";
+      }
+
+      try {
+        const uploadedImageURLs = [];
+        for (var image of item.imageFiles) {
+          uploadedImageURLs.push(await this.uploadImage(image));
+        }
+
+        await addDoc(collection(db, "items"), {
+          ownerId: this.myUserUid,
+          images: uploadedImageURLs,
+          itemName: item.itemName,
+          location: item.location,
+          rentAmount: item.rentAmount,
+          rentRate: item.rentRate,
+          tags: item.tags,
+          description: item.description,
+          dateCreated: Date.now(),
+        });
+
+        return true;
+      } catch (err) {
+        throw err.message;
       }
     },
 

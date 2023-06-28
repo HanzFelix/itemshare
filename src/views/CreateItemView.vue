@@ -4,58 +4,35 @@ import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import db from "../firebase/firebaseInit.js";
-import "firebase/storage";
-import {
-  ref as stRef,
-  getStorage,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-/*import {
-  getStorage,
-  ref as stRef,
-  uploadBytes,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";*/
-
-const currentUserID = ref();
-const currentUserFName = ref("");
-const currentUserLName = ref("");
-//const imagePreview = ref();
-//const imgPath = ref();
-
-onMounted(() => {
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      // User logged in already or has just logged in.
-      currentUserID.value = user.uid;
-      const querySnapshot = await getDocs(collection(db, "users"));
-      querySnapshot.forEach((doc) => {
-        if (user.uid == doc.id) {
-          currentUserFName.value = doc.data().firstName;
-          currentUserLName.value = doc.data().lastName;
-        }
-      });
-    } else {
-      // User not logged in or has just logged out.
-    }
-  });
-});
+import { useItemShareStore } from "../stores/itemshare";
 
 const router = useRouter();
-const storage = getStorage();
+const itemShareStore = useItemShareStore();
 
 const imagePreviews = ref([]);
-const imageFiles = ref([]);
-const uploadedImageURLs = ref([]);
 
+const item = ref({
+  itemName: "",
+  location: "",
+  rentAmount: "",
+  rentRate: "",
+  description: "",
+  imageFiles: [],
+  tags: [],
+});
+
+const errorMessage = ref("");
+
+const tagInput = ref("");
+
+// image-related stuff
 function loadImageFile(e) {
   for (let file of e.target.files) {
-    let reader = new FileReader(); // allow multiple files to be read simultaneously
-    imageFiles.value.push(file); // add the file to the list of files to be uploaded later
+    // allow multiple files to be read simultaneously
+    let reader = new FileReader();
+
+    // add the file to the list of files to be uploaded later
+    item.value.imageFiles.push(file);
 
     // Converts the file to a browser-readable image (aka string with base64 encoding) for display
     reader.readAsDataURL(file);
@@ -65,16 +42,14 @@ function loadImageFile(e) {
   }
 }
 
-const tagInput = ref("");
-const tags = ref([]);
-
+// tag-related stuff
 function deleteTag(index) {
-  tags.value.splice(index, 1);
+  item.value.tags.splice(index, 1);
 }
 
 function addTag() {
-  if (!tags.value.includes(tagInput.value)) {
-    tags.value.push(tagInput.value);
+  if (!item.value.tags.includes(tagInput.value)) {
+    item.value.tags.push(tagInput.value);
   }
   tagInput.value = "";
 }
@@ -98,90 +73,20 @@ personal idea lang on how to create item
 
 */
 
-const itemName = ref("");
-const location = ref("");
-const rentAmount = ref();
-const rentRate = ref("");
-const description = ref("");
-let error = ref(false);
-let errorMessage = ref("");
-
-// returns an the imageURL
-async function uploadImage(image) {
-  // set the filename to timestamp.jpg or something in itemImages folder
-  const storageRef = stRef(
-    storage,
-    "itemImages/" + Date.now() + "." + image.name.split(".").pop()
-  );
-  await uploadBytesResumable(storageRef, image);
-  return await getDownloadURL(storageRef);
-}
-
-async function addItem() {
+async function createItem() {
+  errorMessage.value = "";
   try {
-    if (
-      imageFiles.value.length !== 0 &&
-      itemName.value !== "" &&
-      location.value !== "" &&
-      rentAmount.value !== "" &&
-      rentRate.value !== "" &&
-      tags.value.length !== 0 &&
-      description.value !== ""
-    ) {
-      try {
-        for (var image of imageFiles.value) {
-          uploadedImageURLs.value.push(await uploadImage(image));
-        }
-
-        await addDoc(collection(db, "items"), {
-          ownerId: currentUserID.value,
-          ownerFName: currentUserFName.value,
-          ownerLName: currentUserLName.value,
-          images: uploadedImageURLs.value,
-          itemName: itemName.value,
-          location: location.value,
-          rentAmount: rentAmount.value,
-          rentRate: rentRate.value,
-          tags: tags.value,
-          description: description.value,
-        });
-        router.push("/home");
-        return;
-      } catch (err) {
-        error.value = true;
-        errorMessage.value = err.message;
-      }
-    } else {
-      error.value = true;
-      errorMessage.value = "Please fill out all the fields!";
-    }
-  } catch (err) {
-    error.value = true;
-    errorMessage.value = err.message;
+    if (await itemShareStore.createItem(item.value)) router.push("/home");
+  } catch (error) {
+    errorMessage.value = error;
   }
 }
-/*
-async function uploadImage(img) {
-  //console.log(img.name);
-  const storageRef = stRef(storage, "postImages/" + img.name);
-  const taskUpload = uploadBytesResumable(storageRef, img);
-  await taskUpload;
-  const imageURL = getDownloadURL(storageRef);
-  return await imageURL;
-}
-
-async function handleUploadImage(event) {
-  const img = event.target.files[0];
-  imagePreview.value = URL.createObjectURL(img);
-  imgPath.value = await uploadImage(img);
-}
-*/
 </script>
 <template>
   <main>
     <form
       class="container mx-auto flex flex-col px-4 py-8"
-      @submit.stop.prevent="addItem"
+      @submit.stop.prevent="createItem"
     >
       <h1>Create an item</h1>
       <input
@@ -212,7 +117,7 @@ async function handleUploadImage(event) {
       </div>
       <label for="fname">Item Name</label>
       <input
-        v-model="itemName"
+        v-model="item.itemName"
         name="fname"
         type="text"
         class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -220,7 +125,7 @@ async function handleUploadImage(event) {
       />
       <label for="fname">Location</label>
       <input
-        v-model="location"
+        v-model="item.location"
         name="fname"
         type="text"
         class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -229,14 +134,14 @@ async function handleUploadImage(event) {
       <label for="fname">Rent rate</label>
       <div class="rent-rate">
         <input
-          v-model="rentAmount"
+          v-model="item.rentAmount"
           name="fname"
           type="text"
           class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
           placeholder="Amount"
         />
         <input
-          v-model="rentRate"
+          v-model="item.rentRate"
           name="fname"
           type="text"
           class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
@@ -246,7 +151,7 @@ async function handleUploadImage(event) {
       <h2>Tags</h2>
       <div class="flex flex-wrap gap-2 border border-black p-2">
         <div
-          v-for="(tag, index) in tags"
+          v-for="(tag, index) in item.tags"
           class="flex items-center gap-1 whitespace-nowrap rounded-md bg-red-300 px-2 py-1"
         >
           <span>{{ tag }}</span>
@@ -264,19 +169,20 @@ async function handleUploadImage(event) {
           placeholder="Add a tag..."
           @input="validateTag()"
           @keydown.enter.prevent="addTag()"
+          @focusout="addTag()"
           v-model="tagInput"
           class="flex-1 border-none py-0"
         />
       </div>
       <label for="fname">Description</label>
       <textarea
-        v-model="description"
+        v-model="item.description"
         name="description"
         class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="A short description on what the item is about"
       ></textarea>
       <div
-        v-show="error"
+        v-show="errorMessage"
         class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
       >
         {{ errorMessage }}
