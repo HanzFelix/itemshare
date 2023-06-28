@@ -407,7 +407,9 @@ export const useItemShareStore = defineStore("itemshare", {
           rentRate: itemSnap.data().rentRate,
           description: itemSnap.data().description,
           tags: itemSnap.data().tags,
-          images: itemSnap.data().images,
+          images: itemSnap.data().images || [
+            "https://www.ikea.com/ph/en/images/products/ringsta-lamp-shade-white__0784061_pe761617_s5.jpg",
+          ],
           ownerId: itemSnap.data().ownerId,
         };
       }
