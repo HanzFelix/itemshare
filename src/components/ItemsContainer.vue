@@ -58,7 +58,7 @@ function gridSize(text) {
           alt=""
           srcset=""
           loading="lazy"
-          class="object-contain"
+          class="aspect-square h-full object-contain"
         />
       </div>
 
