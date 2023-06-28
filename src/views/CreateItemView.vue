@@ -7,6 +7,12 @@ import "firebase/compat/auth";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
 import "firebase/storage";
+import {
+  ref as stRef,
+  getStorage,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 /*import {
   getStorage,
   ref as stRef,
@@ -40,22 +46,23 @@ onMounted(() => {
 });
 
 const router = useRouter();
+const storage = getStorage();
 
-const reader = new FileReader();
-const imageFiles = ref([]);
 const imagePreviews = ref([]);
+const imageFiles = ref([]);
+const uploadedImageURLs = ref([]);
 
 function loadImageFile(e) {
-  let file = e.target.files[0];
+  for (let file of e.target.files) {
+    let reader = new FileReader(); // allow multiple files to be read simultaneously
+    imageFiles.value.push(file); // add the file to the list of files to be uploaded later
 
-  // add the file to the list of files to be uploaded later
-  imageFiles.value.push(file);
-
-  // Converts the file to a browser-readable image (aka string with base64 encoding) for display
-  reader.readAsDataURL(file);
-  reader.onload = (event) => {
-    imagePreviews.value.push(event.target.result);
-  };
+    // Converts the file to a browser-readable image (aka string with base64 encoding) for display
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      imagePreviews.value.push(event.target.result);
+    };
+  }
 }
 
 const tagInput = ref("");
@@ -99,23 +106,38 @@ const description = ref("");
 let error = ref(false);
 let errorMessage = ref("");
 
-const addItem = async () => {
+// returns an the imageURL
+async function uploadImage(image) {
+  // set the filename to timestamp.jpg or something in itemImages folder
+  const storageRef = stRef(
+    storage,
+    "itemImages/" + Date.now() + "." + image.name.split(".").pop()
+  );
+  await uploadBytesResumable(storageRef, image);
+  return await getDownloadURL(storageRef);
+}
+
+async function addItem() {
   try {
     if (
-      /*image !== null &&*/
+      imageFiles.value.length !== 0 &&
       itemName.value !== "" &&
       location.value !== "" &&
       rentAmount.value !== "" &&
       rentRate.value !== "" &&
-      tags.value !== null &&
+      tags.value.length !== 0 &&
       description.value !== ""
     ) {
       try {
+        for (var image of imageFiles.value) {
+          uploadedImageURLs.value.push(await uploadImage(image));
+        }
+
         await addDoc(collection(db, "items"), {
           ownerId: currentUserID.value,
           ownerFName: currentUserFName.value,
           ownerLName: currentUserLName.value,
-          //image: imageFiles.value,
+          images: uploadedImageURLs.value,
           itemName: itemName.value,
           location: location.value,
           rentAmount: rentAmount.value,
@@ -137,7 +159,7 @@ const addItem = async () => {
     error.value = true;
     errorMessage.value = err.message;
   }
-};
+}
 /*
 async function uploadImage(img) {
   //console.log(img.name);
@@ -165,8 +187,10 @@ async function handleUploadImage(event) {
       <input
         type="file"
         id="add-image"
+        accept="image/*"
         @change="loadImageFile($event)"
         hidden
+        multiple
       />
       <label for="images">Add Images</label>
       <div class="w-full overflow-x-auto bg-red-200 p-4" id="images">
