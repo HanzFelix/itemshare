@@ -26,6 +26,7 @@ const item = ref({
   location: "",
   rentAmount: "",
   rentRate: "",
+  images: [],
   description: "",
   ownerId: "",
   tags: [],
@@ -51,7 +52,7 @@ onMounted(async () => {
       <!--Images-->
       <div class="flex basis-3/12 flex-col gap-2 bg-white p-4">
         <img
-          :src="sampleImgs[activeImg]"
+          :src="item.images[activeImg]"
           alt=""
           srcset=""
           class="aspect-square w-full object-contain"
@@ -59,7 +60,7 @@ onMounted(async () => {
         <div class="flex w-full gap-2 overflow-x-auto">
           <img
             class="aspect-square h-24 cursor-pointer object-contain"
-            v-for="(img, index) in sampleImgs"
+            v-for="(img, index) in item.images"
             :src="img"
             @click="viewImage(index)"
             alt=""
