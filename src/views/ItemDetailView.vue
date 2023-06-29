@@ -50,21 +50,22 @@ onMounted(async () => {
     <!--Item-->
     <section class="flex flex-col gap-2 lg:flex-row">
       <!--Images-->
-      <div class="flex basis-3/12 flex-col gap-2 bg-white p-4">
+      <div class="flex basis-3/12 flex-col bg-white p-4">
         <img
           :src="item.images[activeImg]"
           alt=""
           srcset=""
           class="aspect-square w-full object-contain"
         />
-        <div class="flex w-full gap-2 overflow-x-auto">
+        <div class="flex w-full gap-2 overflow-x-auto px-1 py-2">
           <img
-            class="aspect-square h-24 cursor-pointer object-contain"
+            class="aspect-square h-24 cursor-pointer object-contain ring-4 ring-opacity-75"
             v-for="(img, index) in item.images"
             :src="img"
             @click="viewImage(index)"
             alt=""
             srcset=""
+            :class="activeImg == index ? 'ring-primary' : 'ring-transparent'"
           />
         </div>
       </div>
