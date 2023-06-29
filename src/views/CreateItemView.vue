@@ -89,21 +89,21 @@ async function createItem() {
         <CustomField
           v-model="item.itemName"
           label="Item Name"
-          placeholder="A name of the item..."
+          placeholder="A name for the item..."
         />
         <div class="flex flex-col gap-1">
           <label>Description</label>
           <textarea
             v-model="item.description"
             name="description"
-            class="rounded-md border-2 border-text border-opacity-25 bg-secondary bg-opacity-50 focus:border-2 focus:border-primary focus:border-opacity-60 focus:bg-primary focus:bg-opacity-5 focus:ring-0"
+            class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-5 placeholder:text-sm placeholder:text-text placeholder:text-opacity-60 focus:border-2 focus:border-primary focus:border-opacity-100 focus:bg-accent focus:bg-opacity-20 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50"
             placeholder="A description on the item..."
           ></textarea>
         </div>
         <div class="flex flex-col gap-1">
           <label>Tags</label>
           <div
-            class="flex flex-wrap gap-2 rounded-md border-2 border-text border-opacity-25 bg-secondary p-2 focus-within:border-primary focus-within:border-opacity-60 focus-within:bg-primary focus-within:bg-opacity-5"
+            class="flex flex-wrap gap-2 rounded-md border-2 border-text border-opacity-25 bg-white bg-opacity-5 p-2 focus-within:border-primary focus-within:border-opacity-60 focus-within:bg-accent focus-within:bg-opacity-20"
           >
             <div
               v-for="(tag, index) in item.tags"
