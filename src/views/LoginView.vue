@@ -4,6 +4,7 @@ import { ref } from "vue";
 import firebase from "firebase/compat/app";
 import { useItemShareStore } from "../stores/itemshare";
 import "firebase/compat/auth";
+import CustomField from "../components/CustomField.vue";
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
@@ -28,16 +29,10 @@ async function login() {
   >
     <form class="flex max-w-full flex-col gap-2" @submit.stop.prevent="login">
       <h1>Login</h1>
-      <input
-        v-model="email"
-        type="text"
-        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
-        placeholder="Email"
-      />
-      <input
+      <CustomField input-type="email" v-model="email" placeholder="Email" />
+      <CustomField
+        input-type="password"
         v-model="password"
-        type="password"
-        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="Password"
       />
       <div
