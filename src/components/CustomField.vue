@@ -23,7 +23,8 @@ defineEmits(["update:modelValue"]);
       :placeholder="placeholder"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
-      class="rounded-md border-2 border-text border-opacity-25 bg-secondary bg-opacity-50 focus:border-2 focus:border-primary focus:border-opacity-60 focus:bg-primary focus:bg-opacity-5 focus:ring-0"
+      class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-5 placeholder:text-sm placeholder:text-text placeholder:text-opacity-60 focus:border-2 focus:border-primary focus:border-opacity-100 focus:bg-accent focus:bg-opacity-20 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50"
     />
+    <slot></slot>
   </div>
 </template>
