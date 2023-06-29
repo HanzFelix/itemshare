@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useItemShareStore } from "../stores/itemshare";
+import CustomField from "../components/CustomField.vue";
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
@@ -39,77 +40,66 @@ async function register() {
       <h1>Create an account</h1>
       <div class="flex flex-col gap-2 xl:flex-row xl:gap-8">
         <div class="flex basis-1/2 flex-col gap-2">
-          <label for="phone">Phone Number</label>
-          <input
+          <CustomField
+            label="Phone Number"
             v-model="registerDetails.phoneNumber"
-            name="phone"
-            type="tel"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+            input-type="tel"
             placeholder="Enter your phone number"
-          />
-          <button
-            class="rounded-xl border-2 border-green-800 bg-white px-5 py-3 text-green-800"
           >
-            Send SMS Code
-          </button>
-          <label for="email">Email Address</label>
-          <input
+            <button
+              class="rounded-md border-2 border-transparent bg-primary bg-opacity-70 px-4 py-2 text-white transition-colors hover:bg-primary hover:bg-opacity-100"
+            >
+              Send SMS Code
+            </button>
+          </CustomField>
+          <CustomField
+            label="Email Address"
             v-model="registerDetails.email"
-            name="email"
-            type="email"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+            input-type="email"
             placeholder="Email"
           />
-          <label for="fname">First Name</label>
-          <input
+          <CustomField
+            label="First Name"
             v-model="registerDetails.firstName"
-            name="fname"
-            type="text"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+            input-type="text"
             placeholder="First Name"
           />
-          <label for="lname">Last Name</label>
-          <input
+          <CustomField
+            label="Last Name"
             v-model="registerDetails.lastName"
-            name="lname"
-            type="text"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+            input-type="text"
             placeholder="Last Name"
           />
-          <label for="fname">Gender</label>
-          <select
-            v-model="registerDetails.gender"
-            name="fname"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-700"
-            placeholder="Gender"
-          >
-            <option>Male</option>
-            <option>Female</option>
-            <option>Others</option>
-          </select>
+          <div class="flex w-full flex-col gap-1">
+            <label>Gender</label>
+            <select
+              v-model="registerDetails.gender"
+              class="rounded-md border-2 border-text border-opacity-25 bg-secondary bg-opacity-50 focus:border-2 focus:border-primary focus:border-opacity-60 focus:bg-primary focus:bg-opacity-5 focus:ring-0"
+              placeholder="Gender"
+            >
+              <option>Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Others</option>
+            </select>
+          </div>
         </div>
         <div class="flex basis-1/2 flex-col gap-2">
-          <label for="bday">Birthday</label>
-          <input
+          <CustomField
+            label="Birthday"
             v-model="registerDetails.birthday"
-            name="bday"
-            type="date"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-700"
+            input-type="date"
           />
-          <label for="password">Password</label>
-          <input
+          <CustomField
+            label="Password"
             v-model="registerDetails.password"
-            name="password"
-            type="password"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+            input-type="password"
             placeholder="Password"
           />
-          <label for="confirm password">Confirm Password</label>
-          <input
+          <CustomField
+            label="Confirm Password"
             v-model="registerDetails.confirmPassword"
-            name="confirm password"
-            type="password"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+            input-type="password"
             placeholder="Confirm Password"
           />
           <div
@@ -124,18 +114,21 @@ async function register() {
               name="checkbox"
               id="checkbox"
               v-model="registerDetails.terms"
+              class="text-primary focus:ring-0"
             />
             <span> I agree to the </span>
             <RouterLink to="/terms-and-conditions" class="underline">
               Terms and Conditions
             </RouterLink>
           </p>
-          <button class="rounded-xl bg-green-800 px-5 py-3 text-white">
+          <button
+            class="rounded-md border-2 border-transparent bg-primary px-4 py-2 text-center text-white"
+          >
             CREATE ACCOUNT
           </button>
           <RouterLink
             to="/login"
-            class="rounded-xl border-2 border-green-800 bg-white px-5 py-3 text-center text-green-800"
+            class="rounded-md border-2 border-primary bg-white px-4 py-2 text-center text-primary"
           >
             GO BACK
           </RouterLink>
