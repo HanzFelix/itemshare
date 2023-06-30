@@ -83,7 +83,7 @@ async function createItem() {
     <h1>New Item for Rent</h1>
     <form
       @submit.stop.prevent="createItem"
-      class="flex flex-col gap-4 divide-x-0 divide-text divide-opacity-25 bg-white py-8 md:flex-row md:gap-0 md:divide-x-2"
+      class="flex flex-col gap-4 divide-x-0 divide-secondary bg-white py-8 shadow-sm shadow-secondary md:flex-row md:gap-0 md:divide-x-2"
     >
       <div class="flex basis-1/2 flex-col gap-4 px-8">
         <CustomField
@@ -96,22 +96,22 @@ async function createItem() {
           <textarea
             v-model="item.description"
             name="description"
-            class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-5 placeholder:text-sm placeholder:text-text placeholder:text-opacity-60 focus:border-2 focus:border-primary focus:border-opacity-100 focus:bg-accent focus:bg-opacity-20 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50"
+            class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 placeholder:text-sm placeholder:text-text placeholder:text-opacity-60 focus:border-primary focus:border-opacity-100 focus:bg-white focus:bg-opacity-90 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50"
             placeholder="A description on the item..."
           ></textarea>
         </div>
         <div class="flex flex-col gap-1">
           <label>Tags</label>
           <div
-            class="flex flex-wrap gap-2 rounded-md border-2 border-text border-opacity-25 bg-white bg-opacity-5 p-2 focus-within:border-primary focus-within:border-opacity-60 focus-within:bg-accent focus-within:bg-opacity-20"
+            class="flex flex-wrap gap-2 rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 p-2 focus-within:border-primary focus-within:border-opacity-100 focus-within:bg-white focus-within:bg-opacity-90"
           >
             <div
               v-for="(tag, index) in item.tags"
-              class="flex items-center gap-1 whitespace-nowrap rounded-md bg-primary bg-opacity-90 px-2 py-1 text-white"
+              class="flex items-center gap-1 whitespace-nowrap rounded-md bg-primary bg-opacity-80 py-1 pl-2 pr-1 text-background"
             >
               <span>{{ tag }}</span>
               <button
-                class="material-icons aspect-square rounded-lg pl-1.5 text-xs font-bold text-white"
+                class="material-icons aspect-square rounded-lg bg-background bg-opacity-10 px-1 text-xs font-bold text-background hover:bg-accent hover:text-text"
                 @click="deleteTag(index)"
                 type="button"
               >
@@ -155,7 +155,7 @@ async function createItem() {
                 <p
                   class="text-sm text-text text-opacity-75 group-hover/x:text-primary"
                 >
-                  Drag an image here or browse for an image to upload.
+                  Browse for an image to upload.
                 </p>
                 <input
                   type="file"
@@ -200,13 +200,13 @@ async function createItem() {
         <footer class="mt-4 flex flex-col justify-end gap-2 md:flex-row">
           <button
             type="submit"
-            class="rounded-md border-2 border-green-800 bg-green-800 px-6 py-2 text-white"
+            class="rounded-md border-2 border-green-800 bg-green-800 px-8 py-2 text-white"
           >
             Create
           </button>
           <button
             type="button"
-            class="rounded-md border-2 border-green-800 bg-white px-6 py-2 text-green-800"
+            class="rounded-md border-2 border-green-800 bg-white px-8 py-2 text-green-800"
           >
             Cancel
           </button>

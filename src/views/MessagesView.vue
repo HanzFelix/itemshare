@@ -63,11 +63,11 @@ const conversations = ref([
   >
     <!--Recent Messages-->
     <aside
-      class="box-border basis-full overflow-hidden rounded-xl bg-white shadow-md shadow-gray-400 lg:block lg:basis-1/3"
+      class="box-border basis-full overflow-hidden rounded-xl bg-white shadow-md shadow-secondary lg:block lg:basis-1/3"
       :class="['messages'].includes($route.name) ? '' : 'hidden'"
     >
       <div class="flex h-full flex-col overflow-hidden">
-        <h1 class="z-10 px-6 py-4 shadow-sm shadow-gray-300">
+        <h1 class="z-10 px-6 py-4 shadow-sm shadow-secondary">
           Recent Messages
         </h1>
         <!-- Container -->
@@ -76,8 +76,8 @@ const conversations = ref([
           <RouterLink
             v-for="conversation in conversations"
             :to="'/messages/' + conversation.id"
-            class="my-2 flex gap-2 rounded-2xl p-2"
-            active-class="bg-yellow-200"
+            class="my-2 flex gap-2 rounded-2xl bg-opacity-40 p-2"
+            active-class="bg-accent"
           >
             <img
               :src="conversation.avatar"

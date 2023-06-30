@@ -8,11 +8,11 @@ module.exports = {
   theme: {
     extend: {},
     colors: {
-      text: "#0e1111",
-      background: "#e6eaea",
-      primary: "#2d6c50",
-      secondary: "#f4f4f6",
-      accent: "#f0bb62",
+      text: "#1d1f0e",
+      background: "#f0f2e3",
+      primary: "#18593b",
+      secondary: "#c9d09f",
+      accent: "#debc12",
     },
   },
   plugins: [require("flowbite/plugin")],

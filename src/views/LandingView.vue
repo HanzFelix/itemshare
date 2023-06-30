@@ -4,7 +4,7 @@ import ItemShareLogo from "../components/ItemShareLogo.vue";
 </script>
 <template>
   <div
-    class="flex h-full flex-col-reverse bg-green-100 md:flex-row-reverse"
+    class="flex h-full flex-col-reverse bg-background md:flex-row-reverse"
     style="
       background-image: url('https://wordpress.heals.com/blog/wp-content/uploads/2021/08/Colourful-sofa-cushions-1024x485.jpg;');
       background-size: cover;
@@ -14,7 +14,7 @@ import ItemShareLogo from "../components/ItemShareLogo.vue";
     <div
       class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
     ></div>
-    <div class="z-10 basis-1/2 bg-green-600"></div>
+    <div class="z-10 basis-1/2 bg-primary"></div>
   </div>
   <div
     class="absolute top-0 z-20 flex h-screen w-full flex-col md:flex-row-reverse"
@@ -23,14 +23,16 @@ import ItemShareLogo from "../components/ItemShareLogo.vue";
       class="flex w-full basis-full flex-col justify-between gap-4 overflow-y-auto p-8 md:basis-1/2"
     >
       <header class="flex items-center justify-between">
-        <nav class="flex gap-4 text-white">
+        <nav class="flex gap-4 text-background">
           <a href="#">About Us</a>
           <a href="#">Contacts</a>
         </nav>
         <ItemShareLogo />
       </header>
       <RouterView />
-      <footer class="text-right text-white">All Rights Reserved 2023. ®</footer>
+      <footer class="text-right text-background">
+        All Rights Reserved 2023. ®
+      </footer>
     </div>
   </div>
 </template>

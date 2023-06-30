@@ -14,6 +14,8 @@ const registerDetails = ref({
   firstName: "",
   lastName: "",
   gender: "Select",
+  location: "",
+  image: "",
   birthday: "",
   password: "",
   confirmPassword: "",
@@ -31,7 +33,7 @@ async function register() {
 </script>
 <template>
   <div
-    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-white p-8"
+    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-background p-8"
   >
     <form
       class="flex max-w-full flex-col gap-2"
@@ -47,7 +49,7 @@ async function register() {
             placeholder="Enter your phone number"
           >
             <button
-              class="rounded-md border-2 border-transparent bg-primary bg-opacity-70 px-4 py-2 text-white transition-colors hover:bg-primary hover:bg-opacity-100"
+              class="rounded-md border-2 border-text border-opacity-50 bg-secondary px-6 py-2 text-text text-opacity-80 transition-colors hover:bg-opacity-90"
             >
               Send SMS Code
             </button>
@@ -74,7 +76,7 @@ async function register() {
             <label>Gender</label>
             <select
               v-model="registerDetails.gender"
-              class="rounded-md border-2 border-text border-opacity-25 bg-secondary bg-opacity-50 focus:border-2 focus:border-primary focus:border-opacity-60 focus:bg-primary focus:bg-opacity-5 focus:ring-0"
+              class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 focus:border-2 focus:border-primary focus:border-opacity-60 focus:bg-white focus:bg-opacity-90 focus:ring-0"
               placeholder="Gender"
             >
               <option>Select</option>
@@ -85,6 +87,12 @@ async function register() {
           </div>
         </div>
         <div class="flex basis-1/2 flex-col gap-2">
+          <CustomField
+            label="Location"
+            v-model="registerDetails.location"
+            input-type="text"
+            placeholder="Location"
+          />
           <CustomField
             label="Birthday"
             v-model="registerDetails.birthday"
@@ -104,7 +112,7 @@ async function register() {
           />
           <div
             v-show="errorMessage"
-            class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
+            class="errorMessage rounded-md border-2 border-red-400 bg-red-300 px-4 py-2 align-middle text-sm text-red-800"
           >
             {{ errorMessage }}
           </div>
@@ -114,23 +122,26 @@ async function register() {
               name="checkbox"
               id="checkbox"
               v-model="registerDetails.terms"
-              class="text-primary focus:ring-0"
+              class="text-accent focus:ring-0"
             />
             <span> I agree to the </span>
-            <RouterLink to="/terms-and-conditions" class="underline">
+            <RouterLink
+              to="/terms-and-conditions"
+              class="underline decoration-accent"
+            >
               Terms and Conditions
             </RouterLink>
           </p>
           <button
-            class="rounded-md border-2 border-transparent bg-primary px-4 py-2 text-center text-white"
+            class="rounded-md border-2 border-transparent bg-primary px-6 py-2 text-white"
           >
-            CREATE ACCOUNT
+            Create account
           </button>
           <RouterLink
             to="/login"
-            class="rounded-md border-2 border-primary bg-white px-4 py-2 text-center text-primary"
+            class="rounded-md border-2 border-primary bg-background px-6 py-2 text-center text-primary"
           >
-            GO BACK
+            Go back
           </RouterLink>
         </div>
       </div>

@@ -8,12 +8,12 @@ import {
   onBeforeMount,
 } from "vue";
 import { useItemShareStore } from "../stores/itemshare";
+import CustomField from "../components/CustomField.vue";
 const itemShareStore = useItemShareStore();
 const emit = defineEmits(["close"]);
 const reader = new FileReader();
 
 const props = defineProps({
-  // value is the number of stars
   useruid: {
     default: 0,
   },
@@ -66,7 +66,7 @@ onBeforeMount(async () => {
             />
             <label
               for="add-image"
-              class="material-icons absolute -bottom-2 -right-2 cursor-pointer rounded-lg border-2 border-yellow-500 bg-yellow-200 px-1 py-1 text-yellow-700"
+              class="material-icons absolute -bottom-2 -right-2 cursor-pointer rounded-md border-2 border-text border-opacity-50 bg-accent px-1 py-1 text-text text-opacity-70"
             >
               add_photo_alternate
             </label>
@@ -78,51 +78,36 @@ onBeforeMount(async () => {
             />
           </div>
         </div>
-        <div class="flex flex-col gap-2">
-          <div class="flex flex-col">
-            <label for="fname">First Name</label>
-            <input
-              v-model="profile.firstName"
-              name="fname"
-              type="text"
-              class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-2 placeholder-yellow-700"
-              placeholder="First Name"
-            />
-          </div>
-          <div class="flex flex-col">
-            <label for="lname">Last Name</label>
-            <input
-              v-model="profile.lastName"
-              name="lname"
-              type="text"
-              class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-2 placeholder-yellow-700"
-              placeholder="Last Name"
-            />
-          </div>
+        <div class="flex w-56 basis-full flex-col gap-2">
+          <CustomField
+            label="First Name"
+            v-model="profile.firstName"
+            placeholder="First Name"
+          />
+          <CustomField
+            label="Last Name"
+            v-model="profile.lastName"
+            placeholder="Last Name"
+          />
         </div>
       </div>
-      <div class="flex flex-col">
-        <label for="lname">Location</label>
-        <input
-          name="location"
-          v-model="profile.location"
-          type="text"
-          class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-2 placeholder-yellow-700"
-          placeholder="Current Location"
-        />
-      </div>
+      <CustomField
+        label="Location"
+        v-model="profile.location"
+        placeholder="Current Location"
+      />
     </div>
-    <footer class="mt-4 flex flex-col justify-end gap-2 px-2 md:flex-row">
+    <footer class="my-2 flex flex-col justify-end gap-2 px-2 md:flex-row">
       <button
         type="submit"
-        class="rounded-lg border-2 border-green-800 bg-green-800 px-5 py-3 text-white"
+        class="rounded-md border-2 border-green-800 bg-green-800 px-6 py-2 text-white"
       >
         Save changes
       </button>
       <button
         type="button"
         @click="emit('close')"
-        class="rounded-lg border-2 border-green-800 bg-white px-5 py-3 text-green-800"
+        class="rounded-md border-2 border-green-800 bg-white px-6 py-2 text-green-800"
       >
         Cancel
       </button>

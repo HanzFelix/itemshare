@@ -103,7 +103,7 @@ onMounted(async () => {
             {{ item.description }}
           </p>
         </div>
-        <div class="mt-2 flex flex-col items-start">
+        <div class="mt-2 flex flex-col">
           <div class="flex gap-2">
             Tags:
             <ul class="flex flex-wrap gap-2">
@@ -116,14 +116,19 @@ onMounted(async () => {
               </li>
             </ul>
           </div>
-          <div class="flex flex-col gap-2">
-            <button class="mt-4 rounded-lg bg-green-600 px-5 py-3 text-white">
-              Rent
-            </button>
+          <div class="mt-4 flex flex-col justify-end gap-2 md:flex-row">
             <button
-              class="rounded-lg border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-center text-yellow-800"
+              class="flex basis-1/2 items-center justify-center gap-1 rounded-md bg-primary px-8 py-2 text-background sm:basis-auto"
             >
-              Add to Favorites
+              <span class="material-icons">more_time</span>
+              <span>Rent</span>
+            </button>
+            <!--Need some placeholder action-->
+            <button
+              class="flex basis-1/2 items-center justify-center gap-1 rounded-md border-2 border-text border-opacity-50 bg-secondary px-8 py-2 text-text text-opacity-80 transition-colors hover:bg-opacity-90 sm:basis-auto"
+            >
+              <span class="material-icons">star</span>
+              <span>Add to Favorites</span>
             </button>
           </div>
         </div>
@@ -132,7 +137,10 @@ onMounted(async () => {
       <div class="basis-3/12 bg-white p-4">
         <h2>Lender</h2>
         <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <RouterLink to="" class="flex items-center gap-2">
+          <RouterLink
+            :to="'/profile/' + item.ownerId"
+            class="flex items-center gap-2"
+          >
             <img
               class="aspect-square w-12 rounded-full"
               :src="profile.image"
@@ -187,6 +195,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+      <!--Reviews-->
       <section class="flex flex-col gap-2">
         <article v-for="i in 6" class="flex flex-col gap-2 bg-white p-4">
           <div class="flex items-center gap-2">

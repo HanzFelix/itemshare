@@ -3,7 +3,7 @@ import { RouterLink, useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import StarRating from "../components/StarRating.vue";
 import ItemsContainer from "../components/ItemsContainer.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { collection, getDocs, where, query } from "firebase/firestore";
@@ -12,14 +12,14 @@ import EditProfile from "../components/EditProfile.vue";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
-var useruid = route.params.id || itemShareStore.myUserUid;
+var useruid = route.params.id || itemShareStore.myUserUid; // redundant?
 
 const items = ref([]);
 const profile = ref({
-  firstName: "Isaac",
-  lastName: "Einstein",
-  image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
-  location: "Baybay City",
+  firstName: "",
+  lastName: "",
+  image: "",
+  location: "",
 });
 
 onMounted(async () => {
@@ -27,7 +27,14 @@ onMounted(async () => {
   profile.value = await itemShareStore.loadProfile(useruid);
   items.value = await itemShareStore.loadItems(12, useruid);
 });
-
+watch(
+  () => route.params.id,
+  async (newId) => {
+    newId = newId || itemShareStore.myUserUid;
+    profile.value = await itemShareStore.loadProfile(newId);
+    items.value = await itemShareStore.loadItems(12, newId);
+  }
+);
 const editDialog = ref(null);
 function showEditProfile() {
   itemShareStore.editProfile = profile.value;
@@ -44,7 +51,9 @@ function hideEditProfile() {
     <section class="flex flex-col gap-2 lg:flex-row">
       <div class="flex basis-9/12 flex-col gap-2 sm:flex-row">
         <!--Image-->
-        <div class="flex basis-4/12 flex-col gap-2 bg-white p-4">
+        <div
+          class="flex basis-4/12 flex-col gap-2 bg-white p-4 shadow-sm shadow-secondary"
+        >
           <img
             :src="profile.image"
             alt=""
@@ -54,18 +63,18 @@ function hideEditProfile() {
         </div>
         <!--Details-->
         <div
-          class="flex w-full basis-8/12 flex-col justify-between bg-white p-4"
+          class="flex w-full basis-8/12 flex-col justify-between bg-white p-4 shadow-sm shadow-secondary"
         >
           <div>
             <div class="flex flex-wrap items-start justify-between gap-2">
-              <div class="flex items-center gap-2">
+              <div class="flex items-start gap-2">
                 <h1 class="text-3xl">
                   {{ profile.firstName + " " + profile.lastName }}
                 </h1>
                 <button
                   v-if="useruid == itemShareStore.myUserUid"
                   @click="showEditProfile"
-                  class="material-icons rounded-md border border-yellow-500 bg-yellow-200 p-0.5 px-1.5 text-base text-yellow-800"
+                  class="material-icons rounded-md border-2 border-text border-opacity-50 bg-accent px-1.5 py-0.5 text-base text-text text-opacity-60"
                 >
                   edit
                 </button>
@@ -91,28 +100,28 @@ function hideEditProfile() {
             </div>
           </div>
           <!--Button actions-->
-          <div class="flex flex-col items-start">
-            <div class="flex flex-col gap-2">
-              <RouterLink
-                to="/messages/5"
-                class="flex items-center justify-center gap-1 rounded-lg bg-green-600 px-5 py-3 text-white"
-              >
-                <span class="material-icons">forum</span>
-                <span>Chat</span>
-              </RouterLink>
-              <!--Need some placeholder action-->
-              <button
-                class="flex items-center justify-center gap-1 rounded-lg border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-800"
-              >
-                <span class="material-icons">flag</span>
-                <span>Report user</span>
-              </button>
-            </div>
+          <div class="flex flex-col justify-end gap-2 md:flex-row">
+            <RouterLink
+              to="/messages/5"
+              class="flex basis-1/2 items-center justify-center gap-1 rounded-md bg-primary px-8 py-2 text-background sm:basis-auto"
+            >
+              <span class="material-icons">forum</span>
+              <span>Chat</span>
+            </RouterLink>
+            <!--Need some placeholder action-->
+            <button
+              class="flex basis-1/2 items-center justify-center gap-1 rounded-md border-2 border-text border-opacity-50 bg-secondary px-8 py-2 text-text text-opacity-80 transition-colors hover:bg-opacity-90 sm:basis-auto"
+            >
+              <span class="material-icons">flag</span>
+              <span>Report user</span>
+            </button>
           </div>
         </div>
       </div>
       <!--Lend Details-->
-      <div class="flex basis-3/12 flex-row gap-4 bg-white p-4 lg:flex-col">
+      <div
+        class="flex basis-3/12 flex-row gap-4 bg-white p-4 shadow-sm shadow-secondary lg:flex-col"
+      >
         <div class="basis-1/2 lg:basis-0">
           <h2>Lended Items</h2>
           <h2 class="text-2xl">542</h2>

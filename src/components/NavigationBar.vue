@@ -36,11 +36,11 @@ async function logout() {
 </script>
 <template>
   <header
-    class="sticky flex w-full flex-col bg-green-600 text-white shadow-sm shadow-gray-400"
+    class="sticky flex w-full flex-col bg-primary text-background shadow-sm shadow-secondary"
     v-if="!['login', 'register'].includes($route.name)"
   >
     <nav
-      class="container mx-auto flex items-center justify-between bg-green-600 px-4 py-2"
+      class="container mx-auto flex items-center justify-between bg-primary px-4 py-2"
     >
       <ItemShareLogo />
       <ul class="flex items-center gap-4">
@@ -81,26 +81,29 @@ async function logout() {
         </li>
         <!--TODO: move logout to somewhere else-->
         <li>
-          <button @click.prevent="logout">LOG OUT</button>
+          <button @click.prevent="logout" class="flex gap-1">
+            <span class="material-icons text-3xl lg:text-base">logout</span
+            ><span class="hidden lg:inline-block">LOG OUT</span>
+          </button>
         </li>
         <li>
-          <RouterLink to="/profile">
+          <RouterLink to="/profile" class="flex items-center gap-2">
             <img
-              src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+              :src="itemShareStore.myProfile.image"
               alt=""
               class="aspect-square w-10 rounded-full"
-          /></RouterLink>
+            />
+            <!--span class="hidden lg:inline-block">
+              {{
+                itemShareStore.myProfile.firstName +
+                " " +
+                itemShareStore.myProfile.lastName
+              }}</span-->
+          </RouterLink>
         </li>
-        <h5>
-          {{
-            itemShareStore.myProfile.firstName +
-            " " +
-            itemShareStore.myProfile.lastName
-          }}
-        </h5>
       </ul>
     </nav>
-    <section class="bg-green-500">
+    <section class="bg-secondary bg-opacity-20">
       <div
         class="container mx-auto flex flex-col-reverse items-stretch justify-between px-4 lg:flex-row"
       >
@@ -117,7 +120,7 @@ async function logout() {
         </ol>
         <div></div>
         <form
-          class="my-3 flex rounded-xl border-2 border-yellow-500 bg-yellow-200"
+          class="my-3 flex overflow-hidden rounded-md border-2 border-text border-opacity-50 bg-background focus-within:border-2 focus-within:border-primary focus-within:border-opacity-100"
           v-if="!['search'].includes($route.name)"
           @submit.stop.prevent="searchItem()"
         >
@@ -125,17 +128,17 @@ async function logout() {
             type="text"
             name=""
             id=""
-            class="w-full rounded-l-xl border-none bg-transparent px-4 py-1 text-sm text-black placeholder-yellow-700"
+            class="w-full rounded-l-md border-none bg-transparent bg-white bg-opacity-50 px-4 py-1 text-sm text-text placeholder:text-text placeholder:text-opacity-60 focus:bg-white focus:bg-opacity-90 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50"
             placeholder="Search..."
           />
           <button
-            class="material-icons px-2 py-1 text-yellow-700 lg:py-0 lg:text-lg"
+            class="material-icons bg-accent px-2 py-1 text-text text-opacity-70 lg:py-0 lg:text-lg"
           >
             search
           </button>
           <RouterLink
             to="/search"
-            class="material-icons py-1 pr-2 text-yellow-700 lg:py-0 lg:text-lg"
+            class="material-icons bg-accent py-1 pr-2 text-text text-opacity-70 lg:py-0 lg:text-lg"
             >menu</RouterLink
           >
         </form>
