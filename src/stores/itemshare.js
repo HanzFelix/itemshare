@@ -482,13 +482,13 @@ export const useItemShareStore = defineStore("itemshare", {
     },
 
     async register(details) {
-      console.log(details);
       if (
         details.phoneNumber == "" ||
         details.email == "" ||
         details.firstName == "" ||
         details.lastName == "" ||
         details.gender == "Select" ||
+        details.location == "" ||
         details.birthday == "" ||
         details.password == "" ||
         details.confirmPassword == ""
@@ -504,6 +504,21 @@ export const useItemShareStore = defineStore("itemshare", {
         throw "Please agree to the terms and conditions.";
       }
 
+      switch (details.gender) {
+        case "Male":
+          details.image =
+            "https://firebasestorage.googleapis.com/v0/b/itemshare-68ae3.appspot.com/o/defaultAvatars%2Fis_avatar_male.png?alt=media&token=b239dcf0-a57f-43a1-a0bd-34898f5a9714";
+          break;
+        case "Female":
+          details.image =
+            "https://firebasestorage.googleapis.com/v0/b/itemshare-68ae3.appspot.com/o/defaultAvatars%2Fis_avatar_female.png?alt=media&token=6bca62c3-150b-46f7-ad60-6128217e24bd";
+          break;
+        default:
+          details.image =
+            "https://firebasestorage.googleapis.com/v0/b/itemshare-68ae3.appspot.com/o/defaultAvatars%2Fis_avatar_non.png?alt=media&token=3ad18afa-9e86-486c-8b03-184678722366";
+          break;
+      }
+
       try {
         const createdUser = await firebase
           .auth()
@@ -516,7 +531,8 @@ export const useItemShareStore = defineStore("itemshare", {
           phoneNumber: details.phoneNumber,
           gender: details.gender,
           birthday: details.birthday,
-          location: "unspecified",
+          location: details.location,
+          image: details.image,
           verified: false,
           admin: false,
         });
