@@ -30,7 +30,8 @@ export const useItemShareStore = defineStore("itemshare", {
     myProfile: {
       firstName: "",
       lastName: "",
-      image: "",
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/itemshare-68ae3.appspot.com/o/defaultAvatars%2Fis_avatar_non.png?alt=media&token=3ad18afa-9e86-486c-8b03-184678722366",
       location: "",
     },
     editProfile: {
@@ -294,16 +295,16 @@ export const useItemShareStore = defineStore("itemshare", {
         ownerId: 8,
       },
     ],
-    sampleConvos: [
-      {
-        username: "John Doe",
-        lastMessage: "Sample message",
-      },
-    ],
   }),
   getters: {
-    tempGetter(state) {
-      return state.temp;
+    tempUserProfile(state) {
+      return {
+        firstName: "Loading...",
+        lastName: "",
+        image:
+          "https://firebasestorage.googleapis.com/v0/b/itemshare-68ae3.appspot.com/o/defaultAvatars%2Fis_avatar_non.png?alt=media&token=3ad18afa-9e86-486c-8b03-184678722366",
+        location: "Loading location...",
+      };
     },
     // sample getter that accepts argument
     productsCheaperThan(state) {
@@ -384,7 +385,7 @@ export const useItemShareStore = defineStore("itemshare", {
         q = query(q, where("ownerId", "==", ownerId));
       }
       // q = query(q, orderBy("dateCreated", "desc")); // temp, please uncomment this later
-      q = query(q, limit(maxlimit));
+      q = query(q, orderBy("createdAt", "desc"), limit(maxlimit));
       const querySnapshot = await getDocs(q);
       const fItems = [];
       querySnapshot.forEach((doc) => {
@@ -466,7 +467,7 @@ export const useItemShareStore = defineStore("itemshare", {
           rentRate: item.rentRate,
           tags: item.tags,
           description: item.description,
-          dateCreated: Date.now(),
+          createdAt: Date.now(),
         });
 
         return true;
@@ -479,6 +480,60 @@ export const useItemShareStore = defineStore("itemshare", {
     searchItem() {
       // some search processing
       return [];
+    },
+
+    async loadConversations(userUid) {
+      let q = query(collection(db, "conversations"));
+      q = query(q, where("participants", "array-contains", userUid));
+      q = query(q, orderBy("lastSentAt", "desc"), limit(12));
+      const querySnapshot = await getDocs(q);
+      const conversations = [];
+      // doesn't support 3+ participant convos yet (will it ever be?)
+      for (const doc of querySnapshot.docs) {
+        let conversation = {
+          convoId: doc.id,
+          lastMessage: doc.data().lastMessage,
+          lastSentAt: doc.data().lastSentAt,
+          lastSender: doc.data().lastSender,
+          participant: await this.loadProfile(
+            doc.data().participants.find((uid) => uid != userUid)
+          ),
+          isRead: doc.data().isRead,
+        };
+        conversations.push(conversation);
+      }
+      return conversations;
+    },
+
+    async loadConversation(convoId) {
+      const convoSnap = await getDoc(doc(db, "conversations", convoId));
+      // doesn't support 3+ participant convos yet (will it ever be?)
+      if (convoSnap.exists()) {
+        return {
+          lastMessage: convoSnap.data().lastMessage,
+          lastSentAt: convoSnap.data().lastSentAt,
+          lastSender: convoSnap.data().lastSender,
+          participants: convoSnap.data().participants,
+          isRead: convoSnap.data().isRead,
+        };
+      }
+    },
+
+    async loadMessages(convoId) {
+      let q = query(collection(db, "conversations", convoId, "messages"));
+      q = query(q, orderBy("sentAt", "desc"), limit(64));
+      const querySnapshot = await getDocs(q);
+      const messages = [];
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        let message = {
+          content: doc.data().content,
+          sender: doc.data().sender,
+          type: doc.data().type,
+        };
+        messages.push(message);
+      });
+      return messages;
     },
 
     async register(details) {

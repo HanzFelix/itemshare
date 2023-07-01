@@ -1,61 +1,25 @@
 <script setup>
 import { RouterView, RouterLink } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useItemShareStore } from "../stores/itemshare";
 
+const itemShareStore = useItemShareStore();
 // help, need better sample avatars
 const conversations = ref([
   {
-    id: 1,
-    name: "John Smith",
-    avatar: "https://img.getimg.ai/generated/img-NBSWR192z1P7HQLAUP4hR.jpeg",
-    message: "Okay, but when?",
-  },
-  {
-    id: 2,
-    name: "Emily Johnson",
-    avatar: "https://img.getimg.ai/generated/img-BiRtUIr1MBupBILYwExbV.jpeg",
-    message:
-      "Hi there! I'm interested in renting this item. Can you provide more details about its specifications?",
-  },
-  {
-    id: 3,
-    name: "David Brown",
-    avatar: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
-    message:
-      "I received the package today, and I'm thrilled with the product! It exceeded my expectations.",
-  },
-  {
-    id: 4,
-    avatar: "https://img.getimg.ai/generated/img-A1VWmtSrpbnz3IaAZoRGd.jpeg",
-    name: "Sarah Davis",
-    message: "Great!",
-  },
-  {
-    id: 5,
-    avatar: "https://img.getimg.ai/generated/img-LGspJ7ZY9oQAd8wXCvllL.jpeg",
-    name: "Michael Wilson",
-    message: "Will the item be available by Tuesday?",
-  },
-  {
-    id: 6,
-    name: "Jessica Thompson",
-    avatar: "https://th.bing.com/th/id/OIG.8wsk4S4V4bwjD_ptJt.d?pid=ImgGn",
-    message:
-      "I just wanted to say thank you for the excellent customer service. I'm impressed with the prompt responses and assistance.",
-  },
-  {
-    id: 7,
-    name: "Christopher Martinez",
-    avatar: "https://th.bing.com/th/id/OIG.cK203xdTu6lyf1bhWnDk?pid=ImgGn",
-    message: "👍",
-  },
-  {
-    id: 8,
-    name: "Megan Taylor",
-    avatar: "https://th.bing.com/th/id/OIG.IseiFm0qbzVS.fUqNwqS?pid=ImgGn",
-    message: "Look! A placeholder text!",
+    convoId: "",
+    participant: itemShareStore.tempUserProfile,
+    lastSender: "2",
+    isRead: true,
+    lastMessage: "...",
   },
 ]);
+
+onMounted(async () => {
+  conversations.value = await itemShareStore.loadConversations(
+    itemShareStore.myUserUid
+  );
+});
 </script>
 <template>
   <main
@@ -75,19 +39,37 @@ const conversations = ref([
           <!--Should link to user's conversation id instead-->
           <RouterLink
             v-for="conversation in conversations"
-            :to="'/messages/' + conversation.id"
-            class="my-2 flex gap-2 rounded-2xl bg-opacity-40 p-2"
-            active-class="bg-accent"
+            :to="'/messages/' + conversation.convoId"
+            class="my-2 flex gap-2 rounded-lg bg-opacity-40 p-2"
+            active-class="bg-secondary"
           >
             <img
-              :src="conversation.avatar"
+              :src="conversation.participant.image"
               alt=""
-              class="aspect-square w-12 rounded-full"
+              class="aspect-square w-12 rounded-full shadow-sm shadow-secondary"
             />
             <div class="w-full truncate">
-              <p class="truncate font-black">{{ conversation.name }}</p>
-              <p class="truncate text-gray-800">
-                {{ conversation.message }}
+              <p class="truncate font-black">
+                {{
+                  conversation.participant.firstName +
+                  " " +
+                  conversation.participant.lastName
+                }}
+              </p>
+              <p
+                class="truncate text-base text-gray-800"
+                :class="
+                  conversation.isRead ||
+                  conversation.lastSender == itemShareStore.myUserUid
+                    ? 'font-normal'
+                    : 'font-bold'
+                "
+              >
+                {{
+                  (conversation.lastSender == itemShareStore.myUserUid
+                    ? "You: "
+                    : "") + conversation.lastMessage
+                }}
               </p>
             </div>
           </RouterLink>
