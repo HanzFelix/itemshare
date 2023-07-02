@@ -4,6 +4,7 @@ import { useItemShareStore } from "../stores/itemshare";
 import { RouterLink } from "vue-router";
 import { onMounted, ref } from "vue";
 import StarRating from "../components/StarRating.vue";
+import RentItem from "../components/RentItem.vue";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
@@ -40,6 +41,16 @@ onMounted(async () => {
   item.value = await itemShareStore.loadItem(itemId.value);
   profile.value = await itemShareStore.loadProfile(item.value.ownerId);
 });
+
+const rentDialog = ref(null);
+function showRentItem() {
+  itemShareStore.editProfile = profile.value;
+  rentDialog.value.showModal();
+}
+
+function hideRentItem() {
+  rentDialog.value.close();
+}
 </script>
 <template>
   <main class="container mx-auto flex flex-col gap-4 px-4 py-8">
@@ -50,7 +61,9 @@ onMounted(async () => {
     <!--Item-->
     <section class="flex flex-col gap-2 lg:flex-row">
       <!--Images-->
-      <div class="flex basis-3/12 flex-col bg-white p-4">
+      <div
+        class="flex basis-3/12 flex-col bg-white p-4 shadow-sm shadow-secondary"
+      >
         <img
           :src="item.images[activeImg]"
           alt=""
@@ -70,7 +83,9 @@ onMounted(async () => {
         </div>
       </div>
       <!--Details-->
-      <div class="flex w-full basis-6/12 flex-col justify-between bg-white p-4">
+      <div
+        class="flex w-full basis-6/12 flex-col justify-between bg-white p-4 shadow-sm shadow-secondary"
+      >
         <div>
           <div class="flex items-start justify-between">
             <h1>{{ item.itemName }}</h1>
@@ -116,8 +131,9 @@ onMounted(async () => {
               </li>
             </ul>
           </div>
-          <div class="mt-4 flex flex-col justify-end gap-2 md:flex-row">
+          <div class="mt-4 flex flex-col justify-end gap-2 sm:flex-row">
             <button
+              @click="showRentItem"
               class="flex basis-1/2 items-center justify-center gap-1 rounded-md bg-primary px-8 py-2 text-background sm:basis-auto"
             >
               <span class="material-icons">more_time</span>
@@ -134,7 +150,7 @@ onMounted(async () => {
         </div>
       </div>
       <!--Lender Details-->
-      <div class="basis-3/12 bg-white p-4">
+      <div class="basis-3/12 bg-white p-4 shadow-sm shadow-secondary">
         <h2>Lender</h2>
         <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
           <RouterLink
@@ -221,4 +237,10 @@ onMounted(async () => {
       </section>
     </section>
   </main>
+  <dialog
+    ref="rentDialog"
+    class="rounded-xl bg-background backdrop:backdrop-brightness-50"
+  >
+    <RentItem @close="hideRentItem" :item="item" />
+  </dialog>
 </template>
