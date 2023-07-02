@@ -51,8 +51,8 @@ onBeforeMount(async () => {
 <template>
   <form action="#" @submit.stop.prevent="updateProfile">
     <h1>Edit Profile</h1>
-    <div class="flex flex-col gap-2 p-2 md:gap-4">
-      <div class="flex flex-col gap-4 md:flex-row md:items-start md:gap-8">
+    <div class="flex flex-col gap-2 p-2 sm:gap-4">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-8">
         <div class="flex flex-col">
           <h2>Profile Picture</h2>
           <div
@@ -97,7 +97,7 @@ onBeforeMount(async () => {
         placeholder="Current Location"
       />
     </div>
-    <footer class="my-2 flex flex-col justify-end gap-2 px-2 md:flex-row">
+    <footer class="my-2 flex flex-col justify-end gap-2 px-2 sm:flex-row">
       <button
         type="submit"
         class="rounded-md border-2 border-green-800 bg-green-800 px-6 py-2 text-white"
