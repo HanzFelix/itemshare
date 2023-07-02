@@ -72,19 +72,12 @@ async function register() {
             input-type="text"
             placeholder="Last Name"
           />
-          <div class="flex w-full flex-col gap-1">
-            <label>Gender</label>
-            <select
-              v-model="registerDetails.gender"
-              class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 focus:border-2 focus:border-primary focus:border-opacity-60 focus:bg-white focus:bg-opacity-90 focus:ring-0"
-              placeholder="Gender"
-            >
-              <option>Select</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Others</option>
-            </select>
-          </div>
+          <CustomDropdown label="Gender" v-model="registerDetails.gender">
+            <option>Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Others</option>
+          </CustomDropdown>
         </div>
         <div class="flex basis-1/2 flex-col gap-2">
           <CustomField
