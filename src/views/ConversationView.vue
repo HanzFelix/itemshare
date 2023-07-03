@@ -4,7 +4,6 @@ import { useRoute, RouterLink } from "vue-router";
 import CustomField from "../components/CustomField.vue";
 import { useItemShareStore } from "../stores/itemshare";
 const route = useRoute();
-
 const itemShareStore = useItemShareStore();
 
 const messageDraft = ref("");
@@ -17,13 +16,8 @@ const conversationDetails = ref({
 });
 const id = route.params.id;
 
-const messages = ref([
-  {
-    sender: itemShareStore.myUserUid,
-    type: "message",
-    content: "Loading...",
-  },
-]);
+const isLoading = ref(true);
+const messages = ref([]);
 
 onMounted(async () => {
   conversationDetails.value = await itemShareStore.loadConversation(id);
@@ -34,12 +28,15 @@ onMounted(async () => {
     )
   );
   messages.value = await itemShareStore.loadMessages(id);
+  isLoading.value = false;
 });
 
 watch(
   () => route.params.id,
   async (convoId) => {
     if (convoId) {
+      isLoading.value = true;
+      messages.value = [];
       conversationDetails.value = await itemShareStore.loadConversation(
         convoId
       );
@@ -49,6 +46,7 @@ watch(
         )
       );
       messages.value = await itemShareStore.loadMessages(convoId);
+      isLoading.value = false;
     }
   }
 );
@@ -106,7 +104,7 @@ function isSameMessageSource(chat_id) {
 }
 </script>
 <template>
-  <div class="flex h-full flex-col justify-between">
+  <div class="flex h-full flex-col justify-between" v-if="messages.length != 0">
     <header
       class="flex items-center justify-between bg-primary bg-opacity-90 px-6 py-2 shadow-md shadow-gray-400"
     >
@@ -181,5 +179,11 @@ function isSameMessageSource(chat_id) {
         </section>
       </div>
     </main>
+  </div>
+  <div
+    v-else
+    class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+  >
+    <p>Loading messages...</p>
   </div>
 </template>

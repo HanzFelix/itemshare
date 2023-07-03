@@ -4,21 +4,14 @@ import { ref, onMounted } from "vue";
 import { useItemShareStore } from "../stores/itemshare";
 
 const itemShareStore = useItemShareStore();
-// help, need better sample avatars
-const conversations = ref([
-  {
-    convoId: "",
-    participant: itemShareStore.tempUserProfile,
-    lastSender: "2",
-    isRead: true,
-    lastMessage: "...",
-  },
-]);
+const conversations = ref([]);
+const isLoading = ref(true);
 
 onMounted(async () => {
   conversations.value = await itemShareStore.loadConversations(
     itemShareStore.myUserUid
   );
+  isLoading.value = false;
 });
 </script>
 <template>
@@ -35,7 +28,7 @@ onMounted(async () => {
           Recent Messages
         </h1>
         <!-- Container -->
-        <div class="overflow-y-auto px-2">
+        <div class="overflow-y-auto px-2" v-if="conversations.length != 0">
           <!--Should link to user's conversation id instead-->
           <RouterLink
             v-for="conversation in conversations"
@@ -73,6 +66,18 @@ onMounted(async () => {
               </p>
             </div>
           </RouterLink>
+        </div>
+        <div
+          v-else-if="isLoading"
+          class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+        >
+          <p>Loading messages...</p>
+        </div>
+        <div
+          v-else
+          class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+        >
+          <p>No messages to show.</p>
         </div>
       </div>
     </aside>
