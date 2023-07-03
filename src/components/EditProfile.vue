@@ -1,12 +1,5 @@
 <script setup>
-import {
-  onMounted,
-  onUpdated,
-  onActivated,
-  ref,
-  onBeforeUpdate,
-  onBeforeMount,
-} from "vue";
+import { ref, watch } from "vue";
 import { useItemShareStore } from "../stores/itemshare";
 import CustomField from "../components/CustomField.vue";
 const itemShareStore = useItemShareStore();
@@ -22,11 +15,12 @@ const props = defineProps({
       firstName: "",
       lastName: "",
       image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
-      location: "Baybay City",
+      location: "",
     },
   },
 });
-const profile = ref(Object.assign({}, props.profile)); // duplicates it
+
+const editProfile = ref(Object.assign({}, props.profile)); // duplicates it
 
 function loadImageFile(e) {
   let file = e.target.files[0];
@@ -37,16 +31,19 @@ function loadImageFile(e) {
     profile.value.image = event.target.result;
   };
 }
+
 function updateProfile() {
-  // insert firebase stuff
+  // TODO: insert firebase stuff
   itemShareStore.editProfile = Object.assign({}, profile.value);
   emit("close");
 }
 
-onBeforeMount(async () => {
-  // redundant retrieval from server, might be possible to rework, idk
-  profile.value = await itemShareStore.loadProfile(props.useruid);
-});
+watch(
+  () => props.profile,
+  (newProfile) => {
+    editProfile.value = Object.assign({}, newProfile);
+  }
+);
 </script>
 <template>
   <form action="#" @submit.stop.prevent="updateProfile">
@@ -59,7 +56,7 @@ onBeforeMount(async () => {
             class="relative inline-block aspect-square w-32 rounded-sm object-contain"
           >
             <img
-              :src="profile.image"
+              :src="editProfile.image"
               alt=""
               srcset=""
               class="aspect-square w-32 rounded-lg object-contain"
@@ -81,19 +78,19 @@ onBeforeMount(async () => {
         <div class="flex w-56 basis-full flex-col gap-2">
           <CustomField
             label="First Name"
-            v-model="profile.firstName"
+            v-model="editProfile.firstName"
             placeholder="First Name"
           />
           <CustomField
             label="Last Name"
-            v-model="profile.lastName"
+            v-model="editProfile.lastName"
             placeholder="Last Name"
           />
         </div>
       </div>
       <CustomField
         label="Location"
-        v-model="profile.location"
+        v-model="editProfile.location"
         placeholder="Current Location"
       />
     </div>
