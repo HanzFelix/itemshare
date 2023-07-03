@@ -2,9 +2,10 @@
 import { useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import { RouterLink } from "vue-router";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import StarRating from "../components/StarRating.vue";
 import RentItem from "../components/RentItem.vue";
+import MessageOwner from "../components/MessageOwner.vue";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
@@ -12,15 +13,21 @@ const route = useRoute();
 const itemId = ref(route.params.id);
 //const item = itemShareStore.itemById(id);
 const activeImg = ref(0);
-const sampleImgs = ref([
-  "https://www.ikea.com/ph/en/images/products/pello-armchair-holmby-natural__0841137_pe600889_s5.jpg",
-  "https://www.ikea.com/ph/en/images/products/baggebo-shelf-unit-metal-white__0981563_pe815398_s5.jpg",
-  "https://www.ikea.com/ph/en/images/products/friheten-sleeper-sofa-bomstad-black__0620065_pe689376_s5.jpg",
-  "https://www.ikea.com/ph/en/images/products/jokkmokk-table-and-4-chairs-antique-stain__0870916_pe716638_s5.jpg",
-]);
 
+const messageDialog = ref(null);
+
+function showMessageOwner(yes) {
+  if (yes) {
+    messageDialog.value.showModal();
+  } else {
+    messageDialog.value.close();
+  }
+}
 // temporarily uses placeholder profile until onMounted is called
 const profile = ref(itemShareStore.loadedProfile(5));
+const isMyProfile = computed(
+  () => item.value.ownerId == itemShareStore.myUserUid
+);
 
 const item = ref({
   itemName: "",
@@ -132,6 +139,7 @@ function hideRentItem() {
             </ul>
           </div>
           <div class="mt-4 flex flex-col justify-end gap-2 sm:flex-row">
+            <!--Add edit item here-->
             <button
               @click="showRentItem"
               class="flex basis-1/2 items-center justify-center gap-1 rounded-md bg-primary px-8 py-2 text-background sm:basis-auto"
@@ -167,8 +175,13 @@ function hideRentItem() {
               profile.firstName + " " + profile.lastName
             }}</span>
           </RouterLink>
-          <button class="flex items-center gap-1">
-            <span class="material-icons text-green-600">forum</span>Chat
+          <button
+            class="flex items-center gap-1"
+            v-if="!isMyProfile"
+            @click="showMessageOwner(true)"
+          >
+            <span class="material-icons text-green-600">forum</span>
+            <span>Chat</span>
           </button>
         </div>
         <!--rating-->
@@ -242,5 +255,15 @@ function hideRentItem() {
     class="rounded-xl bg-background backdrop:backdrop-brightness-50"
   >
     <RentItem @close="hideRentItem" :item="item" />
+  </dialog>
+  <dialog
+    ref="messageDialog"
+    class="rounded-xl p-0 backdrop:backdrop-brightness-50"
+  >
+    <MessageOwner
+      :owner-id="item.ownerId"
+      :owner-profile="profile"
+      @close="showMessageOwner(false)"
+    />
   </dialog>
 </template>

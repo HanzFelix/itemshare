@@ -3,16 +3,17 @@ import { RouterLink, useRoute } from "vue-router";
 import { useItemShareStore } from "../stores/itemshare";
 import StarRating from "../components/StarRating.vue";
 import ItemsContainer from "../components/ItemsContainer.vue";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { collection, getDocs, where, query } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
 import EditProfile from "../components/EditProfile.vue";
+import MessageOwner from "../components/MessageOwner.vue";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
-var useruid = route.params.id || itemShareStore.myUserUid; // redundant?
+const useruid = ref(route.params.id || itemShareStore.myUserUid); // redundant?
 
 const items = ref([]);
 const profile = ref({
@@ -23,26 +24,36 @@ const profile = ref({
 });
 
 onMounted(async () => {
-  initFlowbite();
-  profile.value = await itemShareStore.loadProfile(useruid);
-  items.value = await itemShareStore.loadItems(12, useruid);
+  profile.value = await itemShareStore.loadProfile(useruid.value);
+  items.value = await itemShareStore.loadItems(12, useruid.value);
 });
+
 watch(
   () => route.params.id,
   async (newId) => {
-    newId = newId || itemShareStore.myUserUid;
-    profile.value = await itemShareStore.loadProfile(newId);
-    items.value = await itemShareStore.loadItems(12, newId);
+    useruid.value = newId || itemShareStore.myUserUid;
+    profile.value = await itemShareStore.loadProfile(useruid.value);
+    items.value = await itemShareStore.loadItems(12, useruid.value);
   }
 );
 const editDialog = ref(null);
-function showEditProfile() {
-  itemShareStore.editProfile = profile.value;
-  editDialog.value.showModal();
+const messageDialog = ref(null);
+const isMyProfile = computed(() => useruid.value == itemShareStore.myUserUid);
+
+function showEditProfile(yes) {
+  if (yes) {
+    editDialog.value.showModal();
+  } else {
+    editDialog.value.close();
+  }
 }
 
-function hideEditProfile() {
-  editDialog.value.close();
+function showMessageOwner(yes) {
+  if (yes) {
+    messageDialog.value.showModal();
+  } else {
+    messageDialog.value.close();
+  }
 }
 </script>
 
@@ -67,18 +78,9 @@ function hideEditProfile() {
         >
           <div>
             <div class="flex flex-wrap items-start justify-between gap-2">
-              <div class="flex items-start gap-2">
-                <h1 class="text-3xl">
-                  {{ profile.firstName + " " + profile.lastName }}
-                </h1>
-                <button
-                  v-if="useruid == itemShareStore.myUserUid"
-                  @click="showEditProfile"
-                  class="material-icons rounded-md border-2 border-text border-opacity-50 bg-accent px-1.5 py-0.5 text-base text-text text-opacity-60"
-                >
-                  edit
-                </button>
-              </div>
+              <h1 class="text-3xl">
+                {{ profile.firstName + " " + profile.lastName }}
+              </h1>
               <div class="flex">
                 <span class="material-icons text-green-600">location_on</span>
                 <span>{{ profile.location }}</span>
@@ -101,16 +103,26 @@ function hideEditProfile() {
           </div>
           <!--Button actions-->
           <div class="flex flex-col justify-end gap-2 md:flex-row">
-            <RouterLink
-              to="/messages/5"
-              class="flex basis-1/2 items-center justify-center gap-1 rounded-md bg-primary px-8 py-2 text-background sm:basis-auto"
+            <button
+              v-if="isMyProfile"
+              @click="showEditProfile(true)"
+              class="flex items-center justify-center gap-1 rounded-md border-2 border-text border-opacity-50 bg-secondary px-8 py-2 text-text text-opacity-80"
+            >
+              <span class="material-icons">edit</span>
+              <span>Edit Profile</span>
+            </button>
+            <button
+              v-if="!isMyProfile"
+              @click="showMessageOwner(true)"
+              class="flex items-center justify-center gap-1 rounded-md border-2 border-primary bg-primary px-8 py-2 text-background sm:basis-auto"
             >
               <span class="material-icons">forum</span>
               <span>Chat</span>
-            </RouterLink>
+            </button>
             <!--Need some placeholder action-->
             <button
-              class="flex basis-1/2 items-center justify-center gap-1 rounded-md border-2 border-text border-opacity-50 bg-secondary px-8 py-2 text-text text-opacity-80 transition-colors hover:bg-opacity-90 sm:basis-auto"
+              v-if="!isMyProfile"
+              class="flex items-center justify-center gap-1 rounded-md border-2 border-text border-opacity-50 bg-secondary px-8 py-2 text-text text-opacity-80"
             >
               <span class="material-icons">flag</span>
               <span>Report user</span>
@@ -148,9 +160,19 @@ function hideEditProfile() {
   </main>
   <dialog ref="editDialog" class="rounded-xl backdrop:backdrop-brightness-50">
     <EditProfile
-      @close="hideEditProfile"
+      @close="showEditProfile(false)"
       :useruid="useruid"
       :profile="profile"
+    />
+  </dialog>
+  <dialog
+    ref="messageDialog"
+    class="rounded-xl p-0 backdrop:backdrop-brightness-50"
+  >
+    <MessageOwner
+      :owner-id="useruid"
+      :owner-profile="profile"
+      @close="showMessageOwner(false)"
     />
   </dialog>
 </template>
