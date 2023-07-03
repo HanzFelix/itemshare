@@ -12,6 +12,7 @@ import {
   query,
   where,
   orderBy,
+  updateDoc,
 } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
 import {
@@ -531,7 +532,7 @@ export const useItemShareStore = defineStore("itemshare", {
           sender: doc.data().sender,
           type: doc.data().type,
         };
-        messages.push(message);
+        messages.unshift(message);
       });
       return messages;
     },
@@ -613,6 +614,60 @@ export const useItemShareStore = defineStore("itemshare", {
       } catch (error) {
         throw error;
       }
+    },
+
+    // is senderId redundant? perhaps
+    async messageOwner(senderId, receiverId, messageContent) {
+      // Function to send a message to a user
+      const conversationsRef = collection(db, "conversations");
+      const participants = [senderId, receiverId];
+
+      // Step 1: Check Existing Conversation
+      const existingConversationQuery = query(
+        conversationsRef,
+        where("participants", "==", participants)
+      );
+      const existingConversationSnapshot = await getDocs(
+        existingConversationQuery
+      );
+
+      let conversationId;
+      let conversationRef;
+      let conversationDoc;
+
+      if (existingConversationSnapshot.empty) {
+        // Step 2: Create Conversation
+        conversationDoc = await addDoc(conversationsRef, { participants });
+
+        // Step 3: Generate Conversation ID
+        conversationId = conversationDoc.id;
+      } else {
+        // Existing conversation found
+        conversationDoc = existingConversationSnapshot.docs[0];
+        conversationId = conversationDoc.id;
+      }
+
+      // Step 4: Create Messages Collection
+      conversationRef = doc(db, "conversations", conversationId);
+      const messagesRef = collection(conversationRef, "messages");
+
+      // Step 5: Create Message Document
+      const newMessageDoc = await addDoc(messagesRef, {
+        sender: senderId,
+        type: "message",
+        content: messageContent,
+        sentAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      // Step 6: Update Conversation Details
+      await updateDoc(conversationRef, {
+        lastMessage: messageContent,
+        lastSender: senderId,
+        lastSentAt: firebase.firestore.FieldValue.serverTimestamp(),
+        isRead: false,
+      });
+
+      return conversationId;
     },
   },
 });
