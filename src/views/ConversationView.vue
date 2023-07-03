@@ -14,45 +14,47 @@ const conversationDetails = ref({
   lastSender: "12",
   isRead: true,
 });
-const id = route.params.id;
+const convoId = ref(route.params.id);
 
 const isLoading = ref(true);
 const messages = ref([]);
 
 onMounted(async () => {
-  conversationDetails.value = await itemShareStore.loadConversation(id);
+  conversationDetails.value = await itemShareStore.loadConversation(
+    convoId.value
+  );
   messages.value = [{ sender: conversationDetails.value.lastSender }];
   otherParticipant.value = await itemShareStore.loadProfile(
     conversationDetails.value.participants.find(
       (uid) => uid != itemShareStore.myUserUid
     )
   );
-  messages.value = await itemShareStore.loadMessages(id);
+  messages.value = await itemShareStore.loadMessages(convoId.value);
   isLoading.value = false;
 });
 
 watch(
   () => route.params.id,
-  async (convoId) => {
-    if (convoId) {
+  async (newId) => {
+    if (newId) {
+      convoId.value = newId;
       isLoading.value = true;
       messages.value = [];
-      conversationDetails.value = await itemShareStore.loadConversation(
-        convoId
-      );
+      conversationDetails.value = await itemShareStore.loadConversation(newId);
       otherParticipant.value = await itemShareStore.loadProfile(
         conversationDetails.value.participants.find(
           (uid) => uid != itemShareStore.myUserUid
         )
       );
-      messages.value = await itemShareStore.loadMessages(convoId);
+      messages.value = await itemShareStore.loadMessages(newId);
       isLoading.value = false;
     }
   }
 );
 
 // send a message & clear input field
-function sendMessage() {
+async function sendMessage() {
+  await itemShareStore.sendMessage(convoId.value, messageDraft.value);
   messages.value.push({
     sender: itemShareStore.myUserUid,
     content: messageDraft.value,

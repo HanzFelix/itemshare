@@ -522,7 +522,7 @@ export const useItemShareStore = defineStore("itemshare", {
 
     async loadMessages(convoId) {
       let q = query(collection(db, "conversations", convoId, "messages"));
-      q = query(q, orderBy("sentAt", "desc"), limit(64));
+      q = query(q, orderBy("sentAt"), limit(64));
       const querySnapshot = await getDocs(q);
       const messages = [];
       querySnapshot.forEach((doc) => {
@@ -532,7 +532,7 @@ export const useItemShareStore = defineStore("itemshare", {
           sender: doc.data().sender,
           type: doc.data().type,
         };
-        messages.unshift(message);
+        messages.push(message);
       });
       return messages;
     },
@@ -617,10 +617,10 @@ export const useItemShareStore = defineStore("itemshare", {
     },
 
     // is senderId redundant? perhaps
-    async messageOwner(senderId, receiverId, messageContent) {
+    async messageOwner(receiverId, messageContent) {
       // Function to send a message to a user
       const conversationsRef = collection(db, "conversations");
-      const participants = [senderId, receiverId];
+      const participants = [this.myUserUid, receiverId];
 
       // Step 1: Check Existing Conversation
       const existingConversationQuery = query(
@@ -632,7 +632,6 @@ export const useItemShareStore = defineStore("itemshare", {
       );
 
       let conversationId;
-      let conversationRef;
       let conversationDoc;
 
       if (existingConversationSnapshot.empty) {
@@ -647,13 +646,19 @@ export const useItemShareStore = defineStore("itemshare", {
         conversationId = conversationDoc.id;
       }
 
+      this.sendMessage(conversationId, messageContent);
+
+      return conversationId;
+    },
+
+    async sendMessage(conversationId, messageContent) {
       // Step 4: Create Messages Collection
-      conversationRef = doc(db, "conversations", conversationId);
+      const conversationRef = doc(db, "conversations", conversationId);
       const messagesRef = collection(conversationRef, "messages");
 
       // Step 5: Create Message Document
       const newMessageDoc = await addDoc(messagesRef, {
-        sender: senderId,
+        sender: this.myUserUid,
         type: "message",
         content: messageContent,
         sentAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -662,12 +667,10 @@ export const useItemShareStore = defineStore("itemshare", {
       // Step 6: Update Conversation Details
       await updateDoc(conversationRef, {
         lastMessage: messageContent,
-        lastSender: senderId,
+        lastSender: this.myUserUid,
         lastSentAt: firebase.firestore.FieldValue.serverTimestamp(),
         isRead: false,
       });
-
-      return conversationId;
     },
   },
 });

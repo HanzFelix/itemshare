@@ -26,7 +26,6 @@ async function messageOwner() {
   try {
     isSending.value = true;
     let convoid = await itemShareStore.messageOwner(
-      itemShareStore.myUserUid,
       props.ownerId,
       messageDraft.value
     );
