@@ -15,6 +15,7 @@ const db = firebase.firestore();
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
+const showNotifs = ref(false);
 
 onMounted(async () => {
   initFlowbite();
@@ -54,15 +55,13 @@ async function logout() {
           <button
             type="button"
             class="flex gap-1"
-            id="dropdownDefaultButton"
-            data-dropdown-toggle="dropdownNotifications"
-            data-dropdown-trigger="click"
+            @click="showNotifs = !showNotifs"
           >
             <span class="material-icons text-3xl lg:text-base"
               >notifications</span
             ><span class="hidden lg:inline-block">NOTIFICATIONS</span>
           </button>
-          <NotificationsPopup />
+          <NotificationsPopup :visible="showNotifs" />
         </li>
         <!--p class="flex gap-1">
           <span class="material-icons lg:text-base text-3xl">inbox</span

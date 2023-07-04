@@ -2,6 +2,10 @@
 import { ref } from "vue";
 import StarRating from "./StarRating.vue";
 
+defineProps({
+  visible: Boolean,
+});
+
 const notifications = ref([
   {
     type: "review",
@@ -29,36 +33,43 @@ const notifications = ref([
 ]);
 </script>
 <template>
-  <!-- flex -->
-  <div
-    class="rounded-lg shadow-md shadow-gray-400 overflow-hidden hidden z-50 bg-white"
-    id="dropdownNotifications"
+  <Transition
+    enter-active-class="transition ease-out duration-200"
+    enter-from-class="opacity-0 -translate-y-1"
+    enter-to-class="opacity-100 translate-y-0"
+    leave-active-class="transition ease-in duration-150"
+    leave-from-class="opacity-100 translate-y-0"
+    leave-to-class="opacity-0 -translate-y-1"
   >
+    <!-- flex -->
     <div
-      class="h-64 w-full md:w-96 flex flex-col"
-      aria-labelledby="dropdownNotificationsButton"
+      class="absolute left-0 z-50 mt-2.5 w-screen max-w-max translate-x-0 overflow-hidden rounded-none bg-white shadow-md shadow-gray-400 md:left-auto md:-translate-x-1/2 md:rounded-lg lg:mt-4"
+      id="dropdownNotifications"
+      v-if="visible"
     >
-      <h2
-        class="font-bold px-3 py-2 shadow-sm shadow-gray-400 z-10 text-green-600"
-      >
-        NOTIFICATIONS
-      </h2>
-      <!--List of notifications go here-->
-      <div class="overflow-y-auto bg-green-50">
-        <div class="flex flex-col gap-1 p-2">
-          <article
-            v-for="notification in notifications"
-            class="p-2 text-sm shadow-sm bg-white shadow-gray-400 text-gray-700"
-          >
-            <p>{{ notification.message }}</p>
-            <StarRating
-              v-if="notification.rating"
-              :value="notification.rating"
-            />
-            <p>{{ notification.time }}</p>
-          </article>
+      <div class="flex h-64 w-full flex-col md:w-96">
+        <h2
+          class="z-10 px-3 py-2 font-bold text-green-600 shadow-sm shadow-gray-400"
+        >
+          NOTIFICATIONS
+        </h2>
+        <!--List of notifications go here-->
+        <div class="overflow-y-auto bg-green-50">
+          <div class="flex flex-col gap-1 p-2">
+            <article
+              v-for="notification in notifications"
+              class="bg-white p-2 text-sm text-gray-700 shadow-sm shadow-gray-400"
+            >
+              <p>{{ notification.message }}</p>
+              <StarRating
+                v-if="notification.rating"
+                :value="notification.rating"
+              />
+              <p>{{ notification.time }}</p>
+            </article>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
