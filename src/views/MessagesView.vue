@@ -24,7 +24,7 @@ onMounted(async () => {
       :class="['messages'].includes($route.name) ? '' : 'hidden'"
     >
       <div class="flex h-full flex-col overflow-hidden">
-        <h1 class="z-10 px-6 py-4 shadow-sm shadow-secondary">
+        <h1 class="bg-white px-6 py-4 shadow-sm shadow-secondary">
           Recent Messages
         </h1>
         <!-- Container -->
