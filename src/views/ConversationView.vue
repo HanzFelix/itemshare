@@ -20,17 +20,7 @@ const isLoading = ref(true);
 const messages = ref([]);
 
 onMounted(async () => {
-  conversationDetails.value = await itemShareStore.loadConversation(
-    convoId.value
-  );
-  messages.value = [{ sender: conversationDetails.value.lastSender }];
-  otherParticipant.value = await itemShareStore.loadProfile(
-    conversationDetails.value.participants.find(
-      (uid) => uid != itemShareStore.myUserUid
-    )
-  );
-  messages.value = await itemShareStore.loadMessages(convoId.value);
-  isLoading.value = false;
+  await loadData(route.params.id);
 });
 
 watch(
@@ -38,31 +28,33 @@ watch(
   async (newId) => {
     if (newId) {
       convoId.value = newId;
-      isLoading.value = true;
-      messages.value = [];
-      conversationDetails.value = await itemShareStore.loadConversation(newId);
-      otherParticipant.value = await itemShareStore.loadProfile(
-        conversationDetails.value.participants.find(
-          (uid) => uid != itemShareStore.myUserUid
-        )
-      );
-      messages.value = await itemShareStore.loadMessages(newId);
-      isLoading.value = false;
+      await loadData(newId);
     }
   }
 );
 
-// send a message & clear input field
-async function sendMessage() {
-  await itemShareStore.sendMessage(convoId.value, messageDraft.value);
-  messages.value.push({
-    sender: itemShareStore.myUserUid,
-    content: messageDraft.value,
-  });
-  messageDraft.value = "";
-  //scrollToElement.value.scrollTop = scrollContainer.value.scrollHeight;
+async function loadData(convoId) {
+  conversationDetails.value = await itemShareStore.loadConversation(convoId);
+  otherParticipant.value = await itemShareStore.loadProfile(
+    conversationDetails.value.participants.find(
+      (uid) => uid != itemShareStore.myUserUid
+    )
+  );
+  itemShareStore.loadMessages(convoId);
 }
 
+// send a message & clear input field
+async function sendMessage(message) {
+  messageDraft.value = "";
+  itemShareStore.loadedMessages.push({
+    sender: itemShareStore.myUserUid,
+    content: message,
+    type: "message",
+  });
+  await itemShareStore.sendMessage(convoId.value, message);
+  //scrollToElement.value.scrollTop = scrollContainer.value.scrollHeight;
+}
+/*
 // hide avatar if from same sender
 function isSamePerson(chat_id) {
   if (chat_id + 1 == messages.value.length) {
@@ -103,12 +95,15 @@ function isSameMessageSource(chat_id) {
       : " bg-secondary bg-opacity-40";
 
   return classes;
-}
+}*/
 </script>
 <template>
-  <div class="flex h-full flex-col justify-between" v-if="messages.length != 0">
+  <div
+    class="flex h-full flex-col justify-between"
+    v-if="itemShareStore.loadedMessages.length != 0"
+  >
     <header
-      class="flex items-center justify-between bg-primary bg-opacity-90 px-6 py-2 shadow-md shadow-gray-400"
+      class="flex items-center justify-between bg-primary bg-opacity-90 px-6 py-2 shadow-sm shadow-secondary"
     >
       <div class="flex gap-2">
         <img
@@ -137,7 +132,7 @@ function isSameMessageSource(chat_id) {
     >
       <div class="bg-white px-6 pt-12">
         <div
-          v-for="(message, index) in messages"
+          v-for="(message, index) in itemShareStore.loadedMessages"
           :class="
             message.sender == itemShareStore.myUserUid
               ? 'flex-row-reverse'
@@ -153,11 +148,11 @@ function isSameMessageSource(chat_id) {
             "
             alt=""
             class="aspect-square w-12 rounded-full shadow-sm shadow-secondary"
-            :class="isSamePerson(index) ? 'opacity-0' : ''"
+            :class="itemShareStore.isSamePerson(index) ? 'opacity-0' : ''"
           />
           <div
             class="max-w-md rounded-3xl px-4 py-3 shadow-sm shadow-secondary"
-            :class="isSameMessageSource(index)"
+            :class="itemShareStore.isSameMessageSource(index)"
           >
             <p class="max-w-full break-words">{{ message.content }}</p>
           </div>
@@ -165,7 +160,7 @@ function isSameMessageSource(chat_id) {
         <section class="sticky bottom-0 mt-4 rounded-t-xl bg-white pb-4">
           <form
             class="bg-amber-400 flex gap-2 rounded-xl bg-secondary bg-opacity-80 p-2 shadow-gray-400 drop-shadow-sm"
-            @submit.prevent="sendMessage()"
+            @submit.prevent="sendMessage(messageDraft)"
           >
             <CustomField
               placeholder="Enter message..."

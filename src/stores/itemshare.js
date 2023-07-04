@@ -13,6 +13,7 @@ import {
   where,
   orderBy,
   updateDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import db from "../firebase/firebaseInit.js";
 import {
@@ -296,6 +297,7 @@ export const useItemShareStore = defineStore("itemshare", {
         ownerId: 8,
       },
     ],
+    loadedMessages: [],
   }),
   getters: {
     tempUserProfile(state) {
@@ -323,6 +325,52 @@ export const useItemShareStore = defineStore("itemshare", {
     },
     loggedInUser(state) {
       return state.myUserUid;
+    },
+    isSamePerson(state) {
+      return (chat_id) => {
+        if (chat_id + 1 == state.loadedMessages.length) {
+          return false;
+        }
+        return (
+          state.loadedMessages[chat_id].sender ==
+          state.loadedMessages[chat_id + 1].sender
+        );
+      };
+    },
+    isSameMessageSource(state) {
+      return (chat_id) => {
+        var classes = "";
+
+        if (
+          chat_id + 1 < state.loadedMessages.length &&
+          state.loadedMessages[chat_id].sender ==
+            state.loadedMessages[chat_id + 1].sender
+        ) {
+          classes +=
+            state.loadedMessages[chat_id].sender == state.myUserUid
+              ? " rounded-br-none"
+              : " rounded-bl-none";
+        }
+
+        if (
+          chat_id - 1 >= 0 &&
+          state.loadedMessages[chat_id].sender ==
+            state.loadedMessages[chat_id - 1].sender
+        ) {
+          classes +=
+            state.loadedMessages[chat_id].sender == state.myUserUid
+              ? " rounded-tr-none"
+              : " rounded-tl-none";
+        }
+
+        // use green color if message source is me
+        classes +=
+          state.loadedMessages[chat_id].sender == state.myUserUid
+            ? " bg-primary text-background bg-opacity-90"
+            : " bg-secondary bg-opacity-40";
+
+        return classes;
+      };
     },
   },
   actions: {
@@ -521,20 +569,22 @@ export const useItemShareStore = defineStore("itemshare", {
     },
 
     async loadMessages(convoId) {
+      this.loadedMessages = [];
       let q = query(collection(db, "conversations", convoId, "messages"));
       q = query(q, orderBy("sentAt"), limit(64));
-      const querySnapshot = await getDocs(q);
-      const messages = [];
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        let message = {
-          content: doc.data().content,
-          sender: doc.data().sender,
-          type: doc.data().type,
-        };
-        messages.push(message);
+      //const querySnapshot = await getDocs(q);
+      onSnapshot(q, (querySnapshot) => {
+        const messages = [];
+        querySnapshot.forEach((doc) => {
+          let message = {
+            content: doc.data().content,
+            sender: doc.data().sender,
+            type: doc.data().type,
+          };
+          messages.push(message);
+        });
+        this.loadedMessages = messages;
       });
-      return messages;
     },
 
     async register(details) {
