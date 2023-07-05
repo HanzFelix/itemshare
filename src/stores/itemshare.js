@@ -516,7 +516,7 @@ export const useItemShareStore = defineStore("itemshare", {
           rentRate: item.rentRate,
           tags: item.tags,
           description: item.description,
-          createdAt: Date.now(),
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
 
         return true;
