@@ -2,82 +2,58 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import firebase from "firebase/compat/app";
+import { useItemShareStore } from "../stores/itemshare";
 import "firebase/compat/auth";
+import CustomField from "../components/CustomField.vue";
 
 const router = useRouter();
+const itemShareStore = useItemShareStore();
 
-let error = ref(false);
 let errorMessage = ref("");
 const email = ref("");
 const password = ref("");
 
-const login = async () => {
-  if (email.value !== "" && password.value !== "") {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email.value, password.value)
-      .then(() => {
-        router.push("/home");
-      })
-      .catch((err) => {
-        error.value = true;
-        switch (error.code) {
-          case "auth/invalid-email":
-            errorMessage.value = "Invalid email";
-            break;
-          case "auth/user-not-found":
-            errorMessage.value = "No account with that email was found";
-            break;
-          case "auth/wrong-password":
-            errorMessage.value = "Incorrect password";
-            break;
-          default:
-            errorMessage.value = "Email or password was incorrect";
-            break;
-        }
-      });
-  } else {
-    error.value = true;
-    errorMessage.value = "Please fill out all the fields!";
+async function login() {
+  errorMessage.value = "";
+  try {
+    if (await itemShareStore.login(email.value, password.value)) {
+      router.push("/home");
+    }
+  } catch (err) {
+    errorMessage.value = err;
   }
-};
+}
 </script>
 <template>
   <div
-    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-white p-8"
+    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-background p-8"
   >
     <form class="flex max-w-full flex-col gap-2" @submit.stop.prevent="login">
       <h1>Login</h1>
-      <input
-        v-model="email"
-        type="text"
-        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
-        placeholder="Email"
-      />
-      <input
+      <CustomField input-type="email" v-model="email" placeholder="Email" />
+      <CustomField
+        input-type="password"
         v-model="password"
-        type="password"
-        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
         placeholder="Password"
       />
       <div
-        v-show="error"
+        v-show="errorMessage"
         class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
       >
         {{ errorMessage }}
       </div>
       <p class="pt-2">
-        <RouterLink to="/forgot-password" class="underline"
+        <RouterLink to="/forgot-password" class="underline decoration-accent"
           >Forgot Password?</RouterLink
         >
       </p>
       <p class="pt-2">
         New here?
-        <RouterLink to="/register" class="underline"
+        <RouterLink to="/register" class="underline decoration-accent"
           >Create an account!</RouterLink
         >
       </p>
-      <button class="rounded-xl bg-green-800 px-5 py-3 text-white">
+      <button class="rounded-md bg-primary px-6 py-2 text-background">
         Login
       </button>
     </form>

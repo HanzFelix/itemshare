@@ -1,102 +1,89 @@
 <script setup>
 import { RouterView, RouterLink } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useItemShareStore } from "../stores/itemshare";
 
-// help, need better sample avatars
-const conversations = ref([
-  {
-    id: 1,
-    name: "John Smith",
-    avatar: "https://img.getimg.ai/generated/img-NBSWR192z1P7HQLAUP4hR.jpeg",
-    message: "Okay, but when?",
-  },
-  {
-    id: 2,
-    name: "Emily Johnson",
-    avatar: "https://img.getimg.ai/generated/img-BiRtUIr1MBupBILYwExbV.jpeg",
-    message:
-      "Hi there! I'm interested in renting this item. Can you provide more details about its specifications?",
-  },
-  {
-    id: 3,
-    name: "David Brown",
-    avatar: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
-    message:
-      "I received the package today, and I'm thrilled with the product! It exceeded my expectations.",
-  },
-  {
-    id: 4,
-    avatar: "https://img.getimg.ai/generated/img-A1VWmtSrpbnz3IaAZoRGd.jpeg",
-    name: "Sarah Davis",
-    message: "Great!",
-  },
-  {
-    id: 5,
-    avatar: "https://img.getimg.ai/generated/img-LGspJ7ZY9oQAd8wXCvllL.jpeg",
-    name: "Michael Wilson",
-    message: "Will the item be available by Tuesday?",
-  },
-  {
-    id: 6,
-    name: "Jessica Thompson",
-    avatar: "https://th.bing.com/th/id/OIG.8wsk4S4V4bwjD_ptJt.d?pid=ImgGn",
-    message:
-      "I just wanted to say thank you for the excellent customer service. I'm impressed with the prompt responses and assistance.",
-  },
-  {
-    id: 7,
-    name: "Christopher Martinez",
-    avatar: "https://th.bing.com/th/id/OIG.cK203xdTu6lyf1bhWnDk?pid=ImgGn",
-    message: "👍",
-  },
-  {
-    id: 8,
-    name: "Megan Taylor",
-    avatar: "https://th.bing.com/th/id/OIG.IseiFm0qbzVS.fUqNwqS?pid=ImgGn",
-    message: "Look! A placeholder text!",
-  },
-]);
+const itemShareStore = useItemShareStore();
+const conversations = ref([]);
+const isLoading = ref(true);
+
+onMounted(async () => {
+  conversations.value = await itemShareStore.loadConversations(
+    itemShareStore.myUserUid
+  );
+  isLoading.value = false;
+});
 </script>
 <template>
   <main
-    class="flex flex-row items-stretch py-8 container mx-auto px-4 gap-4 h-full"
+    class="container mx-auto flex h-full flex-row items-stretch gap-4 px-4 py-8"
   >
     <!--Recent Messages-->
     <aside
-      class="lg:block basis-full lg:basis-1/3 box-border bg-white rounded-xl shadow-md shadow-gray-400 overflow-hidden"
+      class="box-border basis-full overflow-hidden rounded-xl bg-white shadow-md shadow-secondary lg:block lg:basis-1/3"
       :class="['messages'].includes($route.name) ? '' : 'hidden'"
     >
-      <div class="flex flex-col overflow-hidden h-full">
-        <h1 class="px-6 py-4 shadow-sm shadow-gray-300 z-10">
+      <div class="flex h-full flex-col overflow-hidden">
+        <h1 class="bg-white px-6 py-4 shadow-sm shadow-secondary">
           Recent Messages
         </h1>
         <!-- Container -->
-        <div class="overflow-y-auto px-2">
+        <div class="overflow-y-auto px-2" v-if="conversations.length != 0">
           <!--Should link to user's conversation id instead-->
           <RouterLink
             v-for="conversation in conversations"
-            :to="'/messages/' + conversation.id"
-            class="flex gap-2 p-2 rounded-2xl my-2"
-            active-class="bg-yellow-200"
+            :to="'/messages/' + conversation.convoId"
+            class="my-2 flex gap-2 rounded-lg bg-opacity-40 p-2"
+            active-class="bg-secondary"
           >
             <img
-              :src="conversation.avatar"
+              :src="conversation.participant.image"
               alt=""
-              class="aspect-square w-12 rounded-full"
+              class="aspect-square w-12 rounded-full shadow-sm shadow-secondary"
             />
             <div class="w-full truncate">
-              <p class="font-black truncate">{{ conversation.name }}</p>
-              <p class="truncate text-gray-800">
-                {{ conversation.message }}
+              <p class="truncate font-black">
+                {{
+                  conversation.participant.firstName +
+                  " " +
+                  conversation.participant.lastName
+                }}
+              </p>
+              <p
+                class="truncate text-base text-gray-800"
+                :class="
+                  conversation.isRead ||
+                  conversation.lastSender == itemShareStore.myUserUid
+                    ? 'font-normal'
+                    : 'font-bold'
+                "
+              >
+                {{
+                  (conversation.lastSender == itemShareStore.myUserUid
+                    ? "You: "
+                    : "") + conversation.lastMessage
+                }}
               </p>
             </div>
           </RouterLink>
+        </div>
+        <div
+          v-else-if="isLoading"
+          class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+        >
+          <p>Loading messages...</p>
+        </div>
+        <div
+          v-else
+          class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+        >
+          <p>No messages to show.</p>
         </div>
       </div>
     </aside>
     <!--Chat Window-->
     <div
-      class="basis-full lg:basis-2/3 lg:block bg-white overflow-hidden rounded-xl shadow-md shadow-gray-400"
+      class="basis-full overflow-hidden rounded-xl bg-white shadow-md shadow-gray-400 lg:block lg:basis-2/3"
       :class="['messages'].includes($route.name) ? 'hidden' : ''"
     >
       <RouterView />

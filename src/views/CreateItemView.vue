@@ -4,70 +4,60 @@ import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import db from "../firebase/firebaseInit.js";
-import "firebase/storage";
-/*import {
-  getStorage,
-  ref as stRef,
-  uploadBytes,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";*/
-
-const currentUserID = ref();
-const currentUserFName = ref("");
-const currentUserLName = ref("");
-//const imagePreview = ref();
-//const imgPath = ref();
-
-onMounted(() => {
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      // User logged in already or has just logged in.
-      currentUserID.value = user.uid;
-      const querySnapshot = await getDocs(collection(db, "users"));
-      querySnapshot.forEach((doc) => {
-        if (user.uid == doc.id) {
-          currentUserFName.value = doc.data().firstName;
-          currentUserLName.value = doc.data().lastName;
-        }
-      });
-    } else {
-      // User not logged in or has just logged out.
-    }
-  });
-});
+import { useItemShareStore } from "../stores/itemshare";
+import CustomField from "../components/CustomField.vue";
 
 const router = useRouter();
+const itemShareStore = useItemShareStore();
 
-const reader = new FileReader();
-const imageFiles = ref([]);
 const imagePreviews = ref([]);
 
-function loadImageFile(e) {
-  let file = e.target.files[0];
+const item = ref({
+  itemName: "",
+  location: "",
+  rentAmount: "",
+  rentRate: "",
+  description: "",
+  imageFiles: [],
+  tags: [],
+});
 
-  // add the file to the list of files to be uploaded later
-  imageFiles.value.push(file);
-
-  // Converts the file to a browser-readable image (aka string with base64 encoding) for display
-  reader.readAsDataURL(file);
-  reader.onload = (event) => {
-    imagePreviews.value.push(event.target.result);
-  };
-}
+const errorMessage = ref("");
 
 const tagInput = ref("");
-const tags = ref([]);
 
+// image-related stuff
+function loadImageFile(e) {
+  for (let file of e.target.files) {
+    // allow multiple files to be read simultaneously
+    let reader = new FileReader();
+
+    // add the file to the list of files to be uploaded later
+    item.value.imageFiles.push(file);
+
+    // Converts the file to a browser-readable image (aka string with base64 encoding) for display
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      imagePreviews.value.push(event.target.result);
+    };
+  }
+}
+
+function removeImage(index) {
+  imagePreviews.value.splice(index, 1);
+  item.value.imageFiles.splice(index, 1);
+}
+
+// tag-related stuff
 function deleteTag(index) {
-  tags.value.splice(index, 1);
+  item.value.tags.splice(index, 1);
 }
 
 function addTag() {
-  if (!tags.value.includes(tagInput.value)) {
-    tags.value.push(tagInput.value);
+  if (!tagInput.value) return; // do nothing if empty
+
+  if (!item.value.tags.includes(tagInput.value)) {
+    item.value.tags.push(tagInput.value);
   }
   tagInput.value = "";
 }
@@ -79,199 +69,148 @@ function validateTag() {
   }
 }
 
-/*
-
-personal idea lang on how to create item
-- user fills in field
-- attach images
-- submit
-- user wait for images to upload
-- add details to database
-- item complete
-
-*/
-
-const itemName = ref("");
-const location = ref("");
-const rentAmount = ref();
-const rentRate = ref("");
-const description = ref("");
-let error = ref(false);
-let errorMessage = ref("");
-
-const addItem = async () => {
+async function createItem() {
+  errorMessage.value = "";
   try {
-    if (
-      /*image !== null &&*/
-      itemName.value !== "" &&
-      location.value !== "" &&
-      rentAmount.value !== "" &&
-      rentRate.value !== "" &&
-      tags.value !== null &&
-      description.value !== ""
-    ) {
-      try {
-        await addDoc(collection(db, "items"), {
-          ownerId: currentUserID.value,
-          ownerFName: currentUserFName.value,
-          ownerLName: currentUserLName.value,
-          //image: imageFiles.value,
-          itemName: itemName.value,
-          location: location.value,
-          rentAmount: rentAmount.value,
-          rentRate: rentRate.value,
-          tags: tags.value,
-          description: description.value,
-        });
-        router.push("/home");
-        return;
-      } catch (err) {
-        error.value = true;
-        errorMessage.value = err.message;
-      }
-    } else {
-      error.value = true;
-      errorMessage.value = "Please fill out all the fields!";
-    }
-  } catch (err) {
-    error.value = true;
-    errorMessage.value = err.message;
+    if (await itemShareStore.createItem(item.value)) router.push("/home");
+  } catch (error) {
+    errorMessage.value = error;
   }
-};
-/*
-async function uploadImage(img) {
-  //console.log(img.name);
-  const storageRef = stRef(storage, "postImages/" + img.name);
-  const taskUpload = uploadBytesResumable(storageRef, img);
-  await taskUpload;
-  const imageURL = getDownloadURL(storageRef);
-  return await imageURL;
 }
-
-async function handleUploadImage(event) {
-  const img = event.target.files[0];
-  imagePreview.value = URL.createObjectURL(img);
-  imgPath.value = await uploadImage(img);
-}
-*/
 </script>
 <template>
-  <main>
+  <main class="container mx-auto flex flex-col gap-2 px-4 py-8">
+    <h1>New Item for Rent</h1>
     <form
-      class="container mx-auto flex flex-col px-4 py-8"
-      @submit.stop.prevent="addItem"
+      @submit.stop.prevent="createItem"
+      class="flex flex-col gap-4 divide-x-0 divide-secondary bg-white py-8 shadow-sm shadow-secondary md:flex-row md:gap-0 md:divide-x-2"
     >
-      <h1>Create an item</h1>
-      <input
-        type="file"
-        id="add-image"
-        @change="loadImageFile($event)"
-        hidden
-      />
-      <label for="images">Add Images</label>
-      <div class="w-full overflow-x-auto bg-red-200 p-4" id="images">
-        <div class="flex gap-2">
-          <img
-            class="aspect-square h-40 gap-2 object-contain"
-            v-for="image in imagePreviews"
-            :src="image"
-            alt=""
-            srcset=""
+      <div class="flex basis-1/2 flex-col gap-4 px-8">
+        <CustomField
+          v-model="item.itemName"
+          label="Item Name"
+          placeholder="A name for the item..."
+        />
+        <div class="flex flex-col gap-1">
+          <label>Description</label>
+          <textarea
+            v-model="item.description"
+            name="description"
+            class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 placeholder:text-sm placeholder:text-text placeholder:text-opacity-60 focus:border-primary focus:border-opacity-100 focus:bg-white focus:bg-opacity-90 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50"
+            placeholder="A description on the item..."
+          ></textarea>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label>Tags</label>
+          <div
+            class="flex flex-wrap gap-2 rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 p-2 focus-within:border-primary focus-within:border-opacity-100 focus-within:bg-white focus-within:bg-opacity-90"
+          >
+            <div
+              v-for="(tag, index) in item.tags"
+              class="flex items-center gap-1 whitespace-nowrap rounded-md bg-primary bg-opacity-80 py-1 pl-2 pr-1 text-background"
+            >
+              <span>{{ tag }}</span>
+              <button
+                class="material-icons aspect-square rounded-lg bg-background bg-opacity-10 px-1 text-xs font-bold text-background hover:bg-accent hover:text-text"
+                @click="deleteTag(index)"
+                type="button"
+              >
+                close
+              </button>
+            </div>
+            <input
+              type="text"
+              placeholder="Add a tag..."
+              @input="validateTag()"
+              @keydown.enter.prevent="addTag()"
+              @focusout="addTag()"
+              v-model="tagInput"
+              class="flex-1 border-none bg-transparent px-1 py-1 focus:ring-0"
+            />
+          </div>
+        </div>
+        <CustomField
+          v-model="item.location"
+          label="Location"
+          placeholder="Preferred area to deliver or retrieve..."
+        />
+      </div>
+      <div class="flex basis-1/2 flex-col gap-4 px-8">
+        <div class="flex flex-col gap-1">
+          <label>Images</label>
+          <div
+            class="w-full overflow-x-auto rounded-md border-2 border-text border-opacity-25 bg-secondary bg-opacity-50 p-2"
+            id="images"
+          >
+            <div class="flex gap-2">
+              <label
+                for="add-image"
+                class="group/x relative aspect-square h-40 rounded-md border-2 border-dashed border-text border-opacity-40 px-2 py-4 text-center hover:border-primary"
+              >
+                <p
+                  class="material-icons text-6xl text-text text-opacity-50 group-hover/x:text-primary"
+                >
+                  add_photo_alternate
+                </p>
+                <p
+                  class="text-sm text-text text-opacity-75 group-hover/x:text-primary"
+                >
+                  Browse for an image to upload.
+                </p>
+                <input
+                  type="file"
+                  id="add-image"
+                  accept="image/*"
+                  @change="loadImageFile($event)"
+                  class="absolute left-0 top-0 block h-full w-full cursor-pointer opacity-0"
+                  multiple
+                />
+              </label>
+              <img
+                v-for="(image, index) in imagePreviews"
+                class="aspect-square h-40 cursor-pointer rounded-md object-contain ring-4 ring-transparent hover:opacity-60 hover:ring-primary"
+                :src="image"
+                alt=""
+                @click="removeImage(index)"
+                srcset=""
+              />
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-4 sm:flex-row">
+          <CustomField
+            v-model="item.rentAmount"
+            placeholder="1,500"
+            label="Rent Amount"
+            class="basis-1/2"
           />
-          <label
-            for="add-image"
-            class="aspect-square h-40 cursor-pointer bg-green-400 py-4 text-center"
-          >
-            Add image...
-          </label>
+          <CustomField
+            v-model="item.rentRate"
+            label="Rent Rate"
+            class="basis-1/2"
+            placeholder="per day/week/month"
+          />
         </div>
-      </div>
-      <label for="fname">Item Name</label>
-      <input
-        v-model="itemName"
-        name="fname"
-        type="text"
-        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
-        placeholder="Add an item name"
-      />
-      <label for="fname">Location</label>
-      <input
-        v-model="location"
-        name="fname"
-        type="text"
-        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
-        placeholder="Enter location..."
-      />
-      <label for="fname">Rent rate</label>
-      <div class="rent-rate">
-        <input
-          v-model="rentAmount"
-          name="fname"
-          type="text"
-          class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
-          placeholder="Amount"
-        />
-        <input
-          v-model="rentRate"
-          name="fname"
-          type="text"
-          class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
-          placeholder="Rate (e.d. per day, per week, per month)"
-        />
-      </div>
-      <h2>Tags</h2>
-      <div class="flex flex-wrap gap-2 border border-black p-2">
         <div
-          v-for="(tag, index) in tags"
-          class="flex items-center gap-1 whitespace-nowrap rounded-md bg-red-300 px-2 py-1"
+          v-show="errorMessage"
+          class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
         >
-          <span>{{ tag }}</span>
-          <button
-            class="material-icons aspect-square rounded-lg bg-red-500 px-1.5 text-xs text-white"
-            @click="deleteTag(index)"
-          >
-            close
-          </button>
+          {{ errorMessage }}
         </div>
-        <input
-          type="text"
-          name=""
-          id=""
-          placeholder="Add a tag..."
-          @input="validateTag()"
-          @keydown.enter.prevent="addTag()"
-          v-model="tagInput"
-          class="flex-1 border-none py-0"
-        />
-      </div>
-      <label for="fname">Description</label>
-      <textarea
-        v-model="description"
-        name="description"
-        class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
-        placeholder="A short description on what the item is about"
-      ></textarea>
-      <div
-        v-show="error"
-        class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
-      >
-        {{ errorMessage }}
-      </div>
-      <div class="mt-4 flex justify-end gap-2">
-        <!-- TODO: User input from RegisterView is gone upon returning leaving TermsAndConditionVIew -->
-        <!-- Probably some way to mark as check upon accepting the terms and conditions? -->
-        <button
-          class="rounded-lg border-2 border-green-800 bg-green-800 px-5 py-3 text-white"
-        >
-          CREATE
-        </button>
-        <!--TODO: return to previous page using vue router-->
-        <RouterLink
-          to="/home"
-          class="rounded-lg border-2 border-green-800 bg-white px-5 py-3 text-green-800"
-        >
-          CANCEL
-        </RouterLink>
+        <footer class="mt-4 flex flex-col justify-end gap-2 md:flex-row">
+          <button
+            type="submit"
+            class="rounded-md border-2 border-green-800 bg-green-800 px-8 py-2 text-white"
+          >
+            Create
+          </button>
+          <button
+            type="button"
+            class="rounded-md border-2 border-green-800 bg-white px-8 py-2 text-green-800"
+          >
+            Cancel
+          </button>
+        </footer>
       </div>
     </form>
   </main>

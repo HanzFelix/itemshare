@@ -14,6 +14,8 @@ import ConversationView from "../views/ConversationView.vue";
 import ForgotPasswordView from "../views/ForgotPasswordView.vue";
 import TermsAndConditionsView from "../views/TermsAndConditionsView.vue";
 import CreateItemView from "../views/CreateItemView.vue";
+import AboutView from "../views/AboutView.vue";
+import { useItemShareStore } from "../stores/itemshare";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +23,7 @@ const router = createRouter({
     {
       path: "/",
       component: LandingView,
+      meta: { requiresAuth: false },
       children: [
         { path: "", name: "getStarted", component: LandingPageView },
         { path: "/login", name: "login", component: LoginView },
@@ -35,11 +38,13 @@ const router = createRouter({
           name: "forgotPassword",
           component: ForgotPasswordView,
         },
+        { path: "/about", name: "about", component: AboutView },
       ],
     },
     {
       path: "/home",
       component: HomePageView,
+      meta: { requiresAuth: true },
       children: [
         {
           path: "",
@@ -48,12 +53,12 @@ const router = createRouter({
         },
         {
           path: "/profile/:id",
-          name: "myProfile",
+          name: "profile",
           component: ProfileView,
         },
         {
           path: "/profile",
-          name: "profile",
+          name: "myProfile",
           component: ProfileView,
         },
         {
@@ -86,6 +91,28 @@ const router = createRouter({
       ],
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
+});
+
+// checks if user is logged in before navigating
+router.beforeEach((to, from, next) => {
+  const itemShareStore = useItemShareStore();
+  if (to.meta.requiresAuth && !itemShareStore.loggedInUser) {
+    // redirect non-user accessing user-only sites to landing
+    next("/");
+  } else if (!to.meta.requiresAuth && itemShareStore.loggedInUser) {
+    // redirect user accessing landing page to home
+    next("/home");
+  } else {
+    // proceed as usual (even when refreshed)
+    next();
+  }
 });
 
 export default router;

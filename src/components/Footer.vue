@@ -1,12 +1,10 @@
 <script setup></script>
 <template>
   <header
-    class="bg-green-600 flex flex-col sticky w-full text-white bottom-0 px-4"
+    class="sticky bottom-0 flex w-full flex-col bg-primary px-4 text-background"
     v-if="!['login', 'register'].includes($route.name)"
   >
-    <nav
-      class="flex items-center justify-end container mx-auto py-4 bg-green-600"
-    >
+    <nav class="container mx-auto flex items-center justify-end py-4">
       <p>All Rights Reserved 2023. &reg;</p>
     </nav>
   </header>

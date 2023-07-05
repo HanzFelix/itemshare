@@ -1,78 +1,40 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import db from "../firebase/firebaseInit.js";
+import { useItemShareStore } from "../stores/itemshare";
+import CustomField from "../components/CustomField.vue";
+import CustomDropdown from "../components/CustomDropdown.vue";
 
 const router = useRouter();
-
-const phoneNumber = ref("");
-const email = ref("");
-const firstName = ref("");
-const lastName = ref("");
-const gender = ref("Select");
-const birthday = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-const checkbox = ref(false);
-let error = ref(false);
+const itemShareStore = useItemShareStore();
 let errorMessage = ref("");
 
-const register = async () => {
+const registerDetails = ref({
+  phoneNumber: "",
+  email: "",
+  firstName: "",
+  lastName: "",
+  gender: "Select",
+  location: "",
+  image: "",
+  birthday: "",
+  password: "",
+  confirmPassword: "",
+  terms: false,
+});
+
+async function register() {
   try {
-    if (
-      phoneNumber.value !== "" &&
-      email.value !== "" &&
-      firstName.value !== "" &&
-      lastName.value !== "" &&
-      gender.value !== "Select" &&
-      birthday.value !== "" &&
-      password.value !== "" &&
-      confirmPassword !== ""
-    ) {
-      if (password.value === confirmPassword.value) {
-        if (checkbox.value) {
-          const firebaseAuth = await firebase.auth();
-          const createUser = await firebaseAuth.createUserWithEmailAndPassword(
-            email.value,
-            password.value
-          );
-          const result = await createUser;
-          const dataBase = db.collection("users").doc(result.user.uid);
-          await dataBase.set({
-            firstName: firstName.value,
-            lastName: lastName.value,
-            email: email.value,
-            phoneNumber: phoneNumber.value,
-            gender: gender.value,
-            birthday: birthday.value,
-            verified: false,
-            admin: false,
-          });
-          router.push("/home");
-          return;
-        } else {
-          error.value = true;
-          errorMessage.value = "Please agree to the terms and conditions.";
-        }
-      } else {
-        error.value = true;
-        errorMessage.value = "Password does not match!";
-      }
-    } else {
-      error.value = true;
-      errorMessage.value = "Please fill out all the fields!";
-    }
-  } catch (err) {
-    error.value = true;
-    errorMessage.value = err.message;
+    if (await itemShareStore.register(registerDetails.value))
+      router.push("/home");
+  } catch (error) {
+    errorMessage.value = error;
   }
-};
+}
 </script>
 <template>
   <div
-    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-white p-8"
+    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-background p-8"
   >
     <form
       class="flex max-w-full flex-col gap-2"
@@ -81,83 +43,70 @@ const register = async () => {
       <h1>Create an account</h1>
       <div class="flex flex-col gap-2 xl:flex-row xl:gap-8">
         <div class="flex basis-1/2 flex-col gap-2">
-          <label for="phone">Phone Number</label>
-          <input
-            v-model="phoneNumber"
-            name="phone"
-            type="tel"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+          <CustomField
+            label="Phone Number"
+            v-model="registerDetails.phoneNumber"
+            input-type="tel"
             placeholder="Enter your phone number"
-          />
-          <button
-            class="rounded-xl border-2 border-green-800 bg-white px-5 py-3 text-green-800"
           >
-            Send SMS Code
-          </button>
-          <label for="email">Email Address</label>
-          <input
-            v-model="email"
-            name="email"
-            type="email"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+            <button
+              class="rounded-md border-2 border-text border-opacity-50 bg-secondary px-6 py-2 text-text text-opacity-80 transition-colors hover:bg-opacity-90"
+            >
+              Send SMS Code
+            </button>
+          </CustomField>
+          <CustomField
+            label="Email Address"
+            v-model="registerDetails.email"
+            input-type="email"
             placeholder="Email"
           />
-          <label for="fname">First Name</label>
-          <input
-            v-model="firstName"
-            name="fname"
-            type="text"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+          <CustomField
+            label="First Name"
+            v-model="registerDetails.firstName"
+            input-type="text"
             placeholder="First Name"
           />
-          <label for="lname">Last Name</label>
-          <input
-            v-model="lastName"
-            name="lname"
-            type="text"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+          <CustomField
+            label="Last Name"
+            v-model="registerDetails.lastName"
+            input-type="text"
             placeholder="Last Name"
           />
-          <label for="fname">Gender</label>
-          <select
-            v-model="gender"
-            name="fname"
-            type="text"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-700"
-            placeholder="Gender"
-          >
+          <CustomDropdown label="Gender" v-model="registerDetails.gender">
+            <option>Select</option>
             <option>Male</option>
             <option>Female</option>
             <option>Others</option>
-          </select>
+          </CustomDropdown>
         </div>
         <div class="flex basis-1/2 flex-col gap-2">
-          <label for="bday">Birthday</label>
-          <input
-            v-model="birthday"
-            name="bday"
-            type="date"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 text-yellow-700"
+          <CustomField
+            label="Location"
+            v-model="registerDetails.location"
+            input-type="text"
+            placeholder="Location"
           />
-          <label for="password">Password</label>
-          <input
-            v-model="password"
-            name="password"
-            type="password"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+          <CustomField
+            label="Birthday"
+            v-model="registerDetails.birthday"
+            input-type="date"
+          />
+          <CustomField
+            label="Password"
+            v-model="registerDetails.password"
+            input-type="password"
             placeholder="Password"
           />
-          <label for="confirm password">Confirm Password</label>
-          <input
-            v-model="confirmPassword"
-            name="confirm password"
-            type="password"
-            class="rounded-xl border-2 border-yellow-500 bg-yellow-200 px-5 py-3 placeholder-yellow-700"
+          <CustomField
+            label="Confirm Password"
+            v-model="registerDetails.confirmPassword"
+            input-type="password"
             placeholder="Confirm Password"
           />
           <div
-            v-show="error"
-            class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
+            v-show="errorMessage"
+            class="errorMessage rounded-md border-2 border-red-400 bg-red-300 px-4 py-2 align-middle text-sm text-red-800"
           >
             {{ errorMessage }}
           </div>
@@ -166,21 +115,27 @@ const register = async () => {
               type="checkbox"
               name="checkbox"
               id="checkbox"
-              v-model="checkbox"
+              v-model="registerDetails.terms"
+              class="text-accent focus:ring-0"
             />
             <span> I agree to the </span>
-            <RouterLink to="/terms-and-conditions" class="underline">
+            <RouterLink
+              to="/terms-and-conditions"
+              class="underline decoration-accent"
+            >
               Terms and Conditions
             </RouterLink>
           </p>
-          <button class="rounded-xl bg-green-800 px-5 py-3 text-white">
-            CREATE ACCOUNT
+          <button
+            class="rounded-md border-2 border-transparent bg-primary px-6 py-2 text-white"
+          >
+            Create account
           </button>
           <RouterLink
             to="/login"
-            class="rounded-xl border-2 border-green-800 bg-white px-5 py-3 text-center text-green-800"
+            class="rounded-md border-2 border-primary bg-background px-6 py-2 text-center text-primary"
           >
-            GO BACK
+            Go back
           </RouterLink>
         </div>
       </div>

@@ -1,69 +1,67 @@
 <script setup>
-import { onUpdated, ref } from "vue";
+import { onMounted, onUpdated, ref, watch } from "vue";
 import { useRoute, RouterLink } from "vue-router";
+import CustomField from "../components/CustomField.vue";
 import { useItemShareStore } from "../stores/itemshare";
 const route = useRoute();
-
 const itemShareStore = useItemShareStore();
 
-var id = parseInt(route.params.id);
 const messageDraft = ref("");
 const scrollToElement = ref();
-onUpdated(() => {
-  id = parseInt(route.params.id);
+const otherParticipant = ref(itemShareStore.tempUserProfile);
+const conversationDetails = ref({
+  lastMessage: "Loading...",
+  lastSender: "12",
+  isRead: true,
 });
-const chatHistory = ref([
-  {
-    user: "me",
-    message:
-      "Hi, with regards to product X, is this item still in good condition?",
-  },
-  {
-    user: "them",
-    message: "Of course! ",
-  },
-  {
-    user: "them",
-    message:
-      'We regularly perform "Maintenance Order X" upon return of item to ensure that the product is in a good quality ',
-  },
-  {
-    user: "me",
-    message: "Great!",
-  },
-  {
-    user: "me",
-    message: "Will the product be available by Tuesday?",
-  },
-  {
-    user: "them",
-    message: "Yes.",
-  },
-  {
-    user: "me",
-    message: "👍",
-  },
-  {
-    user: "them",
-    message:
-      "And by the way, you can try writing in the input field and it will actually send to our convo.",
-  },
-]);
+const convoId = ref(route.params.id);
 
-// send a message & clear input field
-function sendMessage() {
-  chatHistory.value.push({ user: "me", message: messageDraft.value });
-  messageDraft.value = "";
-  scrollToElement.value.scrollTop = scrollContainer.value.scrollHeight;
+const isLoading = ref(true);
+const messages = ref([]);
+
+onMounted(async () => {
+  await loadData(route.params.id);
+});
+
+watch(
+  () => route.params.id,
+  async (newId) => {
+    if (newId) {
+      convoId.value = newId;
+      await loadData(newId);
+    }
+  }
+);
+
+async function loadData(convoId) {
+  conversationDetails.value = await itemShareStore.loadConversation(convoId);
+  otherParticipant.value = await itemShareStore.loadProfile(
+    conversationDetails.value.participants.find(
+      (uid) => uid != itemShareStore.myUserUid
+    )
+  );
+  itemShareStore.loadMessages(convoId);
 }
 
+// send a message & clear input field
+async function sendMessage(message) {
+  messageDraft.value = "";
+  itemShareStore.loadedMessages.push({
+    sender: itemShareStore.myUserUid,
+    content: message,
+    type: "message",
+  });
+  await itemShareStore.sendMessage(convoId.value, message);
+  //scrollToElement.value.scrollTop = scrollContainer.value.scrollHeight;
+}
+/*
 // hide avatar if from same sender
 function isSamePerson(chat_id) {
-  if (chat_id + 1 == chatHistory.value.length) {
+  if (chat_id + 1 == messages.value.length) {
     return false;
   }
 
-  return chatHistory.value[chat_id].user == chatHistory.value[chat_id + 1].user;
+  return messages.value[chat_id].sender == messages.value[chat_id + 1].sender;
 }
 
 // stylize chat bubbles
@@ -71,52 +69,51 @@ function isSameMessageSource(chat_id) {
   var classes = "";
 
   if (
-    chat_id + 1 < chatHistory.value.length &&
-    chatHistory.value[chat_id].user == chatHistory.value[chat_id + 1].user
+    chat_id + 1 < messages.value.length &&
+    messages.value[chat_id].sender == messages.value[chat_id + 1].sender
   ) {
     classes +=
-      chatHistory.value[chat_id].user == "me"
+      messages.value[chat_id].sender == itemShareStore.myUserUid
         ? " rounded-br-none"
         : " rounded-bl-none";
   }
 
   if (
     chat_id - 1 >= 0 &&
-    chatHistory.value[chat_id].user == chatHistory.value[chat_id - 1].user
+    messages.value[chat_id].sender == messages.value[chat_id - 1].sender
   ) {
     classes +=
-      chatHistory.value[chat_id].user == "me"
+      messages.value[chat_id].sender == itemShareStore.myUserUid
         ? " rounded-tr-none"
         : " rounded-tl-none";
   }
 
   // use green color if message source is me
   classes +=
-    chatHistory.value[chat_id].user == "me"
-      ? " bg-green-700 text-white"
-      : " bg-gray-300";
+    messages.value[chat_id].sender == itemShareStore.myUserUid
+      ? " bg-primary text-background bg-opacity-90"
+      : " bg-secondary bg-opacity-40";
 
   return classes;
-}
+}*/
 </script>
 <template>
-  <div class="flex h-full flex-col justify-between">
+  <div
+    class="flex h-full flex-col justify-between"
+    v-if="itemShareStore.loadedMessages.length != 0"
+  >
     <header
-      class="flex items-center justify-between bg-green-600 px-6 py-2 shadow-md shadow-gray-400"
+      class="flex items-center justify-between bg-primary bg-opacity-90 px-6 py-2 shadow-sm shadow-secondary"
     >
       <div class="flex gap-2">
         <img
-          :src="itemShareStore.loadedProfile(id).image"
+          :src="otherParticipant.image"
           alt=""
           class="aspect-square w-12 rounded-full"
         />
-        <div class="flex flex-col text-white">
+        <div class="flex flex-col text-background">
           <p class="font-black">
-            {{
-              itemShareStore.loadedProfile(id).firstname +
-              " " +
-              itemShareStore.loadedProfile(id).lastname
-            }}
+            {{ otherParticipant.firstName + " " + otherParticipant.lastName }}
           </p>
           <div class="flex items-center gap-1 truncate">
             <div class="inline-block h-2 w-2 rounded-full bg-green-300"></div>
@@ -124,7 +121,7 @@ function isSameMessageSource(chat_id) {
           </div>
         </div>
       </div>
-      <RouterLink to="/messages" class="material-icons text-white"
+      <RouterLink to="/messages" class="material-icons text-background"
         >close</RouterLink
       >
     </header>
@@ -135,45 +132,55 @@ function isSameMessageSource(chat_id) {
     >
       <div class="bg-white px-6 pt-12">
         <div
-          v-for="(chat, index) in chatHistory"
-          :class="chat.user == 'me' ? 'flex-row-reverse' : 'flex-row'"
+          v-for="(message, index) in itemShareStore.loadedMessages"
+          :class="
+            message.sender == itemShareStore.myUserUid
+              ? 'flex-row-reverse'
+              : 'flex-row'
+          "
           class="my-1 flex items-end gap-2"
         >
           <img
-            src="https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg"
+            :src="
+              message.sender == itemShareStore.myUserUid
+                ? itemShareStore.myProfile.image
+                : otherParticipant.image
+            "
             alt=""
-            class="aspect-square w-12 rounded-full"
-            :class="isSamePerson(index) ? 'opacity-0' : ''"
+            class="aspect-square w-12 rounded-full shadow-sm shadow-secondary"
+            :class="itemShareStore.isSamePerson(index) ? 'opacity-0' : ''"
           />
           <div
-            class="max-w-md rounded-3xl px-4 py-3"
-            :class="isSameMessageSource(index)"
+            class="max-w-md rounded-3xl px-4 py-3 shadow-sm shadow-secondary"
+            :class="itemShareStore.isSameMessageSource(index)"
           >
-            <p>{{ chat.message }}</p>
+            <p class="max-w-full break-words">{{ message.content }}</p>
           </div>
         </div>
         <section class="sticky bottom-0 mt-4 rounded-t-xl bg-white pb-4">
           <form
-            class="flex gap-2 rounded-xl bg-amber-400 p-2 shadow-sm shadow-gray-400"
-            @submit.prevent="sendMessage()"
+            class="bg-amber-400 flex gap-2 rounded-xl bg-secondary bg-opacity-80 p-2 shadow-gray-400 drop-shadow-sm"
+            @submit.prevent="sendMessage(messageDraft)"
           >
-            <input
-              type="text"
-              name=""
+            <CustomField
               placeholder="Enter message..."
-              class="w-full rounded-xl border-2 border-yellow-500 bg-yellow-200 px-4 py-2 placeholder-yellow-700"
-              id=""
               v-model="messageDraft"
             />
             <button
               type="submit"
-              class="rounded-xl bg-green-700 px-6 py-2 text-white"
+              class="material-icons rounded-md border-2 border-transparent bg-primary px-4 py-2 text-background"
             >
-              Send
+              send
             </button>
           </form>
         </section>
       </div>
     </main>
+  </div>
+  <div
+    v-else
+    class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+  >
+    <p>Loading messages...</p>
   </div>
 </template>
