@@ -25,7 +25,7 @@ import ItemShareLogo from "../components/ItemShareLogo.vue";
       <header class="flex items-center justify-between">
         <nav class="flex gap-4 text-background">
           <RouterLink to="/about">About Us</RouterLink>
-          <a href="#">Contacts</a>
+          <RouterLink to="/about">Contacts</RouterLink>
         </nav>
         <ItemShareLogo />
       </header>
