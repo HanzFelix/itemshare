@@ -14,6 +14,7 @@ import ConversationView from "../views/ConversationView.vue";
 import ForgotPasswordView from "../views/ForgotPasswordView.vue";
 import TermsAndConditionsView from "../views/TermsAndConditionsView.vue";
 import CreateItemView from "../views/CreateItemView.vue";
+import AboutView from "../views/AboutView.vue";
 import { useItemShareStore } from "../stores/itemshare";
 
 const router = createRouter({
@@ -37,6 +38,7 @@ const router = createRouter({
           name: "forgotPassword",
           component: ForgotPasswordView,
         },
+        { path: "/about", name: "about", component: AboutView },
       ],
     },
     {
