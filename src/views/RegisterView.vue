@@ -3,6 +3,7 @@ import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useItemShareStore } from "../stores/itemshare";
 import CustomField from "../components/CustomField.vue";
+import CustomDropdown from "../components/CustomDropdown.vue";
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
