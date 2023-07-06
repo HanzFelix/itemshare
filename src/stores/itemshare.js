@@ -1,6 +1,6 @@
-import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import firebase from "firebase/compat/app";
+import db from "../firebase/firebaseInit.js";
 import "firebase/compat/auth";
 import {
   collection,
@@ -15,7 +15,6 @@ import {
   updateDoc,
   onSnapshot,
 } from "firebase/firestore";
-import db from "../firebase/firebaseInit.js";
 import {
   ref as stRef,
   getStorage,
@@ -27,7 +26,6 @@ const storage = getStorage();
 
 export const useItemShareStore = defineStore("itemshare", {
   state: () => ({
-    temp: 1,
     myUserUid: localStorage.getItem("useruid") || null,
     myProfile: {
       firstName: "",
@@ -108,12 +106,6 @@ export const useItemShareStore = defineStore("itemshare", {
         location: "Calbayog City",
       },
     ],
-    /*loadedProfile: {
-      firstName: "Isaac",
-      lastName: "Einstein",
-      image: "https://img.getimg.ai/generated/img-4Ld0iBhed56PELjUqhwEO.jpeg",
-      location: "Baybay City",
-    },*/
     rentedItems: [],
     sampleItems: [
       {
@@ -309,6 +301,9 @@ export const useItemShareStore = defineStore("itemshare", {
         location: "Loading location...",
       };
     },
+    myFullName(state) {
+      return state.myProfile.firstName + " " + state.myProfile.lastName;
+    },
     // sample getter that accepts argument
     productsCheaperThan(state) {
       return (price) =>
@@ -427,21 +422,31 @@ export const useItemShareStore = defineStore("itemshare", {
       }
     },
 
+    async resetPassword(email) {
+      if (email == "") {
+        throw "Please enter your email address.";
+      }
+
+      try {
+        await firebase.auth().sendPasswordResetEmail(email);
+        return true;
+      } catch (err) {
+        throw err;
+      }
+    },
+
     // returns an array of items, paramters are: max number to retrieve, or just user's uid
     async loadItems(maxlimit = 12, ownerId = "") {
       let q = query(collection(db, "items"));
       if (ownerId) {
         q = query(q, where("ownerId", "==", ownerId));
       }
-      // q = query(q, orderBy("dateCreated", "desc")); // temp, please uncomment this later
       q = query(q, orderBy("createdAt", "desc"), limit(maxlimit));
       const querySnapshot = await getDocs(q);
       const fItems = [];
       querySnapshot.forEach((doc) => {
         const item = {
           itemId: doc.id,
-          //ownerID: doc.data().ownerId,
-          //ownerName: doc.data().ownerFName + " " + doc.data().ownerLName,
           itemName: doc.data().itemName,
           location: doc.data().location,
           rentAmount: doc.data().rentAmount,
@@ -593,9 +598,7 @@ export const useItemShareStore = defineStore("itemshare", {
         details.email == "" ||
         details.firstName == "" ||
         details.lastName == "" ||
-        details.gender == "Select" ||
         details.location == "" ||
-        details.birthday == "" ||
         details.password == "" ||
         details.confirmPassword == ""
       ) {
@@ -635,8 +638,6 @@ export const useItemShareStore = defineStore("itemshare", {
           lastName: details.lastName,
           email: details.email,
           phoneNumber: details.phoneNumber,
-          gender: details.gender,
-          birthday: details.birthday,
           location: details.location,
           image: details.image,
           verified: false,
