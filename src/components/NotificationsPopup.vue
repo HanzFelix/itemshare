@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import StarRating from "./StarRating.vue";
+import StarRating from "@/components/StarRating.vue";
 
 defineProps({
   visible: Boolean,

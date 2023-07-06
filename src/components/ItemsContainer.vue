@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { useItemShareStore } from "../stores/itemshare";
+
 const props = defineProps({
   gridfor: {
     type: String,

@@ -1,21 +1,21 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LandingView from "../views/LandingView.vue";
-import LandingPageView from "../views/LandingPageView.vue";
-import LoginView from "../views/LoginView.vue";
-import RegisterView from "../views/RegisterView.vue";
-import HomePageView from "../views/HomePageView.vue";
-import HomeView from "../views/HomeView.vue";
-import ProfileView from "../views/ProfileView.vue";
-import ItemDetailView from "../views/ItemDetailView.vue";
-import MessagesView from "../views/MessagesView.vue";
-import SearchView from "../views/SearchView.vue";
-import EmptyView from "../views/EmptyView.vue";
-import ConversationView from "../views/ConversationView.vue";
-import ForgotPasswordView from "../views/ForgotPasswordView.vue";
-import TermsAndConditionsView from "../views/TermsAndConditionsView.vue";
-import CreateItemView from "../views/CreateItemView.vue";
-import AboutView from "../views/AboutView.vue";
-import { useItemShareStore } from "../stores/itemshare";
+import { useItemShareStore } from "@/stores/itemshare";
+import LandingView from "@/views/LandingView.vue";
+import LandingPageView from "@/views/LandingPageView.vue";
+import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
+import HomePageView from "@/views/HomePageView.vue";
+import HomeView from "@/views/HomeView.vue";
+import ProfileView from "@/views/ProfileView.vue";
+import ItemDetailView from "@/views/ItemDetailView.vue";
+import MessagesView from "@/views/MessagesView.vue";
+import SearchView from "@/views/SearchView.vue";
+import EmptyView from "@/views/EmptyView.vue";
+import ConversationView from "@/views/ConversationView.vue";
+import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
+import TermsAndConditionsView from "@/views/TermsAndConditionsView.vue";
+import CreateItemView from "@/views/CreateItemView.vue";
+import AboutView from "@/views/AboutView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -92,11 +92,22 @@ const router = createRouter({
     },
   ],
   scrollBehavior(to, from, savedPosition) {
+    // Scroll to the top of the RouterView container
+    const routerViewElement =
+      document.getElementsByClassName("overflow-y-auto")[0];
+    if (routerViewElement) {
+      routerViewElement.scrollTo(0, 0);
+    }
+
+    // Scroll the entire page to the top
+    window.scrollTo(0, 0);
+
+    // Return the savedPosition if available
     if (savedPosition) {
       return savedPosition;
-    } else {
-      return { top: 0 };
     }
+
+    return { top: 0 };
   },
 });
 

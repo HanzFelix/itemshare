@@ -1,16 +1,15 @@
 <script setup>
-// LAYOUT IS WIP
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { onMounted, ref } from "vue";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import { useItemShareStore } from "../stores/itemshare";
-import CustomField from "../components/CustomField.vue";
+import { useItemShareStore } from "@/stores/itemshare";
+import CustomField from "@/components/CustomField.vue";
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
 
 const imagePreviews = ref([]);
+const errorMessage = ref("");
+const tagInput = ref("");
 
 const item = ref({
   itemName: "",
@@ -21,10 +20,6 @@ const item = ref({
   imageFiles: [],
   tags: [],
 });
-
-const errorMessage = ref("");
-
-const tagInput = ref("");
 
 // image-related stuff
 function loadImageFile(e) {
@@ -69,6 +64,7 @@ function validateTag() {
   }
 }
 
+// firebase create item
 async function createItem() {
   errorMessage.value = "";
   try {

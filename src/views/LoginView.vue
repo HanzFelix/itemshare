@@ -1,17 +1,15 @@
 <script setup>
-import { useRouter } from "vue-router";
 import { ref } from "vue";
-import firebase from "firebase/compat/app";
-import { useItemShareStore } from "../stores/itemshare";
-import "firebase/compat/auth";
-import CustomField from "../components/CustomField.vue";
+import { useRouter } from "vue-router";
+import { useItemShareStore } from "@/stores/itemshare";
+import CustomField from "@/components/CustomField.vue";
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
 
-let errorMessage = ref("");
 const email = ref("");
 const password = ref("");
+const errorMessage = ref("");
 
 async function login() {
   errorMessage.value = "";
@@ -26,7 +24,7 @@ async function login() {
 </script>
 <template>
   <div
-    class="flex max-w-full flex-col self-center overflow-y-auto rounded-3xl bg-background p-8"
+    class="flex max-w-xs flex-col self-center overflow-y-auto rounded-3xl bg-background p-8"
   >
     <form class="flex max-w-full flex-col gap-2" @submit.stop.prevent="login">
       <h1>Login</h1>
@@ -38,7 +36,7 @@ async function login() {
       />
       <div
         v-show="errorMessage"
-        class="errorMessage rounded-md bg-red-500 px-5 py-2 align-middle text-sm"
+        class="rounded-md border-2 border-red-400 bg-red-300 px-4 py-2 align-middle text-sm text-red-800"
       >
         {{ errorMessage }}
       </div>

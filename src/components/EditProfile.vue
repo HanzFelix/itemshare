@@ -1,11 +1,12 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useItemShareStore } from "../stores/itemshare";
-import CustomField from "../components/CustomField.vue";
+import CustomField from "@/components/CustomField.vue";
+
 const itemShareStore = useItemShareStore();
-const emit = defineEmits(["close"]);
 const reader = new FileReader();
 
+const emit = defineEmits(["close"]);
 const props = defineProps({
   useruid: {
     default: 0,
@@ -20,7 +21,7 @@ const props = defineProps({
   },
 });
 
-const editProfile = ref(Object.assign({}, props.profile)); // duplicates it
+const editProfile = ref(Object.assign({}, props.profile)); // clones it
 
 function loadImageFile(e) {
   let file = e.target.files[0];
@@ -28,7 +29,7 @@ function loadImageFile(e) {
   // Converts the file to a browser-readable image (aka string with base64 encoding) for display
   reader.readAsDataURL(file);
   reader.onload = (event) => {
-    profile.value.image = event.target.result;
+    editProfile.value.image = event.target.result;
   };
 }
 
@@ -59,7 +60,7 @@ watch(
               :src="editProfile.image"
               alt=""
               srcset=""
-              class="aspect-square w-32 rounded-lg object-contain"
+              class="aspect-square w-32 rounded-lg object-contain shadow-sm shadow-secondary"
             />
             <label
               for="add-image"

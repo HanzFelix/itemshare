@@ -1,24 +1,15 @@
 <script setup>
+import { onMounted, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import { useItemShareStore } from "../stores/itemshare";
-import ItemShareLogo from "./ItemShareLogo.vue";
-import NotificationsPopup from "./NotificationsPopup.vue";
-import { onMounted } from "vue";
-import { initFlowbite } from "flowbite";
-import { ref } from "vue";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import { collection, getDocs } from "firebase/firestore";
-
-// initialize components based on data attribute selectors
-const db = firebase.firestore();
+import { useItemShareStore } from "@/stores/itemshare";
+import ItemShareLogo from "@/components/ItemShareLogo.vue";
+import NotificationsPopup from "@/components/NotificationsPopup.vue";
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
 const showNotifs = ref(false);
 
 onMounted(async () => {
-  initFlowbite();
   await itemShareStore.initMyProfile();
 });
 
@@ -63,15 +54,6 @@ async function logout() {
           </button>
           <NotificationsPopup :visible="showNotifs" />
         </li>
-        <!--p class="flex gap-1">
-          <span class="material-icons lg:text-base text-3xl">inbox</span
-          ><span class="hidden lg:inline-block">MY ITEMS</span>
-        </p-->
-        <!--p class="flex gap-1">
-          <span class="material-icons lg:text-base text-3xl"
-            >favorite_border</span
-          ><span class="hidden lg:inline-block">FAVORITES</span>
-        </p-->
         <li>
           <RouterLink to="/messages" class="flex gap-1">
             <span class="material-icons text-3xl lg:text-base">chat</span
@@ -91,13 +73,8 @@ async function logout() {
               :src="itemShareStore.myProfile.image"
               alt=""
               class="aspect-square w-10 rounded-full"
+              :title="itemShareStore.myFullName"
             />
-            <!--span class="hidden lg:inline-block">
-              {{
-                itemShareStore.myProfile.firstName +
-                " " +
-                itemShareStore.myProfile.lastName
-              }}</span-->
           </RouterLink>
         </li>
       </ul>
@@ -138,8 +115,9 @@ async function logout() {
           <RouterLink
             to="/search"
             class="material-icons bg-accent py-1 pr-2 text-text text-opacity-70 lg:py-0 lg:text-lg"
-            >menu</RouterLink
           >
+            menu
+          </RouterLink>
         </form>
       </div>
     </section>

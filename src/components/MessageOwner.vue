@@ -1,11 +1,12 @@
 <script setup>
-import { useRouter } from "vue-router";
-import CustomField from "../components/CustomField.vue";
 import { ref } from "vue";
-import { useItemShareStore } from "../stores/itemshare";
+import { useRouter } from "vue-router";
+import { useItemShareStore } from "@/stores/itemshare";
+import CustomField from "@/components/CustomField.vue";
 
 const router = useRouter();
 const itemShareStore = useItemShareStore();
+
 const emit = defineEmits(["close"]);
 const props = defineProps({
   ownerId: String,
@@ -31,7 +32,7 @@ async function messageOwner() {
     );
     router.push("/messages/" + convoid);
   } catch (error) {
-    console.log(error + "from MessageOwner");
+    console.log(error + "from MessageOwner"); //need to display this somehow
   } finally {
     isSending.value = false;
   }

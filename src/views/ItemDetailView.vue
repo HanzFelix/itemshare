@@ -1,34 +1,17 @@
 <script setup>
-import { useRoute } from "vue-router";
-import { useItemShareStore } from "../stores/itemshare";
-import { RouterLink } from "vue-router";
 import { onMounted, ref, computed } from "vue";
-import StarRating from "../components/StarRating.vue";
-import RentItem from "../components/RentItem.vue";
-import MessageOwner from "../components/MessageOwner.vue";
+import { useRoute, RouterLink } from "vue-router";
+import { useItemShareStore } from "@/stores/itemshare";
+import StarRating from "@/components/StarRating.vue";
+import RentItem from "@/components/RentItem.vue";
+import MessageOwner from "@/components/MessageOwner.vue";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
-
 const itemId = ref(route.params.id);
-//const item = itemShareStore.itemById(id);
+
 const activeImg = ref(0);
-
-const messageDialog = ref(null);
-
-function showMessageOwner(yes) {
-  if (yes) {
-    messageDialog.value.showModal();
-  } else {
-    messageDialog.value.close();
-  }
-}
-// temporarily uses placeholder profile until onMounted is called
-const profile = ref(itemShareStore.loadedProfile(5));
-const isMyProfile = computed(
-  () => item.value.ownerId == itemShareStore.myUserUid
-);
-
+const profile = ref("");
 const item = ref({
   itemName: "",
   location: "",
@@ -40,24 +23,37 @@ const item = ref({
   tags: [],
 });
 
+const messageDialog = ref(null);
+const rentDialog = ref(null);
+
+const isMyProfile = computed(
+  () => item.value.ownerId == itemShareStore.myUserUid
+);
+
+function showMessageOwner(yes) {
+  if (yes) {
+    messageDialog.value.showModal();
+  } else {
+    messageDialog.value.close();
+  }
+}
+
 function viewImage(index) {
   activeImg.value = index;
 }
 
-onMounted(async () => {
-  item.value = await itemShareStore.loadItem(itemId.value);
-  profile.value = await itemShareStore.loadProfile(item.value.ownerId);
-});
-
-const rentDialog = ref(null);
 function showRentItem() {
-  itemShareStore.editProfile = profile.value;
   rentDialog.value.showModal();
 }
 
 function hideRentItem() {
   rentDialog.value.close();
 }
+
+onMounted(async () => {
+  item.value = await itemShareStore.loadItem(itemId.value);
+  profile.value = await itemShareStore.loadProfile(item.value.ownerId);
+});
 </script>
 <template>
   <main class="container mx-auto flex flex-col gap-4 px-4 py-8">
@@ -73,8 +69,7 @@ function hideRentItem() {
       >
         <img
           :src="item.images[activeImg]"
-          alt=""
-          srcset=""
+          v-if="item.images.length > 0"
           class="aspect-square w-full object-contain"
         />
         <div class="flex w-full gap-2 overflow-x-auto px-1 py-2">
@@ -159,8 +154,10 @@ function hideRentItem() {
       </div>
       <!--Lender Details-->
       <div class="basis-3/12 bg-white p-4 shadow-sm shadow-secondary">
-        <h2>Lender</h2>
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div
+          v-if="profile"
+          class="mb-4 flex flex-wrap items-center justify-between gap-2"
+        >
           <RouterLink
             :to="'/profile/' + item.ownerId"
             class="flex items-center gap-2"
@@ -171,9 +168,12 @@ function hideRentItem() {
               alt=""
               srcset=""
             />
-            <span class="whitespace-nowrap">{{
-              profile.firstName + " " + profile.lastName
-            }}</span>
+            <div class="flex flex-col">
+              <p class="font-black">
+                {{ profile.firstName + " " + profile.lastName }}
+              </p>
+              <p class="text-sm">Item Owner</p>
+            </div>
           </RouterLink>
           <button
             class="flex items-center gap-1"
@@ -201,7 +201,7 @@ function hideRentItem() {
     </section>
     <section class="flex flex-col gap-2">
       <div
-        class="flex flex-col justify-between gap-4 bg-gray-50 p-4 md:flex-row md:items-center"
+        class="flex flex-col justify-between gap-4 bg-white p-4 md:flex-row md:items-center"
       >
         <h1>Item Reviews and Rating</h1>
         <div

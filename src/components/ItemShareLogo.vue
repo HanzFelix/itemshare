@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import itemShareLogo from "../assets/ItemShareLogo.png";
+import itemShareLogo from "@/assets/ItemShareLogo.png";
 </script>
 <template>
   <RouterLink to="/" class="flex items-center gap-2">

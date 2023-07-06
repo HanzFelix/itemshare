@@ -1,9 +1,9 @@
 <script setup>
-import ItemsContainer from "../components/ItemsContainer.vue";
-import { useItemShareStore } from "../stores/itemshare";
 import { onMounted, ref } from "vue";
-const itemShareStore = useItemShareStore();
+import { useItemShareStore } from "@/stores/itemshare";
+import ItemsContainer from "@/components/ItemsContainer.vue";
 
+const itemShareStore = useItemShareStore();
 const discoverItems = ref([]);
 
 onMounted(async () => {

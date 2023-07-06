@@ -1,11 +1,13 @@
 <script setup>
+import { ref, computed } from "vue";
+import CustomField from "@/components/CustomField.vue";
+import CustomDropdown from "@/components/CustomDropdown.vue";
+
+const emit = defineEmits(["close"]);
 const props = defineProps({
   rentRate: { default: 1 },
 });
-import { ref, computed, reactive } from "vue";
-import CustomField from "../components/CustomField.vue";
-import CustomDropdown from "./CustomDropdown.vue";
-const emit = defineEmits(["close"]);
+
 const suggestAddress = ref(false);
 const rent = ref({
   startDate: addDays(new Date(), 1),
@@ -41,12 +43,7 @@ const returnDate = computed({
     rent.value.returnDate = stringToDate(newValue);
   },
 });
-/*
-const startDate = ref();
-const endDate = reactive(dateToString(addDays(new Date(), 1 + props.rentRate)));
-const returnDate = computed(() => {
-  dateToString(addDays(stringToDate(endDate), 1));
-});*/
+
 function rentItem() {
   emit("close");
 }

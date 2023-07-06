@@ -1,15 +1,11 @@
 <script setup>
-import { RouterLink, useRoute } from "vue-router";
-import { useItemShareStore } from "../stores/itemshare";
-import StarRating from "../components/StarRating.vue";
-import ItemsContainer from "../components/ItemsContainer.vue";
 import { computed, onMounted, ref, watch } from "vue";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import { collection, getDocs, where, query } from "firebase/firestore";
-import db from "../firebase/firebaseInit.js";
-import EditProfile from "../components/EditProfile.vue";
-import MessageOwner from "../components/MessageOwner.vue";
+import { useRoute } from "vue-router";
+import { useItemShareStore } from "@/stores/itemshare";
+import ItemsContainer from "@/components/ItemsContainer.vue";
+import StarRating from "@/components/StarRating.vue";
+import EditProfile from "@/components/EditProfile.vue";
+import MessageOwner from "@/components/MessageOwner.vue";
 
 const itemShareStore = useItemShareStore();
 const route = useRoute();
@@ -23,21 +19,9 @@ const profile = ref({
   location: "",
 });
 
-onMounted(async () => {
-  profile.value = await itemShareStore.loadProfile(useruid.value);
-  items.value = await itemShareStore.loadItems(12, useruid.value);
-});
-
-watch(
-  () => route.params.id,
-  async (newId) => {
-    useruid.value = newId || itemShareStore.myUserUid;
-    profile.value = await itemShareStore.loadProfile(useruid.value);
-    items.value = await itemShareStore.loadItems(12, useruid.value);
-  }
-);
 const editDialog = ref(null);
 const messageDialog = ref(null);
+
 const isMyProfile = computed(() => useruid.value == itemShareStore.myUserUid);
 
 function showEditProfile(yes) {
@@ -55,6 +39,20 @@ function showMessageOwner(yes) {
     messageDialog.value.close();
   }
 }
+
+onMounted(async () => {
+  profile.value = await itemShareStore.loadProfile(useruid.value);
+  items.value = await itemShareStore.loadItems(12, useruid.value);
+});
+
+watch(
+  () => route.params.id,
+  async (newId) => {
+    useruid.value = newId || itemShareStore.myUserUid;
+    profile.value = await itemShareStore.loadProfile(useruid.value);
+    items.value = await itemShareStore.loadItems(12, useruid.value);
+  }
+);
 </script>
 
 <template>
@@ -66,6 +64,7 @@ function showMessageOwner(yes) {
           class="flex basis-4/12 flex-col gap-2 bg-white p-4 shadow-sm shadow-secondary"
         >
           <img
+            v-if="profile.image"
             :src="profile.image"
             alt=""
             srcset=""
