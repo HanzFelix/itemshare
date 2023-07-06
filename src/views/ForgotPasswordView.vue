@@ -1,79 +1,67 @@
 <script setup>
 import { ref } from "vue";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
+import { useItemShareStore } from "@/stores/itemshare";
+import CustomField from "@/components/CustomField.vue";
+
+const itemShareStore = useItemShareStore();
 
 const email = ref("");
-let error = ref(false);
 let errorMessage = ref("");
-let success = ref(false);
 let successMessage = ref("");
 
-const resetPassword = async () => {
-  if (email.value !== "") {
-    try {
-      await firebase
-        .auth()
-        .sendPasswordResetEmail(email.value)
-        .then(() => {
-          success.value = true;
-          successMessage.value = "Check your email to reset your password";
-          error.value = false;
-        });
-    } catch (err) {
-      success.value = false;
-      error.value = true;
-      errorMessage.value = err.message;
-      console.log("error");
+async function resetPassword() {
+  try {
+    errorMessage.value = "";
+    if (await itemShareStore.resetPassword(email.value)) {
+      successMessage.value = "Check your email to reset your password";
     }
-    console.log("success");
-  } else {
-    success.value = false;
-    error.value = true;
-    errorMessage.value = "Please enter your email address.";
+  } catch (error) {
+    errorMessage.value = error;
   }
-  console.log("failed");
-};
+}
 </script>
 
 <template>
   <div
-    class="bg-white p-8 self-center rounded-3xl flex flex-col overflow-y-auto max-w-full"
+    class="flex max-w-xs flex-col self-center overflow-y-auto rounded-3xl bg-background p-8"
   >
-    <div v-show="success" class="successMessage bg-white rounded-md">
-      {{ successMessage }}
-      <button
-        class="py-3 px-5 text-white bg-gray-800 rounded-xl flex flex-col m-auto mt-5"
+    <div v-show="successMessage" class="flex flex-col gap-4">
+      <p>{{ successMessage }}</p>
+      <RouterLink
+        to="/login"
+        class="rounded-md bg-primary px-6 py-2 text-center text-background"
       >
-        <RouterLink to="/login">Close</RouterLink>
-      </button>
+        Close
+      </RouterLink>
     </div>
     <form
       @submit.stop.prevent="resetPassword"
-      v-show="!success"
-      class="flex gap-2 flex-col"
+      v-show="!successMessage"
+      class="flex flex-col gap-2"
     >
-      <h2>Enter Email that is associated with your account.</h2>
-      <input
+      <CustomField
+        placeholder="Email address"
+        label="Enter the email associated with your account."
         v-model="email"
-        type="text"
-        class="py-3 px-5 bg-yellow-200 placeholder-yellow-700 border-2 border-yellow-500 rounded-xl"
-        placeholder="Email Address"
+        input-type="email"
       />
       <div
-        v-show="error"
-        class="errorMessage bg-red-500 rounded-md align-middle text-sm px-5 py-2"
+        v-show="errorMessage"
+        class="rounded-md border-2 border-red-400 bg-red-300 px-4 py-2 align-middle text-sm text-red-800"
       >
         {{ errorMessage }}
       </div>
-      <button class="py-3 px-5 text-white bg-green-800 rounded-xl">
+      <button
+        class="rounded-md border-2 border-transparent bg-primary px-6 py-2 text-background"
+      >
         Reset Password
       </button>
       <RouterLink
         to="/login"
-        class="py-3 px-5 text-green-800 border-2 bg-white border-green-800 rounded-xl text-center"
-        >Back</RouterLink
+        class="rounded-md border-2 border-primary bg-background px-6 py-2 text-center text-primary"
       >
+        Back
+      </RouterLink>
     </form>
   </div>
 </template>
