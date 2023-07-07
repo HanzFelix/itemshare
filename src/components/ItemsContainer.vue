@@ -44,7 +44,7 @@ function gridSize(text) {
 </script>
 <template>
   <div
-    class="grid grid-flow-row gap-2 rounded-none bg-gradient-to-b from-secondary to-transparent bg-[length:100%_150px] bg-no-repeat px-2 py-4 sm:rounded-xl sm:px-4"
+    class="grid grid-flow-row gap-2 rounded-none bg-gradient-to-b from-primary/80 to-transparent bg-[length:100%_150px] bg-no-repeat px-2 py-4 sm:rounded-xl sm:px-4"
     :class="gridSize(gridfor)"
   >
     <RouterLink
