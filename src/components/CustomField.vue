@@ -25,7 +25,7 @@ defineEmits(["update:modelValue"]);
       :value="modelValue"
       :disabled="disabled"
       @input="$emit('update:modelValue', $event.target.value)"
-      class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 text-text placeholder:text-sm placeholder:text-text placeholder:text-opacity-60 focus:border-2 focus:border-primary focus:border-opacity-100 focus:bg-white focus:bg-opacity-90 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50 disabled:bg-text disabled:bg-opacity-10"
+      class="rounded-md border-2 border-text/50 bg-white/50 text-text placeholder:text-sm placeholder:text-text/60 focus:border-2 focus:border-primary/100 focus:bg-white/90 focus:ring-0 focus:placeholder:text-text/50 disabled:bg-text/10"
     />
     <slot></slot>
   </div>

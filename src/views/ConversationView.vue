@@ -57,7 +57,7 @@ watch(
     v-if="itemShareStore.loadedMessages.length != 0"
   >
     <header
-      class="flex items-center justify-between bg-primary bg-opacity-90 px-6 py-2 shadow-sm shadow-secondary"
+      class="flex items-center justify-between bg-primary/90 px-6 py-2 shadow-sm shadow-secondary"
     >
       <div class="flex gap-2">
         <img
@@ -110,7 +110,7 @@ watch(
         </div>
         <section class="sticky bottom-0 mt-4 rounded-t-xl bg-white pb-4">
           <form
-            class="bg-amber-400 flex gap-2 rounded-xl bg-secondary bg-opacity-80 p-2 shadow-gray-400 drop-shadow-sm"
+            class="bg-amber-400 flex gap-2 rounded-xl bg-secondary/80 p-2 shadow-gray-400 drop-shadow-sm"
             @submit.prevent="sendMessage(messageDraft)"
           >
             <CustomField
@@ -130,7 +130,7 @@ watch(
   </div>
   <div
     v-else
-    class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+    class="my-2 flex h-full basis-full flex-col justify-center text-center text-text/60"
   >
     <p>Loading messages...</p>
   </div>

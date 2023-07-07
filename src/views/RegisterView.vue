@@ -48,7 +48,7 @@ async function register() {
             placeholder="Enter your phone number"
           >
             <button
-              class="rounded-md border-2 border-text border-opacity-50 bg-secondary px-6 py-2 text-text text-opacity-80 transition-colors hover:bg-opacity-90"
+              class="rounded-md border-2 border-text/50 bg-secondary/100 px-6 py-2 text-text/80 transition-colors"
             >
               Send SMS Code
             </button>

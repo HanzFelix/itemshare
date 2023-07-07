@@ -105,7 +105,7 @@ watch(
             <button
               v-if="isMyProfile"
               @click="showEditProfile(true)"
-              class="flex items-center justify-center gap-1 rounded-md border-2 border-text border-opacity-50 bg-secondary px-8 py-2 text-text text-opacity-80"
+              class="flex items-center justify-center gap-1 rounded-md border-2 border-text/50 bg-secondary px-8 py-2 text-text/80"
             >
               <span class="material-icons">edit</span>
               <span>Edit Profile</span>
@@ -121,7 +121,7 @@ watch(
             <!--Need some placeholder action-->
             <button
               v-if="!isMyProfile"
-              class="flex items-center justify-center gap-1 rounded-md border-2 border-text border-opacity-50 bg-secondary px-8 py-2 text-text text-opacity-80"
+              class="flex items-center justify-center gap-1 rounded-md border-2 border-text/50 bg-secondary px-8 py-2 text-text/80"
             >
               <span class="material-icons">flag</span>
               <span>Report user</span>

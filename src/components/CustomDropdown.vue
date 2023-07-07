@@ -16,7 +16,7 @@ defineEmits(["update:modelValue"]);
     <select
       :disabled="disabled"
       :value="modelValue"
-      class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 focus:border-2 focus:border-primary focus:border-opacity-60 focus:bg-white focus:bg-opacity-90 focus:ring-0"
+      class="rounded-md border-2 border-text/50 bg-white/50 focus:border-2 focus:border-primary/60 focus:bg-white/90 focus:ring-0"
       @change="$emit('update:modelValue', $event.target.value)"
     >
       <slot><option>Select...</option></slot>

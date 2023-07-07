@@ -33,8 +33,8 @@ onMounted(async () => {
           <RouterLink
             v-for="conversation in conversations"
             :to="'/messages/' + conversation.convoId"
-            class="my-2 flex gap-2 rounded-lg bg-opacity-40 p-2"
-            active-class="bg-secondary"
+            class="my-2 flex gap-2 rounded-lg p-2"
+            active-class="bg-secondary/40"
           >
             <img
               :src="conversation.participant.image"
@@ -69,13 +69,13 @@ onMounted(async () => {
         </div>
         <div
           v-else-if="isLoading"
-          class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+          class="my-2 flex h-full basis-full flex-col justify-center text-center text-text/60"
         >
           <p>Loading messages...</p>
         </div>
         <div
           v-else
-          class="my-2 flex h-full basis-full flex-col justify-center text-center text-text text-opacity-60"
+          class="my-2 flex h-full basis-full flex-col justify-center text-center text-text/60"
         >
           <p>No messages to show.</p>
         </div>

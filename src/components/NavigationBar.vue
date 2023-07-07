@@ -79,7 +79,7 @@ async function logout() {
         </li>
       </ul>
     </nav>
-    <section class="bg-secondary bg-opacity-20">
+    <section class="bg-secondary/20">
       <div
         class="container mx-auto flex flex-col-reverse items-stretch justify-between px-4 lg:flex-row"
       >
@@ -96,7 +96,7 @@ async function logout() {
         </ol>
         <div></div>
         <form
-          class="my-3 flex overflow-hidden rounded-md border-2 border-text border-opacity-50 bg-background focus-within:border-2 focus-within:border-primary focus-within:border-opacity-100"
+          class="my-3 flex overflow-hidden rounded-md border-2 border-text/50 bg-background focus-within:border-2 focus-within:border-primary/100"
           v-if="!['search'].includes($route.name)"
           @submit.stop.prevent="searchItem()"
         >
@@ -104,17 +104,17 @@ async function logout() {
             type="text"
             name=""
             id=""
-            class="w-full rounded-l-md border-none bg-transparent bg-white bg-opacity-50 px-4 py-1 text-sm text-text placeholder:text-text placeholder:text-opacity-60 focus:bg-white focus:bg-opacity-90 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50"
+            class="w-full rounded-l-md border-none bg-white/50 px-4 py-1 text-sm text-text placeholder:text-text/60 focus:bg-white/90 focus:ring-0 focus:placeholder:text-text/50"
             placeholder="Search..."
           />
           <button
-            class="material-icons bg-accent px-2 py-1 text-text text-opacity-70 lg:py-0 lg:text-lg"
+            class="material-icons bg-accent px-2 py-1 text-text/70 lg:py-0 lg:text-lg"
           >
             search
           </button>
           <RouterLink
             to="/search"
-            class="material-icons bg-accent py-1 pr-2 text-text text-opacity-70 lg:py-0 lg:text-lg"
+            class="material-icons bg-accent py-1 pr-2 text-text/70 lg:py-0 lg:text-lg"
           >
             menu
           </RouterLink>

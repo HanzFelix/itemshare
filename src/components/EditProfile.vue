@@ -64,7 +64,7 @@ watch(
             />
             <label
               for="add-image"
-              class="material-icons absolute -bottom-2 -right-2 cursor-pointer rounded-md border-2 border-text border-opacity-50 bg-accent px-1 py-1 text-text text-opacity-70"
+              class="material-icons absolute -bottom-2 -right-2 cursor-pointer rounded-md border-2 border-text/50 bg-accent px-1 py-1 text-text/70"
             >
               add_photo_alternate
             </label>

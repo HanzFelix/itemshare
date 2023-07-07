@@ -40,7 +40,7 @@ async function messageOwner() {
 </script>
 <template>
   <header
-    class="flex items-center justify-between gap-24 bg-primary bg-opacity-90 px-4 py-2 shadow-md shadow-gray-400"
+    class="flex items-center justify-between gap-24 bg-primary/90 px-4 py-2 shadow-md shadow-secondary"
   >
     <div class="flex items-center gap-2">
       <img
@@ -58,7 +58,7 @@ async function messageOwner() {
   </header>
   <section class="sticky bottom-0 mt-4 rounded-t-xl bg-white">
     <form
-      class="bg-amber-400 flex gap-2 bg-secondary bg-opacity-80 p-2 shadow-gray-400 drop-shadow-sm"
+      class="bg-amber-400 flex gap-2 bg-secondary/80 p-2 shadow-gray-400 drop-shadow-sm"
       @submit.prevent="messageOwner()"
     >
       <CustomField
@@ -69,7 +69,7 @@ async function messageOwner() {
       <button
         :disabled="isSending"
         type="submit"
-        class="material-icons rounded-md border-2 border-transparent bg-primary px-4 py-2 text-background disabled:bg-text disabled:bg-opacity-50"
+        class="material-icons rounded-md border-2 border-transparent bg-primary px-4 py-2 text-background disabled:bg-text/50"
       >
         send
       </button>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex basis-full flex-col justify-between divide-y-0 divide-secondary divide-opacity-80 px-4 md:divide-y-4"
+    class="flex basis-full flex-col justify-between divide-y-0 divide-secondary/80 px-4 md:divide-y-4"
   >
     <div class="flex basis-full flex-col justify-center">
       <h1 class="text-5xl font-bold text-background sm:text-6xl md:shadow-none">

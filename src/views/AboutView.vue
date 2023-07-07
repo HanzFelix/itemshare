@@ -26,7 +26,7 @@ const members = ref([
 ]);
 </script>
 <template>
-  <div class="flex flex-col gap-4 rounded-xl bg-text bg-opacity-25 p-8">
+  <div class="flex flex-col gap-4 rounded-xl bg-text/25 p-8">
     <h1 class="text-white">The Team</h1>
     <div class="grid grid-cols-2 justify-around gap-8">
       <div class="flex flex-col items-center gap-2" v-for="member in members">

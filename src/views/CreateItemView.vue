@@ -92,22 +92,22 @@ async function createItem() {
           <textarea
             v-model="item.description"
             name="description"
-            class="rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 placeholder:text-sm placeholder:text-text placeholder:text-opacity-60 focus:border-primary focus:border-opacity-100 focus:bg-white focus:bg-opacity-90 focus:ring-0 focus:placeholder:text-text focus:placeholder:text-opacity-50"
+            class="rounded-md border-2 border-text/50 bg-white/50 placeholder:text-sm placeholder:text-text/60 focus:border-primary/100 focus:bg-white/90 focus:ring-0 focus:placeholder:text-text/50"
             placeholder="A description on the item..."
           ></textarea>
         </div>
         <div class="flex flex-col gap-1">
           <label>Tags</label>
           <div
-            class="flex flex-wrap gap-2 rounded-md border-2 border-text border-opacity-50 bg-white bg-opacity-50 p-2 focus-within:border-primary focus-within:border-opacity-100 focus-within:bg-white focus-within:bg-opacity-90"
+            class="flex flex-wrap gap-2 rounded-md border-2 border-text/50 bg-white/50 p-2 focus-within:border-primary/100 focus-within:bg-white/90"
           >
             <div
               v-for="(tag, index) in item.tags"
-              class="flex items-center gap-1 whitespace-nowrap rounded-md bg-primary bg-opacity-80 py-1 pl-2 pr-1 text-background"
+              class="flex items-center gap-1 whitespace-nowrap rounded-md bg-primary/80 py-1 pl-2 pr-1 text-background"
             >
               <span>{{ tag }}</span>
               <button
-                class="material-icons aspect-square rounded-lg bg-background bg-opacity-10 px-1 text-xs font-bold text-background hover:bg-accent hover:text-text"
+                class="material-icons aspect-square rounded-lg bg-background/10 px-1 text-xs font-bold text-background hover:bg-accent hover:text-text"
                 @click="deleteTag(index)"
                 type="button"
               >
@@ -135,22 +135,20 @@ async function createItem() {
         <div class="flex flex-col gap-1">
           <label>Images</label>
           <div
-            class="w-full overflow-x-auto rounded-md border-2 border-text border-opacity-25 bg-secondary bg-opacity-50 p-2"
+            class="w-full overflow-x-auto rounded-md border-2 border-text/25 bg-secondary/50 p-2"
             id="images"
           >
             <div class="flex gap-2">
               <label
                 for="add-image"
-                class="group/x relative aspect-square h-40 rounded-md border-2 border-dashed border-text border-opacity-40 px-2 py-4 text-center hover:border-primary"
+                class="group/x relative aspect-square h-40 rounded-md border-2 border-dashed border-text/40 px-2 py-4 text-center hover:border-primary"
               >
                 <p
-                  class="material-icons text-6xl text-text text-opacity-50 group-hover/x:text-primary"
+                  class="material-icons text-6xl text-text/50 group-hover/x:text-primary"
                 >
                   add_photo_alternate
                 </p>
-                <p
-                  class="text-sm text-text text-opacity-75 group-hover/x:text-primary"
-                >
+                <p class="text-sm text-text/75 group-hover/x:text-primary">
                   Browse for an image to upload.
                 </p>
                 <input

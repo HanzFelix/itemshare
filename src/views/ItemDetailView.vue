@@ -74,13 +74,13 @@ onMounted(async () => {
         />
         <div class="flex w-full gap-2 overflow-x-auto px-1 py-2">
           <img
-            class="aspect-square h-24 cursor-pointer object-contain ring-4 ring-opacity-75"
+            class="aspect-square h-24 cursor-pointer object-contain ring-4"
             v-for="(img, index) in item.images"
             :src="img"
             @click="viewImage(index)"
             alt=""
             srcset=""
-            :class="activeImg == index ? 'ring-primary' : 'ring-transparent'"
+            :class="activeImg == index ? 'ring-primary/75' : 'ring-transparent'"
           />
         </div>
       </div>
@@ -144,7 +144,7 @@ onMounted(async () => {
             </button>
             <!--Need some placeholder action-->
             <button
-              class="flex basis-1/2 items-center justify-center gap-1 rounded-md border-2 border-text border-opacity-50 bg-secondary px-8 py-2 text-text text-opacity-80 transition-colors hover:bg-opacity-90 sm:basis-auto"
+              class="flex basis-1/2 items-center justify-center gap-1 rounded-md border-2 border-text/50 bg-secondary px-8 py-2 text-text/80 transition-colors hover:bg-secondary/90 sm:basis-auto"
             >
               <span class="material-icons">star</span>
               <span>Add to Favorites</span>
