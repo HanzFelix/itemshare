@@ -560,15 +560,21 @@ export const useItemShareStore = defineStore("itemshare", {
     },
 
     async loadConversation(convoId) {
-      const convoSnap = await getDoc(doc(db, "conversations", convoId));
+      const convoRef = doc(db, "conversations", convoId);
+      const convoSnap = await getDoc(convoRef);
       // doesn't support 3+ participant convos yet (will it ever be?)
       if (convoSnap.exists()) {
+        if (convoSnap.data().lastSender != this.myUserUid) {
+          await updateDoc(convoRef, {
+            isRead: true,
+          });
+        }
+
         return {
           lastMessage: convoSnap.data().lastMessage,
           lastSentAt: convoSnap.data().lastSentAt,
           lastSender: convoSnap.data().lastSender,
           participants: convoSnap.data().participants,
-          isRead: convoSnap.data().isRead,
         };
       }
     },
