@@ -11,6 +11,7 @@ const itemShareStore = useItemShareStore();
 const route = useRoute();
 const useruid = ref(route.params.id || itemShareStore.myUserUid); // redundant?
 
+const isLoading = ref(true);
 const items = ref([]);
 const profile = ref({
   firstName: "",
@@ -43,14 +44,17 @@ function showMessageOwner(yes) {
 onMounted(async () => {
   profile.value = await itemShareStore.loadProfile(useruid.value);
   items.value = await itemShareStore.loadItems(12, useruid.value);
+  isLoading.value = false;
 });
 
 watch(
   () => route.params.id,
   async (newId) => {
+  isLoading.value = true;
     useruid.value = newId || itemShareStore.myUserUid;
     profile.value = await itemShareStore.loadProfile(useruid.value);
     items.value = await itemShareStore.loadItems(12, useruid.value);
+  isLoading.value = false;
   }
 );
 </script>
@@ -150,7 +154,7 @@ watch(
       </h1>
       <ItemsContainer :items="itemShareStore.itemsInRange(12, 18)" />
     </section>-->
-    <section class="flex flex-col gap-2">
+    <section v-if="!isLoading" class="flex flex-col gap-2">
       <h1>
         {{ profile.firstName + " " + profile.lastName + "'s Item(s)" }}
       </h1>
