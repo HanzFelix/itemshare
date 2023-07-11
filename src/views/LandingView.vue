@@ -6,7 +6,7 @@ import ItemShareLogo from "@/components/ItemShareLogo.vue";
   <div
     class="flex h-full flex-col-reverse bg-background md:flex-row-reverse"
     style="
-      background-image: url('/images/landingBg.jpg');
+      background-image: url('./images/landingBg.jpg');
       background-size: cover;
       background-position: center;
     "
