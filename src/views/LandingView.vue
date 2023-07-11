@@ -1,12 +1,12 @@
 <script setup>
 import { RouterView } from "vue-router";
-import ItemShareLogo from "../components/ItemShareLogo.vue";
+import ItemShareLogo from "@/components/ItemShareLogo.vue";
 </script>
 <template>
   <div
     class="flex h-full flex-col-reverse bg-background md:flex-row-reverse"
     style="
-      background-image: url('https://wordpress.heals.com/blog/wp-content/uploads/2021/08/Colourful-sofa-cushions-1024x485.jpg;');
+      background-image: url('../public/landingBg.jpg');
       background-size: cover;
       background-position: center;
     "
