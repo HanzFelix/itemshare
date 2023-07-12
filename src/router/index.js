@@ -1,21 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useItemShareStore } from "@/stores/itemshare";
-import LandingView from "@/views/LandingView.vue";
-import LandingPageView from "@/views/LandingPageView.vue";
-import LoginView from "@/views/LoginView.vue";
-import RegisterView from "@/views/RegisterView.vue";
-import HomePageView from "@/views/HomePageView.vue";
-import HomeView from "@/views/HomeView.vue";
-import ProfileView from "@/views/ProfileView.vue";
-import ItemDetailView from "@/views/ItemDetailView.vue";
-import MessagesView from "@/views/MessagesView.vue";
-import SearchView from "@/views/SearchView.vue";
-import EmptyView from "@/views/EmptyView.vue";
-import ConversationView from "@/views/ConversationView.vue";
-import ForgotPasswordView from "@/views/ForgotPasswordView.vue";
-import TermsAndConditionsView from "@/views/TermsAndConditionsView.vue";
-import CreateItemView from "@/views/CreateItemView.vue";
-import AboutView from "@/views/AboutView.vue";
+const LandingView = () => import("@/views/LandingView.vue");
+const LandingPageView = () => import("@/views/LandingPageView.vue");
+const LoginView = () => import("@/views/LoginView.vue");
+const RegisterView = () => import("@/views/RegisterView.vue");
+const HomePageView = () => import("@/views/HomePageView.vue");
+const HomeView = () => import("@/views/HomeView.vue");
+const ProfileView = () => import("@/views/ProfileView.vue");
+const ItemDetailView = () => import("@/views/ItemDetailView.vue");
+const MessagesView = () => import("@/views/MessagesView.vue");
+const SearchView = () => import("@/views/SearchView.vue");
+const EmptyView = () => import("@/views/EmptyView.vue");
+const ConversationView = () => import("@/views/ConversationView.vue");
+const ForgotPasswordView = () => import("@/views/ForgotPasswordView.vue");
+const TermsAndConditionsView = () =>
+  import("@/views/TermsAndConditionsView.vue");
+const CreateItemView = () => import("@/views/CreateItemView.vue");
+const AboutView = () => import("@/views/AboutView.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

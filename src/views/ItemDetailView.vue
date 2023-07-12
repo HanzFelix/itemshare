@@ -1,33 +1,31 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, defineAsyncComponent } from "vue";
 import { useRoute, RouterLink } from "vue-router";
 import { useItemShareStore } from "@/stores/itemshare";
+import { useItemStore } from "@/stores/item";
+import { useProfileStore } from "@/stores/profile";
 import StarRating from "@/components/StarRating.vue";
-import RentItem from "@/components/RentItem.vue";
-import MessageOwner from "@/components/MessageOwner.vue";
+const RentItem = defineAsyncComponent(() =>
+  import("@/components/RentItem.vue")
+);
+const MessageOwner = defineAsyncComponent(() =>
+  import("@/components/MessageOwner.vue")
+);
 
 const itemShareStore = useItemShareStore();
+const itemStore = useItemStore();
+const profileStore = useProfileStore();
 const route = useRoute();
 const itemId = ref(route.params.id);
 
 const activeImg = ref(0);
-const profile = ref("");
-const item = ref({
-  itemName: "",
-  location: "",
-  rentAmount: "",
-  rentRate: "",
-  images: [],
-  description: "",
-  ownerId: "",
-  tags: [],
-});
+const isLoading = ref(true);
 
 const messageDialog = ref(null);
 const rentDialog = ref(null);
 
 const isMyProfile = computed(
-  () => item.value.ownerId == itemShareStore.myUserUid
+  () => itemStore.item.ownerId == itemShareStore.myUserUid
 );
 
 function showMessageOwner(yes) {
@@ -51,8 +49,9 @@ function hideRentItem() {
 }
 
 onMounted(async () => {
-  item.value = await itemShareStore.loadItem(itemId.value);
-  profile.value = await itemShareStore.loadProfile(item.value.ownerId);
+  await itemStore.loadItem(itemId.value);
+  await profileStore.loadProfile(itemStore.item.ownerId);
+  isLoading.value = false;
 });
 </script>
 <template>
@@ -68,14 +67,14 @@ onMounted(async () => {
         class="flex basis-3/12 flex-col bg-white p-4 shadow-sm shadow-secondary"
       >
         <img
-          :src="item.images[activeImg]"
-          v-if="item.images.length > 0"
+          :src="itemStore.item.images[activeImg]"
+          v-if="itemStore.item.images.length"
           class="aspect-square w-full object-contain"
         />
         <div class="flex w-full gap-2 overflow-x-auto px-1 py-2">
           <img
             class="aspect-square h-24 cursor-pointer object-contain ring-4"
-            v-for="(img, index) in item.images"
+            v-for="(img, index) in itemStore.item.images"
             :src="img"
             @click="viewImage(index)"
             alt=""
@@ -90,7 +89,7 @@ onMounted(async () => {
       >
         <div>
           <div class="flex items-start justify-between">
-            <h1>{{ item.itemName }}</h1>
+            <h1>{{ itemStore.item.itemName }}</h1>
             <span
               class="rounded-full bg-green-600 px-4 py-1 text-xs font-black text-white"
             >
@@ -102,7 +101,7 @@ onMounted(async () => {
           <div class="my-4">
             <p class="text-green-600">
               <span class="mr-2 text-2xl">₱</span
-              >{{ item.rentAmount + " - " + item.rentRate }}
+              >{{ itemStore.item.rentAmount + " - " + itemStore.item.rentRate }}
             </p>
             <!--rating-->
             <div class="flex gap-4">
@@ -112,12 +111,12 @@ onMounted(async () => {
             <!--location-->
             <div class="flex">
               <span class="material-icons text-green-600">location_on</span>
-              <span>{{ item.location }}</span>
+              <span>{{ itemStore.item.location }}</span>
             </div>
           </div>
           <!--description-->
           <p>
-            {{ item.description }}
+            {{ itemStore.item.description }}
           </p>
         </div>
         <div class="mt-2 flex flex-col">
@@ -126,7 +125,7 @@ onMounted(async () => {
             <ul class="flex flex-wrap gap-2">
               <!--Clicking on a tag should redirect user to search results with the same tag-->
               <li
-                v-for="tag in item.tags"
+                v-for="tag in itemStore.item.tags"
                 class="rounded-full border-2 border-yellow-500 bg-yellow-200 px-4 py-1 text-xs text-yellow-700"
               >
                 {{ tag }}
@@ -155,22 +154,26 @@ onMounted(async () => {
       <!--Lender Details-->
       <div class="basis-3/12 bg-white p-4 shadow-sm shadow-secondary">
         <div
-          v-if="profile"
+          v-if="!isLoading"
           class="mb-4 flex flex-wrap items-center justify-between gap-2"
         >
           <RouterLink
-            :to="'/profile/' + item.ownerId"
+            :to="'/profile/' + itemStore.item.ownerId"
             class="flex items-center gap-2"
           >
             <img
               class="aspect-square w-12 rounded-full"
-              :src="profile.image"
+              :src="profileStore.loadedProfile.image"
               alt=""
               srcset=""
             />
             <div class="flex flex-col">
               <p class="font-black">
-                {{ profile.firstName + " " + profile.lastName }}
+                {{
+                  profileStore.loadedProfile.firstName +
+                  " " +
+                  profileStore.loadedProfile.lastName
+                }}
               </p>
               <p class="text-sm">Item Owner</p>
             </div>
@@ -185,17 +188,19 @@ onMounted(async () => {
           </button>
         </div>
         <!--rating-->
-        <h2>Lender Ratings</h2>
-        <div class="mb-4 flex items-center gap-4">
-          <span>4.0 / 5.0</span>
-          <StarRating value="4" />
-        </div>
+        <div v-if="!isLoading">
+          <h2>Lender Ratings</h2>
+          <div class="mb-4 flex items-center gap-4">
+            <span>4.0 / 5.0</span>
+            <StarRating value="4" />
+          </div>
 
-        <!--rating-->
-        <h2>Chat Response Rate</h2>
-        <div class="mb-4 flex items-center gap-4">
-          <span>3.0 / 5.0</span>
-          <StarRating value="3" />
+          <!--rating-->
+          <h2>Chat Response Rate</h2>
+          <div class="mb-4 flex items-center gap-4">
+            <span>3.0 / 5.0</span>
+            <StarRating value="3" />
+          </div>
         </div>
       </div>
     </section>
@@ -230,7 +235,7 @@ onMounted(async () => {
           <div class="flex items-center gap-2">
             <img
               class="aspect-square w-12 rounded-full"
-              :src="itemShareStore.loadedProfile(i).image"
+              :src="profileStore.loadedProfile.image"
               alt=""
               srcset=""
             />
@@ -238,9 +243,9 @@ onMounted(async () => {
               <StarRating value="4" />
               <span class="truncate text-gray-700">
                 {{
-                  itemShareStore.loadedProfile(i).firstName +
+                  profileStore.loadedProfile.firstName +
                   " " +
-                  itemShareStore.loadedProfile(i).lastName
+                  profileStore.loadedProfile.lastName
                 }}</span
               >
             </div>
@@ -254,15 +259,15 @@ onMounted(async () => {
     ref="rentDialog"
     class="rounded-xl bg-background backdrop:backdrop-brightness-50"
   >
-    <RentItem @close="hideRentItem" :item="item" />
+    <RentItem @close="hideRentItem" :item="itemStore.item" />
   </dialog>
   <dialog
     ref="messageDialog"
     class="rounded-xl p-0 backdrop:backdrop-brightness-50"
   >
     <MessageOwner
-      :owner-id="item.ownerId"
-      :owner-profile="profile"
+      :owner-id="itemStore.item.ownerId"
+      :owner-profile="profileStore.loadedProfile"
       @close="showMessageOwner(false)"
     />
   </dialog>

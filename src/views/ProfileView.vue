@@ -2,23 +2,19 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useItemShareStore } from "@/stores/itemshare";
+import { useProfileStore } from "@/stores/profile";
 import ItemsContainer from "@/components/ItemsContainer.vue";
 import StarRating from "@/components/StarRating.vue";
 import EditProfile from "@/components/EditProfile.vue";
 import MessageOwner from "@/components/MessageOwner.vue";
 
 const itemShareStore = useItemShareStore();
+const profileStore = useProfileStore();
 const route = useRoute();
 const useruid = ref(route.params.id || itemShareStore.myUserUid); // redundant?
 
 const isLoading = ref(true);
 const items = ref([]);
-const profile = ref({
-  firstName: "",
-  lastName: "",
-  image: "",
-  location: "",
-});
 
 const editDialog = ref(null);
 const messageDialog = ref(null);
@@ -42,7 +38,7 @@ function showMessageOwner(yes) {
 }
 
 onMounted(async () => {
-  profile.value = await itemShareStore.loadProfile(useruid.value);
+  await profileStore.loadProfile(useruid.value);
   items.value = await itemShareStore.loadItems(12, useruid.value);
   isLoading.value = false;
 });
@@ -50,11 +46,11 @@ onMounted(async () => {
 watch(
   () => route.params.id,
   async (newId) => {
-  isLoading.value = true;
+    isLoading.value = true;
     useruid.value = newId || itemShareStore.myUserUid;
-    profile.value = await itemShareStore.loadProfile(useruid.value);
+    await profileStore.loadProfile(useruid.value);
     items.value = await itemShareStore.loadItems(12, useruid.value);
-  isLoading.value = false;
+    isLoading.value = false;
   }
 );
 </script>
@@ -68,8 +64,8 @@ watch(
           class="flex basis-4/12 flex-col gap-2 bg-white p-4 shadow-sm shadow-secondary"
         >
           <img
-            v-if="profile.image"
-            :src="profile.image"
+            v-if="profileStore.loadedProfile.image"
+            :src="profileStore.loadedProfile.image"
             alt=""
             srcset=""
             class="aspect-square w-full object-contain"
@@ -82,11 +78,15 @@ watch(
           <div>
             <div class="flex flex-wrap items-start justify-between gap-2">
               <h1 class="text-3xl">
-                {{ profile.firstName + " " + profile.lastName }}
+                {{
+                  profileStore.loadedProfile.firstName +
+                  " " +
+                  profileStore.loadedProfile.lastName
+                }}
               </h1>
               <div class="flex">
                 <span class="material-icons text-green-600">location_on</span>
-                <span>{{ profile.location }}</span>
+                <span>{{ profileStore.loadedProfile.location }}</span>
               </div>
             </div>
             <!--Ratings-->
@@ -156,7 +156,12 @@ watch(
     </section>-->
     <section v-if="!isLoading" class="flex flex-col gap-2">
       <h1>
-        {{ profile.firstName + " " + profile.lastName + "'s Item(s)" }}
+        {{
+          profileStore.loadedProfile.firstName +
+          " " +
+          profileStore.loadedProfile.lastName +
+          "'s Item(s)"
+        }}
       </h1>
       <ItemsContainer :items="items" />
     </section>
@@ -165,7 +170,7 @@ watch(
     <EditProfile
       @close="showEditProfile(false)"
       :useruid="useruid"
-      :profile="profile"
+      :profile="profileStore.loadedProfile"
     />
   </dialog>
   <dialog
@@ -174,7 +179,7 @@ watch(
   >
     <MessageOwner
       :owner-id="useruid"
-      :owner-profile="profile"
+      :owner-profile="profileStore.loadedProfile"
       @close="showMessageOwner(false)"
     />
   </dialog>

@@ -1,8 +1,14 @@
 <script setup>
+import { ref, onMounted } from "vue";
 import { useItemShareStore } from "@/stores/itemshare";
 import ItemsContainer from "@/components/ItemsContainer.vue";
 import CustomField from "@/components/CustomField.vue";
 const itemShareStore = useItemShareStore();
+const queriedItems = ref([]);
+
+onMounted(async () => {
+  queriedItems.value = await itemShareStore.loadItems(12);
+});
 </script>
 <template>
   <main
@@ -32,10 +38,6 @@ const itemShareStore = useItemShareStore();
         </form>
       </div>
     </aside>
-    <ItemsContainer
-      :items="itemShareStore.itemsInRange(4, 16)"
-      gridfor="search"
-      class="basis-2/3"
-    />
+    <ItemsContainer :items="queriedItems" gridfor="search" class="basis-2/3" />
   </main>
 </template>
